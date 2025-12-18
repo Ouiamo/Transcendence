@@ -1,0 +1,33 @@
+
+services:
+
+  backend:
+    
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ft_transcendence_backend
+    restart: always
+    
+    ports:
+      - "3000:3000" 
+      
+    # 💡 الأهم: تثبيت المجلد الذي سيحتوي على ملف SQLite
+    # 'db_data' هو اسم المجلد الذي سيتم إنشاؤه على جهازك المضيف.
+    # '/usr/src/app/data' هو المسار داخل الحاوية حيث سيتواجد ملف SQLite.
+    volumes:
+      - ./db_data:/usr/src/app/data
+      
+    environment:
+      .env
+       
+    networks:
+      - transcendence_network
+
+networks:
+  transcendence_network:
+    driver: bridge
+
+# تعريف الـ Volume المحلي (يمكن الاستغناء عن هذا القسم إذا استخدمت الطريقة أعلاه)
+# volumes:
+#   db_data:

@@ -1,116 +1,92 @@
 body {
     margin: 0;
-    padding: 0;
+    padding: 20px;
     background: linear-gradient(135deg, #2d1b69, #a64d79);
-    color: #ff77ff;
-    font-family: 'Courier New', monospace;
-    height: 100vh;
+    color: white;
+    font-family: 'Courier new', monospace;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .container {
-    text-align: center;
+    background: rgba(45, 27, 105, 0.7);
     padding: 30px;
-    /* width: 350px; */
-    background: rgba(45, 27, 105, 0.8);
-    border: 4px solid #ff77ff;
     border-radius: 10px;
-    box-shadow: 0 0 20px #ff77ff;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
 }
 
 h1 {
     color: #ff44ff;
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 10px #ff44ff;
-    letter-spacing: 2px;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px #ff44ff;
 }
 
-h2 {
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
     color: #ff99ff;
-    margin-bottom: 0.5rem;
-}
-
-.player-input {
-    margin: 15px 0;
 }
 
 input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ff44ff;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
     padding: 12px;
-    font-size: 1rem;
-    border: 3px solid #ff44ff;
-    background: rgba(166, 77, 121, 0.3);
-    color: #ffccff;
-    border-radius: 8px;
-    width: 250px;
-    font-family: 'Courier New', monospace;
+    background: #ff44ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #ff66ff;
+}
+
+.link {
+    color: #ff99ff;
+    text-align: center;
+    margin-top: 15px;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
     text-align: center;
 }
 
-/* input::placeholder {
-    color: #cc99cc;
-} */
-
-/* input:focus {
-    outline: none;
-    box-shadow: 0 0 10px #ff44ff;
-} */
-
-button {
-    padding: 15px 30px;
-    font-size: 1.2rem;
-    background: linear-gradient(45deg, #ff44ff, #a64d79);
-    color: #2d1b69;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-top: 20px;
-    font-family: 'Courier New', monospace;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border: 2px solid #ff99ff;
+.success {
+    background: rgba(0, 255, 0, 0.2);
+    color: #00ff00;
 }
 
-/* button:hover {
-    background: linear-gradient(45deg, #ff66ff, #b35986);
-    box-shadow: 0 0 15px #ff44ff;
-    transform: translateY(-2px);
-} */
-
-.bracket-match {
-    background: rgba(166, 77, 121, 0.3);
-    padding: 15px;
-    margin: 10px 0;
-    border: 2px solid #ff77ff;
-    border-radius: 8px;
-}
-
-/* .bracket-match h3 {
-    color: #ffccff;
-    margin: 0;
-} */
-
-.game-placeholder {
-    margin: 20px;
-    padding: 20px;
-    border: 2px dashed #ff44ff;
-    color: #ffccff;
-    background: rgba(45, 27, 105, 0.5);
-}
-
-.score {
-    color: #ff44ff;
-    text-shadow: 0 0 10px #ff44ff;
-    font-size: 2.5rem;
-}
-
-.instructions {
-    color: #ffccff;
-    background: rgba(45, 27, 105, 0.6);
-    padding: 10px;
-    border-radius: 5px;
-    border: 2px solid #ff77ff;
+.error {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff4444;
 }

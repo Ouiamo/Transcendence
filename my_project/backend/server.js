@@ -13,9 +13,10 @@ db.serialize(() => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       firstname TEXT,
       lastname TEXT,  
-      username TEXT,
-      email TEXT,
-      password_hash TEXT,
+      username TEXT UNIQUE NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      avatar_url TEXT DEFAULT 'default-avatar.png',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -25,7 +26,11 @@ fastify.register(require('@fastify/cors'), {
   origin: true
 });
 
-//==========>hado ghir helper function dyal database 5admi bihom hsen ila htajitiom
+fastify.register(require('@fastify/cookie'), {
+    secret: process.env.COOKIE_SECRET
+  });
+
+//==========>helper function for database
 
 function dbRun(sql, params = []) {
   return new Promise((resolve, reject) => {
@@ -53,6 +58,10 @@ function dbAll(sql, params = []) {
     });
   });
 }
+
+
+// 1 - siginup >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 
 fastify.post('/api/signup', async (request, reply) => {
   const { firstname, lastname, username, email, password } = request.body;
@@ -90,9 +99,8 @@ fastify.post('/api/signup', async (request, reply) => {
   }
 });
 
-  fastify.register(require('@fastify/cookie'), {
-    secret: process.env.COOKIE_SECRET
-  });
+
+// 2 - login >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
   fastify.post('/api/login', async (request, reply) => {
   const { email, password } = request.body;
@@ -148,7 +156,14 @@ fastify.post('/api/signup', async (request, reply) => {
 //jadid (**) hhh
 //    <-{  }->
 //hadi bach afficher profile 
-fastify.post('/api/profile' , async (request, reply) => {
+//cute hhh
+
+
+
+// 3 - profile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+fastify.get('/api/profile' , async (request, reply) => {
   const token= request.cookies.access_token;
   if(!token)
     return reply.code(401).send({error: 'Not authenticated'});
@@ -167,7 +182,10 @@ fastify.post('/api/profile' , async (request, reply) => {
     return reply.code(401).send({error: 'Invalid or expired token'})
   }
 });
-// hadi for update profile
+
+
+// 4 - update profile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 
+
 fastify.patch('/api/profile', async(request, reply) => {
   const token = request.cookies.access_token;
   if(!token) {
@@ -224,6 +242,8 @@ fastify.patch('/api/profile', async(request, reply) => {
   }
 });
 
+// 5 - users >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
 fastify.get('/api/users', async (request, reply) => {
   try {
     const users = await dbAll(`
@@ -238,6 +258,8 @@ fastify.get('/api/users', async (request, reply) => {
     return reply.code(500).send({ error: 'Database error' });
   }
 });
+
+// 6 - root >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 fastify.get('/', async (request, reply) => {
   return {

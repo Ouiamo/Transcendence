@@ -23,3 +23,16 @@ export async function signupUser(userData: {
         
         return await response.json();
 }
+
+export async function loginUser(userData: {
+    email: string;
+    password: string;
+}) {
+        const response = await fetch(`${API_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData)
+        });
+        
+        return await response.json();
+}

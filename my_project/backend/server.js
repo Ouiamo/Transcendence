@@ -90,9 +90,89 @@ fastify.post('/api/signup', async (request, reply) => {
 });
 
 
-fastify.post('/api/login', async (request, reply) => {
-  // hada heta n9adoh (note : 5asna nzido jwt)
+  // fastify.post('/api/login', async (request, reply) => {
+  //   const {email, password} = request.body;
+  //   console.log(request.body);
+    
+  //   const user = await dbGet('SELECT id FROM users WHERE email = ?', [email]);
+
+  //   if (!user) {
+  //     return reply.code(400).send({error: 'Invalid email'});
+  //   }
+
+  //   try{
+      
+  //     // if (!user.is_verified) {
+  //     //   return reply.code(403).send({ error: 'Please confirm your email first'});
+  //     // }
+  
+  //     const isValid = await bcrypt.compare(password, user.password);
+  
+  //     if (!isValid) {
+  //       return reply.code(400).send({error : 'Invalid password'});
+  //     }
+  
+  //     // const SECRET = process.env.JWT_SECRET;
+  //     // const token = jwt.sign({id: user.id, username: user.username}, SECRET , {expiresIn: '1h'} );
+      
+  //      return reply.send({
+  //       success: true,
+  //       message: 'Login successful',
+  //       user: {
+  //         id: user.id,
+  //         username: user.username,
+  //         email: user.email
+  //       }
+  //     });
+  //   }
+  //   catch (err)
+  //   {
+  //     console.error(err);
+  //     return (reply.code(500).send({ error: 'Server error' }))
+  //   }
+  //   });
+
+
+  fastify.post('/api/login', async (request, reply) => {
+  const { email, password } = request.body;
+
+  if (!email || !password) {
+    return reply.code(400).send({ error: 'Email and password required' });
+  }
+
+  try {
+    const user = await dbGet(
+      'SELECT * FROM users WHERE email = ?',
+      [email]
+    );
+
+    if (!user) {
+      return reply.code(401).send({ error: 'Invalid credentials' });
+    }
+
+    const match = await bcrypt.compare(password, user.password_hash);
+
+    if (!match) {
+      return reply.code(401).send({ error: 'Invalid credentials' });
+    }
+
+    return reply.send({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    return reply.code(500).send({ error: 'Server error' });
+  }
 });
+
+
 
 // hadi zadtha bash nxofo ga3 li trogestraw (fblast dik get_players li kant 9bel)
 fastify.get('/api/users', async (request, reply) => {

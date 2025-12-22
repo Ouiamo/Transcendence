@@ -1,5 +1,5 @@
 import { showMessage } from '../utils/api';
-
+import { loginUser } from '../utils/api';
 export function renderLogin(app: HTMLElement, goToHome: () => void) {
     app.innerHTML = `
         <div class="container">
@@ -21,8 +21,15 @@ export function renderLogin(app: HTMLElement, goToHome: () => void) {
         </div>
     `;
     
-    document.getElementById('loginBtn')?.addEventListener('click', () => {
-        showMessage(app, '5asna n9ado l backend dyalo lwl');
+    document.getElementById('loginBtn')?.addEventListener('click', async () => {
+        const email = (document.getElementById('loginEmail') as HTMLInputElement).value;
+        const password = (document.getElementById('loginPassword') as HTMLInputElement).value;
+        const result = await loginUser({email, password});
+        if (result.success) {
+            showMessage(app, 'you have loged successfully!', 'success');
+        } else {
+            showMessage(app, result.error || 'login failed');
+        }
     });
     
     document.getElementById('backToHome')?.addEventListener('click', goToHome);

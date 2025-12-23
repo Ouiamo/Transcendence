@@ -1,7 +1,10 @@
+
 const fastify = require('fastify')({ logger: true });
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pong.db');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // ba9i khsni nzid l avatar elemet f database!!
 db.serialize(() => {
@@ -76,7 +79,6 @@ fastify.post('/api/signup', async (request, reply) => {
        VALUES (?, ?, ?, ?, ?)`,
       [firstname, lastname, username, email, hashedPassword]
     );
-    
     return reply.code(201).send({
       success: true,
       userId: result.lastID,
@@ -89,49 +91,9 @@ fastify.post('/api/signup', async (request, reply) => {
   }
 });
 
-
-  // fastify.post('/api/login', async (request, reply) => {
-  //   const {email, password} = request.body;
-  //   console.log(request.body);
-    
-  //   const user = await dbGet('SELECT id FROM users WHERE email = ?', [email]);
-
-  //   if (!user) {
-  //     return reply.code(400).send({error: 'Invalid email'});
-  //   }
-
-  //   try{
-      
-  //     // if (!user.is_verified) {
-  //     //   return reply.code(403).send({ error: 'Please confirm your email first'});
-  //     // }
-  
-  //     const isValid = await bcrypt.compare(password, user.password);
-  
-  //     if (!isValid) {
-  //       return reply.code(400).send({error : 'Invalid password'});
-  //     }
-  
-  //     // const SECRET = process.env.JWT_SECRET;
-  //     // const token = jwt.sign({id: user.id, username: user.username}, SECRET , {expiresIn: '1h'} );
-      
-  //      return reply.send({
-  //       success: true,
-  //       message: 'Login successful',
-  //       user: {
-  //         id: user.id,
-  //         username: user.username,
-  //         email: user.email
-  //       }
-  //     });
-  //   }
-  //   catch (err)
-  //   {
-  //     console.error(err);
-  //     return (reply.code(500).send({ error: 'Server error' }))
-  //   }
-  //   });
-
+fastify.register(require('@fastify/cookie'), {
+  secret: process.env.COOKIE_SECRET
+});
 
   fastify.post('/api/login', async (request, reply) => {
   const { email, password } = request.body;
@@ -141,21 +103,32 @@ fastify.post('/api/signup', async (request, reply) => {
   }
 
   try {
-    const user = await dbGet(
-      'SELECT * FROM users WHERE email = ?',
-      [email]
-    );
+      const user = await dbGet('SELECT * FROM users WHERE email = ?',[email]);
 
     if (!user) {
       return reply.code(401).send({ error: 'Invalid credentials' });
     }
-
+ 
     const match = await bcrypt.compare(password, user.password_hash);
 
     if (!match) {
       return reply.code(401).send({ error: 'Invalid credentials' });
     }
+    console.log(process.env.JWT_SECRET);
+    const SECRET = process.env.JWT_SECRET;
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
+    reply.setCookie('access_token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 60 * 60
+    });
     return reply.send({
       success: true,
       message: 'Login successful',

@@ -54,7 +54,6 @@ function dbAll(sql, params = []) {
   });
 }
 
-// hadi rah 5edama mais tistiha (ana tesitha b postman o bal frant)
 fastify.post('/api/signup', async (request, reply) => {
   const { firstname, lastname, username, email, password } = request.body;
   
@@ -91,9 +90,9 @@ fastify.post('/api/signup', async (request, reply) => {
   }
 });
 
-fastify.register(require('@fastify/cookie'), {
-  secret: process.env.COOKIE_SECRET
-});
+  fastify.register(require('@fastify/cookie'), {
+    secret: process.env.COOKIE_SECRET
+  });
 
   fastify.post('/api/login', async (request, reply) => {
   const { email, password } = request.body;
@@ -114,14 +113,15 @@ fastify.register(require('@fastify/cookie'), {
     if (!match) {
       return reply.code(401).send({ error: 'Invalid credentials' });
     }
-    console.log(process.env.JWT_SECRET);
+    //hna gadit jwt dial authentication
     const SECRET = process.env.JWT_SECRET;
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-
+    console.log("~~~~~~@token :");
+    console.log(token);
     reply.setCookie('access_token', token, {
       httpOnly: true,
       secure: false,
@@ -145,9 +145,27 @@ fastify.register(require('@fastify/cookie'), {
   }
 });
 
+//jadid hhh
+fastify.post('/api/profile' , async (request, reply) => {
+  const token= request.cookies.access_token;
+  if(!token)
+    return reply.code(401).send({error: 'Not authenticated'});
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+        return reply.send({
+      success: true,
+      message: 'Profile fetched successfully',
+      user: {
+        id: payload.id,
+        username: payload.username
+      }
+    });
+  }
+  catch(err) {
+    return reply.code(401).send({error: 'Invalid or expired token'})
+  }
+});
 
-
-// hadi zadtha bash nxofo ga3 li trogestraw (fblast dik get_players li kant 9bel)
 fastify.get('/api/users', async (request, reply) => {
   try {
     const users = await dbAll(`
@@ -162,7 +180,6 @@ fastify.get('/api/users', async (request, reply) => {
     return reply.code(500).send({ error: 'Database error' });
   }
 });
-
 
 fastify.get('/', async (request, reply) => {
   return {

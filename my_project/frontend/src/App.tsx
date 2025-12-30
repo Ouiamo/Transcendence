@@ -1,14 +1,23 @@
 
 import './style.css';
-import { useState } from 'react';
-import './App.css'
+import { useEffect,useState } from 'react';
+// import './App.css'
 import Signup from './Signup';
 import Login from  './Login';
+import Dashboard from './Dashboard';
+import Profil from './Profil';
 //import Home from './Home';
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP'
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL'
 function App(){
   const [currentPage, setCurrentPage] = useState<page>('HOME');
+useEffect(() => {
+    const loggedIn = localStorage.getItem('isLoggedIn');
+    
+    if (loggedIn === 'true') {
+        setCurrentPage('DASHBOARD');
+    }
+}, []);
   return (
     <div >
       
@@ -28,7 +37,7 @@ function App(){
         <div>
     
            <h2>This is Login Page</h2>
-           <Login gotohome={()=> setCurrentPage('HOME')}/>
+           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD') }/>
         </div>
       )}
 
@@ -39,7 +48,20 @@ function App(){
       <Signup gotohome={()=>setCurrentPage('HOME') } gotologin={()=>setCurrentPage('LOGIN')}/>
       </div>
     }
+    {
 
+      currentPage === 'DASHBOARD'&&
+      <div>
+        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')}/>
+      </div>
+    
+    }
+    {
+      currentPage === 'PROFIL' &&
+      <div> i m in profil
+        <Profil gotohome={()=> setCurrentPage('HOME')}/>
+         </div>
+    }
     </div>
   );
 }

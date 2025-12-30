@@ -3,9 +3,10 @@ import {loginUser} from  './Api';
 
 interface Logintest{
     gotohome : ()=>void ;
+    gotoDASHBOARD : ()=> void;
 }
 
-function Login({gotohome}: Logintest){
+function Login({gotohome ,gotoDASHBOARD}: Logintest){
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
@@ -22,12 +23,11 @@ const handelLogin = async() =>{
             alert("login sucess");
             console.log("haniiiiiiiiiii");
            console.log(result);
-            gotohome();
+           localStorage.setItem('username', result.user.username);
+           localStorage.setItem('isLoggedIn', 'true');
+           gotoDASHBOARD();
+           // gotohome();
         }
-        // if((result as any).accessToken)
-        // {
-
-        // }
         else{
             alert("error serveur");
             return;

@@ -10,12 +10,14 @@ require('dotenv').config();
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
+    
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       firstname TEXT,
       lastname TEXT,  
-      username TEXT UNIQUE NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
+      username TEXT,
+      email TEXT ,
+      password_hash ,
+      provider TEXT,
       avatar_url TEXT DEFAULT 'default-avatar.png',
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
@@ -23,13 +25,18 @@ db.serialize(() => {
 });
 
 fastify.register(require('@fastify/cors'), {
-  origin: true
+  //origin: true
+  origin: 'http://localhost:5173',
+  credentials: true,               // obligatoire pour cookie
+  methods: ['GET','POST','PATCH','DELETE']
 });
 
 fastify.register(require('@fastify/cookie'), {
     secret: process.env.COOKIE_SECRET
   });
-
+  fastify.register(require('@fastify/jwt'), {
+    secret: process.env.JWT_SECRET || 'super_secret_key_for_transcendence'
+});
 //==========>helper function for database
 
 function dbRun(sql, params = []) {
@@ -266,34 +273,47 @@ if (!code) {
     }),
   });
 
-  const tokenDAta = await tokenResponse.json();
-  console.log('tokenData:', tokenDAta);
+  const tokenData = await tokenResponse.json();
+  console.log('tokenData:', tokenData);
 
   const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo',
     {
       headers: { Authorization: `Bearer ${tokenData.access_token}`},
     }
   );
+  console.error('data lijaya men googl ^^^^^^^^^^^^', userResponse);
   const userGoogle = await userResponse.json();
-  console.log('userGoogle:', userGoogle);
+ // console.log('userGoogle:', userGoogle);
 
-  const user = await dbGet('SELECT * FROM users WHERE email = ?',
-     [userGoogle.email]);
+ let user = await dbGet('SELECT * FROM users WHERE email = ?', [userGoogle.email]);
+
   if (!user) {
+
     await dbRun (
-      'INSERT INTO users (email, name, avatar, provider) VALUES (?, ?, ?, ?)',
-      [userGoogle.email, userGoogle.name, userGoogle.picture, 'google' ,]);
+      'INSERT INTO users (email, username, provider, password_hash) VALUES (?, ?, ?, ?)',
+      [userGoogle.email, userGoogle.name, 'google', 'OAUTH_USER']
+    );
+
+    user = await dbGet('SELECT * FROM users WHERE email = ?', [userGoogle.email]);
   }
 
   const token = fastify.jwt.sign({
     id: user.id, email: userResponse.email,});
 
-    reply.setCookie('token', token, {httpOnly: true, secure: false,sameSite: 'lax',})
-  .redirect('http://localhost:3010/profile');
+   // reply.setCookie('access_token', token, {httpOnly: true, secure: false,sameSite: 'lax',})
+   //badlat fe had reply makanosh kawslo cokies
+   reply.setCookie('access_token', token, {
+    httpOnly: true, 
+    secure: false,   // true seulement en HTTPS
+    sameSite: 'lax', // 'lax' ou 'none' si tu passes en HTTPS
+    path: '/',
+    maxAge: 60 * 60 // 1h
+  })
+  .redirect('http://localhost:5173/Profil');
 
 });
 
-fastify.get('/api/auth/google')
+// fastify.get('/api/auth/google')
 // 5 - users >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 fastify.get('/api/users', async (request, reply) => {
@@ -311,6 +331,21 @@ fastify.get('/api/users', async (request, reply) => {
   }
 });
 
+fastify.get('/api/me', async (request, reply) => {
+  const token = request.cookies.access_token; // doit correspondre
+  if (!token) return reply.code(401).send({ authenticated: false });
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await dbGet(
+      `SELECT id, firstname, lastname, username, email FROM users WHERE id = ?`,
+      [payload.id]
+    );
+    return reply.send({ authenticated: true, user });
+  } catch (err) {
+    return reply.code(401).send({ authenticated: false });
+  }
+});
 // 6 - root >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 fastify.get('/', async (request, reply) => {
@@ -331,3 +366,4 @@ fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
     process.exit(1);
   }
 });
+

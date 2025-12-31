@@ -11,12 +11,32 @@ import Profil from './Profil';
 type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL'
 function App(){
   const [currentPage, setCurrentPage] = useState<page>('HOME');
-useEffect(() => {
+ useEffect(() => {
     const loggedIn = localStorage.getItem('isLoggedIn');
     
     if (loggedIn === 'true') {
         setCurrentPage('DASHBOARD');
     }
+}, []);
+useEffect(() => {
+  const checkSession = async () => {
+    try {
+      const res = await fetch('http://localhost:3010/api/me', {
+        credentials: 'include',
+      });
+      console.log("3. Fetch response:", res.status);
+console.log("kharajttttt ****" , res);
+      if (res.ok) {
+        setCurrentPage('DASHBOARD');
+      } else {
+        setCurrentPage('HOME');
+      }
+    } catch (err) {
+      setCurrentPage('HOME');
+    }
+  };
+
+  checkSession();
 }, []);
   return (
     <div >

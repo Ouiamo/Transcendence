@@ -10,6 +10,11 @@ function Login({gotohome ,gotoDASHBOARD}: Logintest){
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
+    const handel_auth_goole = async()=>{
+window.open('http://localhost:3010/api/auth/google');
+gotoDASHBOARD();
+
+    }
 const handelLogin = async() =>{
     const cleangmail_login = gmailogin.trim();
     const data_login = {
@@ -44,6 +49,8 @@ const handelLogin = async() =>{
             <input type="password" placeholder="set password"value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
             <button onClick={handelLogin} > Login</button>
             <button onClick={gotohome}> go to home</button>
+            <button  onClick={handel_auth_goole}>Login with google</button>
+            
         </div>
     )
 

@@ -13,7 +13,10 @@ function Login({gotohome ,gotoDASHBOARD}: Logintest){
     const handel_auth_goole = async()=>{
 window.open('http://localhost:3010/api/auth/google');
 gotoDASHBOARD();
-
+    }
+    const handel_auth_42 = async()=>{
+window.open('http://localhost:3010/api/auth/42');
+gotoDASHBOARD();
     }
 const handelLogin = async() =>{
     const cleangmail_login = gmailogin.trim();
@@ -50,6 +53,7 @@ const handelLogin = async() =>{
             <button onClick={handelLogin} > Login</button>
             <button onClick={gotohome}> go to home</button>
             <button  onClick={handel_auth_goole}>Login with google</button>
+            <button  onClick={handel_auth_42}>Login with 42</button>
             
         </div>
     )

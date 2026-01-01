@@ -1,0 +1,24 @@
+^^you can run server the backend with the cmd 
+(node server.js) 
+of course you should enter first in folder backend   
+
+you should see like that 
+"[dotenv@17.2.3] injecting env (5) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+{"level":30,"time":1767273933930,"pid":3197276,"hostname":"c3r4p1.1337.ma","msg":"Server listening at http://0.0.0.0:3010"}"
+
+
+^^you can run server the frontend with the cmd 
+(npm run dev) of course you should enter first in folder frontend 
+in case the error of version you should install v20 with 
+(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+&& nvm install 20 && npm run dev) 
+
+
+you should see like that 
+"VITE v7.3.0  ready in 482 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help "
+
+ 

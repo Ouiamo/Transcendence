@@ -267,7 +267,7 @@ const  code  = request.query.code;
 if (!code) {
   return reply.code(400).send({error: 'No authorization code'});
 }
-  console.log('Authorization code:', code);
+  console.log('!!!!!!!!!!!!Authorization code:::::::::::::::::::::::::::::', code);
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
@@ -318,9 +318,6 @@ if (!code) {
 
   const token = fastify.jwt.sign({
     id: user.id, email: userResponse.email,});
-
-   // reply.setCookie('access_token', token, {httpOnly: true, secure: false,sameSite: 'lax',})
-   //badlat fe had reply makanosh kawslo cokies
    reply.setCookie('access_token', token, {
     httpOnly: true, 
     secure: false,   // true seulement en HTTPS

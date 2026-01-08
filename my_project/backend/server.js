@@ -461,13 +461,12 @@ fastify.get('/', async (request, reply) => {
 });
 // rout pour logoutttttttttttttt
 fastify.post('/api/logout', async (request, reply) => {
-  // كنعلموا المتصفح أن الـ Cookie اللي سميتها access_token خاصها تمسح
   reply
     .clearCookie('access_token', {
       path: '/',
       httpOnly: true,
       sameSite: 'lax',
-      secure: false // خليها false لأنكِ في localhost
+      secure: false // 
     })
     .send({ success: true, message: 'Logged out successfully' });
 });

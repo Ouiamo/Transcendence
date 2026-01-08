@@ -30,6 +30,7 @@ export async function loginUser(userData: {
 }) {
         const response = await fetch(`${API_URL}/api/login`, {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
@@ -48,3 +49,4 @@ export async function profil( {
         
         return await response.json();
 }
+

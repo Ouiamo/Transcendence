@@ -13,6 +13,7 @@ function Profil({gotohome}: profil_iterface){
               <div className="h-20 w-20 bg-blue-500">
                 helooooooooooo
               </div>
+              <p>wwwwwwwwwwwwwwwwwwwww{user}</p>
             </div>
           
         // <div className=" bg-red-500 p-2">

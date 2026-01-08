@@ -1,13 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
-    margin: 0;
-    padding: 20px;
-    background: linear-gradient(135deg, #2d1b69, #a64d79);
-    color: white;
-    font-family: 'Courier new', monospace;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  margin: 0;
+  background-color: #0d0221; 
+  color: white;
+  font-family: sans-serif;
 }
 
 .container {
@@ -46,7 +45,7 @@ input {
     box-sizing: border-box;
 }
 
-button {
+/* button {
     width: 100%;
     padding: 6px;
     background: #ff44ff;
@@ -57,11 +56,11 @@ button {
     font-weight: bold;
     cursor: pointer;
     margin-top: 10px;
-}
-
+} */
+/* 
 button:hover {
     background: #ff66ff;
-}
+} */
 
 .link {
     color: #ff99ff;

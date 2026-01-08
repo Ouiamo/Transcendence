@@ -4,23 +4,40 @@ const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('pong.db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
+
 require('dotenv').config();
 
-// ba9i khsni nzid l avatar elemet f database!!
+
 db.serialize(() => {
   db.run(`
-      CREATE TABLE IF NOT EXISTS users (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      provider TEXT NOT NULL,
-      provider_id TEXT UNIQUE,
-      username TEXT UNIQUE NOT NULL,
-      firstname TEXT,
-      lastname TEXT,
-      email TEXT UNIQUE NOT NULL,
-      password_hash TEXT NOT NULL,
-      avatar_url TEXT DEFAULT 'default-avatar.png',
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+  -- AUTH
+  provider TEXT NOT NULL,           -- local / google / 42
+  provider_id TEXT UNIQUE,          -- OAuth ID
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+
+  -- PROFILE
+  username TEXT UNIQUE NOT NULL,
+  firstname TEXT,
+  lastname TEXT,
+  avatar_url TEXT DEFAULT 'default-avatar.png',
+
+  -- 2FA
+  twofa_enabled BOOLEAN DEFAULT 0,
+  twofa_method TEXT,                -- 'email' or 'totp'
+  twofa_secret TEXT,                -- for authenticator app
+  twofa_email_code TEXT,            -- hashed OTP
+  twofa_email_expires INTEGER,       -- expiration timestamp
+
+  -- META
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
   `);
 });
 
@@ -37,6 +54,18 @@ fastify.register(require('@fastify/cookie'), {
   fastify.register(require('@fastify/jwt'), {
     secret: process.env.JWT_SECRET
 });
+
+
+// Add a preHandler hook for authentication
+// fastify.addHook('preHandler', async (request, reply) => {
+//   try {
+//     // This will decode and verify the JWT, and populate request.user
+//     request.user = await request.jwtVerify();
+//   } catch (err) {
+//     return reply.code(401).send({ error: 'Unauthorized' });
+//   }
+// });
+
 
 // fastify.decorate('authenticate',async (request, reply) => {
 //     await request.jwtVerify();
@@ -137,15 +166,16 @@ fastify.post('/api/signup', async (request, reply) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    console.log("~~~~~~@token :");
-    console.log(token);
+    // console.log("~~~~~~@token :");
+    // console.log(token);
     reply.setCookie('access_token', token, {
       httpOnly: true,
       secure: false,
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60
     });
+
     return reply.send({
       success: true,
       message: 'Login successful',
@@ -316,8 +346,14 @@ if (!code) {
       ['google', userGoogle.id]);
   }
 
-  const token = fastify.jwt.sign({
-    id: user.id, email: userResponse.email,});
+  // const token = fastify.jwt.sign({
+  //   id: user.id, email: userResponse.email,});
+    const SECRET = process.env.JWT_SECRET;
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
    reply.setCookie('access_token', token, {
     httpOnly: true, 
     secure: false,   // true seulement en HTTPS
@@ -397,10 +433,15 @@ await dbRun(
   ['42', user42.id]);
   }
 
-  const token = fastify.jwt.sign({
-    id: user.id, username: userResponse.login, email: userResponse.gmail});
-
-   reply.setCookie('access_token', token, {
+  // const token = fastify.jwt.sign({
+  //   id: user.id, username: userResponse.login, email: userResponse.gmail});
+    const SECRET = process.env.JWT_SECRET;
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+    reply.setCookie('access_token', token, {
     httpOnly: true, 
     secure: false,   // true seulement en HTTPS
     sameSite: 'lax', // 'lax' ou 'none' si tu passes en HTTPS
@@ -463,3 +504,36 @@ fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
   }
 });
 
+// 10- 2FA >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+//step 1
+fastify.post('/api/2fa/enable', async (request, reply) => {
+  const method = request.body.method;
+
+  const userId = request.user?.id;
+  if (!userId)
+    return reply.code(401).send({ error: 'User not authenticated' });
+
+  if (!['email', 'authenticator app'].includes(method))
+    return reply.code(400).send({ error: 'Invalid 2FA method' });
+
+  if (method === 'email') {
+    await dbRun(
+      `UPDATE users SET twofa_enabled = 1, twofa_method = 'email' WHERE id = ?`,
+      [userId]);
+    return reply.send({ success: true });
+  }
+
+  if (method === 'authenticator app') {
+    const secret = speakeasy.generateSecret({ length: 20 });
+    console.log('secret:', secret);
+
+    await dbRun(
+      `UPDATE users SET twofa_enabled = 0, twofa_method = 'authenticator app', twofa_secret = ? WHERE id = ?`,
+      [secret.base32, userId]);
+
+    const qrCode = await QRCode.toDataURL(secret.otpauth_url);
+    console.log('qrCode:', qrCode);
+
+    return reply.send({ qrCode });
+  }
+});

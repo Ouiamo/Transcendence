@@ -22,3 +22,11 @@ you should see like that
   ➜  press h + enter to show help "
 
  
+
+
+npm install speakeasy qrcode nodemailer
+{
+  speakeasy → generates and verifies TOTP codes (for Authenticator app)
+  qrcode → generates QR code for user to scan with Authenticator app
+  nodemailer → sends email OTPs
+}

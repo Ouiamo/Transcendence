@@ -8,7 +8,7 @@ body {
   color: white;
   font-family: sans-serif;
 }
-
+/* 
 .container {
     background: rgba(45, 27, 105, 0.7);
     padding: 30px;
@@ -40,10 +40,10 @@ input {
     padding: 10px;
     border: 2px solid #ff44ff;
    /* background: rgba(255, 255, 255, 0.1);*/
-    color: white;
+    /* color: white;
     border-radius: 10px;
     box-sizing: border-box;
-}
+} */
 
 /* button {
     width: 100%;
@@ -62,7 +62,7 @@ button:hover {
     background: #ff66ff;
 } */
 
-.link {
+/* .link {
     color: #ff99ff;
     text-align: center;
     margin-top: 15px;
@@ -88,4 +88,4 @@ button:hover {
 .error {
     background: rgba(255, 0, 0, 0.2);
     color: #ff4444;
-}
+} */ 

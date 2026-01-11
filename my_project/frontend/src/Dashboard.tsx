@@ -17,6 +17,7 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj }: Dashboardtest) {
     return (
 <div className=" flex h-screen w-full bg-[#0d0221] ">
    <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} />
+   
 </div>
 
   

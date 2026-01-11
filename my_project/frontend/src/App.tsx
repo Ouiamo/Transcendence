@@ -65,11 +65,11 @@ if(loading) return <div>is loading</div>
       )}
 
 
-      {currentPage === 'LOGIN' && (
-        <div>
+      {currentPage === 'LOGIN' && ( 
+        <div className="min-h-screen w-full flex items-center justify-center bg-[#0d0221] ">
     
-           <h2>This is Login Page</h2>
-           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} />
+      
+           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')}/>
        
         </div>
       )}

@@ -6,9 +6,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const speakeasy = require('speakeasy');
 const QRCode = require('qrcode');
-
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const SendmailTransport = require('nodemailer/lib/sendmail-transport');
+const { error } = require('console');
 require('dotenv').config();
-
 
 db.serialize(() => {
   db.run(`
@@ -159,21 +161,25 @@ fastify.post('/api/signup', async (request, reply) => {
     if (!match) {
       return reply.code(401).send({ error: 'Invalid credentials' });
     }
-    //hna gadit jwt dial authentication
+
+  if(user.twofa_enabled)
+  {
+    return reply.send({
+      requires2FA: true,
+      method: user.twofa_method
+    });
+  }
+    //jwt dial authentication
     const SECRET = process.env.JWT_SECRET;
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-    // console.log("~~~~~~@token :");
     // console.log(token);
     reply.setCookie('access_token', token, {
       httpOnly: true,
       secure: false,
-
-      //badlat hadi
-
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60
@@ -519,7 +525,7 @@ fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
 
 
 // 10- 2FA >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-//step 1
+
 fastify.post('/api/2fa/enable', async (request, reply) => {
   const method = request.body.method;
 
@@ -537,12 +543,12 @@ fastify.post('/api/2fa/enable', async (request, reply) => {
     return reply.send({ success: true });
   }
 
-  if (method === 'authenticator app') {
+  if (method === 'authenticator') {
     const secret = speakeasy.generateSecret({ length: 20 });
     console.log('secret:', secret);
 
     await dbRun(
-      `UPDATE users SET twofa_enabled = 0, twofa_method = 'authenticator app', twofa_secret = ? WHERE id = ?`,
+      `UPDATE users SET twofa_enabled = 0, twofa_method = 'authenticator', twofa_secret = ? WHERE id = ?`,
       [secret.base32, userId]);
 
     const qrCode = await QRCode.toDataURL(secret.otpauth_url);
@@ -550,4 +556,127 @@ fastify.post('/api/2fa/enable', async (request, reply) => {
 
     return reply.send({ qrCode });
   }
+});
+
+
+fastify.post('/api/2fa/authenticator/verify', async (request, reply) => {
+  const userId = request.user?.id;
+  if (!userId)
+    return reply.code(401).send({ error: 'User not authenticated' });
+
+  const code = request.body.code;
+  if (!code)
+    return reply.code(400).send({ error: 'Code required' });
+
+  const user = await dbGet(
+    `SELECT twofa_secret FROM users WHERE id = ?`,
+    [userId]
+  );
+
+  if (!user || !user.twofa_secret)
+    return reply.code(400).send({ error: '2FA not initialized' });
+
+  const verified = speakeasy.totp.verify({
+    secret: user.twofa_secret,
+    encoding: 'base32',
+    token: code,
+    window: 1
+  });
+
+  if (!verified)
+    return reply.code(401).send({ error: 'Invalid code' });
+
+  await dbRun(
+    `UPDATE users SET twofa_enabled = 1 WHERE id = ?`,
+    [userId]
+  );
+
+  return reply.send({ success: true });
+});
+
+
+fastify.post('/api/2fa/email/send', async (request, reply) => {
+
+  const userId = request.user?.id;
+  if(!userId)
+    return reply.code(401).send({ error: 'User not authenticated' });
+
+  const code = crypto.randomInt(100000, 1000000).toString();
+  const expire = Date.now() + 5 * 60 * 1000; // current time + 5 min,  to ms
+
+  await dbRun(
+    `UPDATE users SET twofa_email_code = ?, twofa_email_expires WHERE id = ?`,
+    [code, expire, userId]
+  );
+  
+  console.log('code send to emailuser', code);
+  try{
+    await transporter.sendMail(
+      {
+        to: request.user.email,
+        subject: 'Your 2FA Code',
+        text: `Your verification code is ${code}`
+      }
+    );
+    return reply.send({sent : true});
+  }
+  catch(err)
+  {
+    console.error('Email failed:', err);
+    reply.code(500).send({error: 'Email not sent'});
+  }
+});
+
+fastify.post('/api/2fa/email/verify', async (request, reply) => {
+  const userId = request.user?.id;
+  if (!userId)
+    return reply.code(401).send({ error: 'User not authenticated'});
+
+  const code = request.body.code;
+  if (!code)
+    return reply.code(400).send({ error: 'Code required' });
+
+  const user = await dbGet(
+    `SELECT twofa_email_code, twofa_email_expires FROM users WHERE id = ?`,
+    [userId]
+  );
+
+  if (!user || user.twofa_email_code !== code)
+    return reply.code(401).send({ error: 'Invalid code'});
+
+  if (Date.now() > user.twofa_email_expires)
+    return reply.code(401).send({ error: 'Code expired'});
+
+  return reply.send({ success: true});
+});
+
+
+fastify.post('/api/2fa/complete', async (request, reply) => {
+
+  const userId = request.user?.id;
+  if(!userId)
+      return reply.code(401).send({error: "User not authenticated"});
+  
+    const SECRET = process.env.JWT_SECRET;
+    const token = jwt.sign(
+      {id: user.id, username: user.username},
+      process.env.JWT_SECRET,
+      {expiresIn: '1h'}
+    );
+    reply.setCookie('access_token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60
+    });
+    return reply.send({
+      success: true,
+      message: 'Login successful',
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email
+      }
+    });
 });

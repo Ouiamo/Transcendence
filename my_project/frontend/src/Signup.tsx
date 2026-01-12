@@ -3,6 +3,10 @@ import { signupUser } from './Api';
 import { loginUser } from './Api';
 import { FaGoogle } from "react-icons/fa";
 import { Si42 } from "react-icons/si";
+import Tst from "./Tst.json"
+import Tstt from "./Tstt.json"
+import Lottie from "lottie-react"
+import TT from "./TT.json"
 interface Sinuptest {
     gotohome: () => void;
     gotologin: () => void;
@@ -66,7 +70,14 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
         // console.log(data_user);
     }
     return (
+<div className="relative min-h-screen w-full bg-[#0d0221] flex flex-row items-center justify-center  ">
+            <div className=" w-[300px] h-[200px] flex  px-[80px] ">
+                <div className=" px-[20px] py-[100px]">
 
+                  <Lottie animationData={TT}  />
+                </div>
+
+            </div>
         <div className="flex flex-col items-center  border-[2px] w-[350px] h-[620px]  bg-[#0d0221] border-[2px] border-[#ff44ff]/30 rounded-[30px] shadow-[0_0_20px_rgba(255,68,255,0.8)] pt-10 pb-10 px-8">
             <header className="flex flex-col  items-center ">
                 <h1 className="text-white font-2xl text-3xl">Inscription</h1>
@@ -113,13 +124,11 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
 
                     </div>
                     <button className="mt-[20px] w-[250px] h-[44px] py-3 px-6 mt-4 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]" onClick={handleSignup}>S'inscrire</button>
+                    <a className="mt-[10px]  text-[#ff44ff] text-[10px] font-bold hover:underline hover:text-[#ff99ff]  transition-all " onClick={gotohome}>Home </a>
 
-
-                    <a className="mt-[10px]  text-[#ff44ff] text-[10px] font-bold hover:underline hover:text-[#ff99ff]  transition-all " onClick={gotohome}>Home
-
-                    </a>
                 </footer>
             </section>
+        </div>
         </div>
 
 

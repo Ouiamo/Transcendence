@@ -76,9 +76,9 @@ if(loading) return <div>is loading</div>
 
     {
       currentPage === 'SIGNUP' &&
-      <div>
-      <h2> this is Signup page </h2>
-      <Signup gotohome={()=>setCurrentPage('HOME') } gotologin={()=>setCurrentPage('LOGIN')}/>
+      <div className="min-h-screen w-full h-full flex items-center justify-center bg-[#0d0221] ">
+    
+      <Signup gotohome={()=>setCurrentPage('HOME') } gotologin={()=>setCurrentPage('LOGIN')}  gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')}/>
       </div>
     }
     {

@@ -51,8 +51,8 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
 
     }
     return (
-        <div className=" flex  flex-col gap-y-10 items-center h-auto w-[300px] min-h-[350px]  shrink-0 border-[2px] border-[#ff44ff]/30 rounded-[30px] shadow-[0_0_20px_rgba(255,68,255,0.8)] pt-10 pb-10 px-8">
-            <header className="flex flex-col gap-y-5 items-center justify-center w-full mt-20 ">
+        <div className=" flex  flex-col gap-y-10 items-center h-auto w-[300px] min-h-[400px]  shrink-0 border-[2px] border-[#ff44ff]/30 rounded-[30px] shadow-[0_0_20px_rgba(255,68,255,0.8)] pt-10 pb-10 px-8">
+            <header className="flex flex-col gap-y-5 items-center justify-center w-full mt-[10px] ">
                 <div className="py-3 flex w-[40px] h-[40px] bg-gradient-to-br from-[#ff44ff] to-[#ff99ff] items-center justify-center rounded-full shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
                     < IoPersonCircleOutline className=" text-white " />
                 </div>
@@ -68,9 +68,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
 
                         <input
                             style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                            className="pr-4 py-3 rounded-full w-full  bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="email" placeholder="Entrer votre gmail"
-                            value={gmailogin}
-                            onChange={(e) => setgmailogin(e.target.value)} />
+                            className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="email" placeholder="Entrer votre gmail"value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
                     </div>
                 </div>
                 <div className="flex flex-col  ">
@@ -78,14 +76,14 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
                     <div className="relative flex items-center w-full  ">
                         <RiLockPasswordLine className="absolute left-3 text-[#ff44ff] text-xl pointer-events-none z-10" />
                         <input
-                            style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }} className=" pr-4 py-3 rounded-full w-full bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="password" placeholder="set password" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
+                            style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[33px] rounded-full  bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="password" placeholder="set password" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
 
                     </div>
                 </div>
 
 
                 <div className="flex flex-col gap-y-5 ">
-                    <div className="flex flex-row items-center justify-between w-full max-w-[80px] mx-auto mt-10 px-2">
+                    <div className="flex flex-row items-center justify-between w-full max-w-[80px] mx-auto mt-10 px-2 mt-[10px]">
 
                         <button className="p-3 border-none outline-none  bg-transparent  shrink-0" onClick={handel_auth_goole}>
                             <FaGoogle className="text-[#ff44ff] text-xl   transition-all duration-300 shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
@@ -98,13 +96,13 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
 
                     </div>
 
-                    <button className="w-full py-3 px-6 mt-4 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
-    " 
-    onClick={handelLogin} > se connecter</button>
+                    <button className=" mt-[10px] w-full py-3 px-6 mt-4 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
+    "
+                        onClick={handelLogin} > se connecter</button>
 
 
                 </div>
-                <div className="flex flex-row items-center justify-center gap-x-2 mt-4">
+                <div className="flex flex-row items-center justify-center gap-x-2 mt-[10px]">
 
                     <p className="text-white/60 text-[10px]">
                         Vous n'avez pas de compte ?
@@ -113,7 +111,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
                         className="text-[#ff44ff] text-[10px] font-bold hover:underline hover:text-[#ff99ff]  transition-all"
                     >
                         S'inscrire
-                       
+
                     </a>
                 </div>
             </section>

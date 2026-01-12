@@ -4,6 +4,8 @@ import { loginUser } from './Api';
 import { FaGoogle } from "react-icons/fa";
 import { Si42 } from "react-icons/si";
 import Tst from "./Tst.json"
+import Login3 from "./Login3.json"
+
 import Tstt from "./Tstt.json"
 import Lottie from "lottie-react"
 import TT from "./TT.json"
@@ -71,10 +73,10 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
     }
     return (
 <div className="relative min-h-screen w-full bg-[#0d0221] flex flex-row items-center justify-center  ">
-            <div className=" w-[300px] h-[200px] flex  px-[80px] ">
-                <div className=" px-[20px] py-[100px]">
+            <div className=" w-[400px] h-[400px] flex  px-[80px] ">
+                <div className=" px-[100px] py-[100px] ">
 
-                  <Lottie animationData={TT}  />
+                  <Lottie animationData={Login3}  />
                 </div>
 
             </div>

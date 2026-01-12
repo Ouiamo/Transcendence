@@ -1,8 +1,9 @@
 
 import './style.css';
 import { use, useEffect,useState } from 'react';
-
+import Lottie from "lottie-react"
 import Signup from './Signup';
+import Home from './Home'
 import Login from  './Login';
 import Dashboard from './Dashboard';
 import Profil from './Profil';
@@ -55,12 +56,8 @@ if(loading) return <div>is loading</div>
       
 
       {currentPage === 'HOME' && (
-        <div className='container'>
-          <h1>Welcome to Pong</h1>
-          <nav>
-            <button onClick={() => setCurrentPage('LOGIN')}>GO TO LOGIN</button>
-            <button onClick={() => setCurrentPage('SIGNUP')}>GO TO SIGNUP</button>
-          </nav>
+        <div className=" min-h-screen w-full flex items-center justify-center bg-[#0d0221]">
+         <Home gotologin={()=> setCurrentPage('LOGIN')} gotosignup={()=> setCurrentPage('SIGNUP')}/>
         </div>
       )}
 

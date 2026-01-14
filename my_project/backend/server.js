@@ -617,7 +617,7 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
   }
 });
 
-//==========================================>friends
+//=========================================>friends
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS friends (

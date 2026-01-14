@@ -11,6 +11,8 @@ const crypto = require('crypto');
 const SendmailTransport = require('nodemailer/lib/sendmail-transport');
 const { error } = require('console');
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 db.serialize(() => {
   db.run(`
@@ -207,23 +209,38 @@ fastify.post('/api/signup', async (request, reply) => {
 
 // 3 - profile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-fastify.get('/api/profile' , async (request, reply) => {
-  const token= request.cookies.access_token;
-  if(!token)
-    return reply.code(401).send({error: 'Not authenticated'});
+// 3 - profile >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+fastify.get('/api/profile', async (request, reply) => {
+  const token = request.cookies.access_token;
+  if (!token)
+    return reply.code(401).send({ error: 'Not authenticated' });
+  
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-        return reply.send({
+    
+    const user = await dbGet(
+      'SELECT id, username, email, avatar_url FROM users WHERE id = ?',
+      [payload.id]
+    );
+    
+    let avatarUrl = null;
+    if (user.avatar_url && user.avatar_url !== 'default-avatar.png') {
+      avatarUrl = `/api/avatar/file/${user.avatar_url}`;
+    }
+    
+    return reply.send({
       success: true,
       message: 'Profile fetched successfully',
       user: {
-        id: payload.id,
-        username: payload.username
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        avatarUrl: avatarUrl
       }
     });
-  }
-  catch(err) {
-    return reply.code(401).send({error: 'Invalid or expired token'})
+  } catch(err) {
+    return reply.code(401).send({ error: 'Invalid or expired token' });
   }
 });
 
@@ -232,56 +249,72 @@ fastify.get('/api/profile' , async (request, reply) => {
 
 fastify.patch('/api/profile', async(request, reply) => {
   const token = request.cookies.access_token;
-  if(!token) {
-    return reply.code(401).send({error : 'Not authenticated'});
+  if (!token) {
+    return reply.code(401).send({ error: 'Not authenticated' });
   }
-  let payload;
-  try{
-    payload = jwt.verify(token, process.env.JWT_SECRET);
-  }
-  catch {
-    return reply.code(401).send({error : 'Invalid or expired token'});
-  }
-  try {
-
-    const {firstname, lastname, username, email} =request.body;
-    if (username || email) 
-    {
-      const existingUser = await dbGet(`
-        SELECT id FROM users WHERE (email = ? OR username = ?) AND id != ?`,
-        [email || '', username || '', payload.id]);
-        if(existingUser) 
-        {
-          return reply.code(400).send({error: 'Email or username already in use'});
-        }
-    }
   
+  let payload;
+  try {
+    payload = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    return reply.code(401).send({ error: 'Invalid or expired token' });
+  }
+  
+  try {
+    const { firstname, lastname, username, email } = request.body;
+    
+    if (username || email) {
+      const existingUser = await dbGet(
+        `SELECT id FROM users WHERE (email = ? OR username = ?) AND id != ?`,
+        [email || '', username || '', payload.id]
+      );
+      if (existingUser) {
+        return reply.code(400).send({ error: 'Email or username already in use' });
+      }
+    }
+
     const fields = [];
     const values = [];
-     if (firstname) {fields.push('firstname = ?'); values.push(firstname);}
-    if (lastname) {fields.push('lastname = ?'); values.push(lastname);}
-    if (username) {fields.push('username = ?'); values.push(username);}
-    if (email) {fields.push('email = ?'); values.push(email);}
-  
-    if (fields.length === 0)
+    if (firstname) { fields.push('firstname = ?'); values.push(firstname); }
+    if (lastname) { fields.push('lastname = ?'); values.push(lastname); }
+    if (username) { fields.push('username = ?'); values.push(username); }
+    if (email) { fields.push('email = ?'); values.push(email); }
+
+    if (fields.length === 0) {
       return reply.code(400).send({ error: 'No fields to update' });
-  
+    }
+
     values.push(payload.id);
     await dbRun(
-      `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,values
+      `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
+      values
     );
-    const updatedUser = await dbGet (
-      `SELECT id, firstname, lastname, username, email FROM users WHERE id = ?`, [payload.id]
+    
+    const updatedUser = await dbGet(
+      `SELECT id, firstname, lastname, username, email, avatar_url FROM users WHERE id = ?`,
+      [payload.id]
     );
-  
+    
+    let avatarUrl = null;
+    if (updatedUser.avatar_url && updatedUser.avatar_url !== 'default-avatar.png') {
+      avatarUrl = `/avatars/${updatedUser.avatar_url}`;
+    }
+
     return reply.send({
       success: true,
       message: 'Profile updated successfully',
-      user: updatedUser
+      user: {
+        id: updatedUser.id,
+        firstname: updatedUser.firstname,
+        lastname: updatedUser.lastname,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        avatarUrl: avatarUrl
+      }
     });
-  }
-  catch (err) {
-        console.error(err);
+    
+  } catch (err) {
+    console.error(err);
     return reply.code(500).send({ error: 'Server error' });
   }
 });
@@ -520,6 +553,263 @@ fastify.post('/api/logout', async (request, reply) => {
     .send({ success: true, message: 'Logged out successfully' });
 });
 
+//======================================>avatar
+fastify.register(require('fastify-multipart'));
+
+const avatarFolder = path.join(__dirname, 'avatars');
+if (!fs.existsSync(avatarFolder)) {
+  fs.mkdirSync(avatarFolder, { recursive: true });
+}
+
+
+fastify.post('/api/avatar', async (request, reply) => {
+  const token = request.cookies.access_token;
+  if (!token) {
+    return reply.code(401).send({ error: 'Please login first' });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = payload.id;
+
+    const data = await request.file();
+    if (!data) {
+      return reply.code(400).send({ error: 'No file selected' });
+    }
+
+    if (!data.mimetype.startsWith('image/')) {
+      return reply.code(400).send({ error: 'Only image files allowed' });
+    }
+
+    const extension = data.mimetype.split('/')[1] || 'jpg';
+    const filename = `avatar_${userId}.${extension}`;
+    const filepath = path.join(avatarFolder, filename);
+
+    const buffer = await data.toBuffer();
+    fs.writeFileSync(filepath, buffer);
+
+    await dbRun(
+      'UPDATE users SET avatar_url = ? WHERE id = ?',
+      [filename, userId]
+    );
+
+    return reply.send({
+      success: true,
+      message: 'Avatar uploaded!',
+      avatarUrl: `/api/avatar/file/${filename}`
+    });
+
+  } catch (err) {
+    console.error('Avatar error:', err);
+    return reply.code(500).send({ error: 'Upload failed' });
+  }
+});
+
+fastify.get('/api/avatar/file/:filename', async (request, reply) => {
+  const filename = request.params.filename;
+  const filepath = path.join(avatarFolder, filename);
+  
+  if (fs.existsSync(filepath)) {
+    const fileStream = fs.createReadStream(filepath);
+    reply.type('image/jpeg').send(fileStream);
+  } else {
+    return reply.code(404).send({ error: 'Avatar not found' });
+  }
+});
+
+//==========================================>friends
+db.serialize(() => {
+  db.run(`
+    CREATE TABLE IF NOT EXISTS friends (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      friend_id INTEGER NOT NULL,
+      status TEXT DEFAULT 'pending',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+});
+
+fastify.post('/api/friends/add', async (request, reply) => {
+  const token = request.cookies.access_token;
+  if (!token) {
+    return reply.code(401).send({ error: 'Please login first' });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = payload.id;
+    const { friendUsername } = request.body;
+
+    if (!friendUsername) {
+      return reply.code(400).send({ error: 'Friend username required' });
+    }
+
+    const friend = await dbGet(
+      'SELECT id FROM users WHERE username = ?',
+      [friendUsername]
+    );
+    
+    if (!friend) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+
+    const friendId = friend.id;
+
+    if (userId === friendId) {
+      return reply.code(400).send({ error: 'Cannot add yourself' });
+    }
+
+    const existing = await dbGet(
+      `SELECT id FROM friends 
+       WHERE (user_id = ? AND friend_id = ?) 
+          OR (user_id = ? AND friend_id = ?)`,
+      [userId, friendId, friendId, userId]
+    );
+    
+    if (existing) {
+      return reply.code(400).send({ error: 'Already friends' });
+    }
+
+    await dbRun(
+      'INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)',
+      [userId, friendId, 'accepted']
+    );
+
+    return reply.send({
+      success: true,
+      message: `Added ${friendUsername} as friend!`
+    });
+
+  } catch (err) {
+    console.error('Add friend error:', err);
+    return reply.code(500).send({ error: 'Server error: ' + err.message });
+  }
+});
+
+fastify.delete('/api/friends/remove', async (request, reply) => {
+  const token = request.cookies.access_token;
+  if (!token) {
+    return reply.code(401).send({ error: 'Please login first' });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = payload.id;
+    const { friendId } = request.body;
+
+    if (!friendId) {
+      return reply.code(400).send({ error: 'Friend ID required' });
+    }
+
+    await dbRun(
+      `DELETE FROM friends 
+       WHERE (user_id = ? AND friend_id = ?) 
+          OR (user_id = ? AND friend_id = ?)`,
+      [userId, friendId, friendId, userId]
+    );
+
+    return reply.send({
+      success: true,
+      message: 'Friend removed'
+    });
+
+  } catch (err) {
+    console.error('Remove friend error:', err);
+    return reply.code(500).send({ error: 'Server error' });
+  }
+});
+
+fastify.get('/api/friends', async (request, reply) => {
+  const token = request.cookies.access_token;
+  if (!token) {
+    return reply.code(401).send({ error: 'Please login first' });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = payload.id;
+
+    const friends = await dbAll(`
+      SELECT 
+        u.id,
+        u.username,
+        u.avatar_url,
+        CASE 
+          WHEN f.user_id = ? THEN 'You added them'
+          ELSE 'They added you'
+        END as friendship_type
+      FROM friends f
+      JOIN users u ON (
+        (f.user_id = ? AND u.id = f.friend_id) 
+        OR 
+        (f.friend_id = ? AND u.id = f.user_id)
+      )
+      WHERE (f.user_id = ? OR f.friend_id = ?)
+        AND u.id != ?
+    `, [userId, userId, userId, userId, userId, userId]);
+
+    const formattedFriends = friends.map(friend => ({
+      id: friend.id,
+      username: friend.username,
+      avatarUrl: friend.avatar_url ? `/api/avatar/file/${friend.avatar_url}` : null,
+      friendshipType: friend.friendship_type
+    }));
+
+    return reply.send({
+      success: true,
+      friends: formattedFriends,
+      count: formattedFriends.length
+    });
+
+  } catch (err) {
+    console.error('Get friends error:', err);
+    return reply.code(500).send({ error: 'Server error' });
+  }
+});
+
+fastify.get('/api/friends/check/:username', async (request, reply) => {
+  const token = request.cookies.access_token;
+  if (!token) {
+    return reply.code(401).send({ error: 'Please login first' });
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = payload.id;
+    const friendUsername = request.params.username;
+
+    const friend = await dbGet(
+      'SELECT id FROM users WHERE username = ?',
+      [friendUsername]
+    );
+    
+    if (!friend) {
+      return reply.send({ areFriends: false, message: 'User not found' });
+    }
+
+    const friendId = friend.id;
+
+    const friendship = await dbGet(
+      `SELECT * FROM friends 
+       WHERE (user_id = ? AND friend_id = ?) 
+          OR (user_id = ? AND friend_id = ?)`,
+      [userId, friendId, friendId, userId]
+    );
+
+    return reply.send({
+      areFriends: !!friendship,
+      friendId: friendId
+    });
+
+  } catch (err) {
+    console.error('Check friends error:', err);
+    return reply.code(500).send({ error: 'Server error' });
+  }
+});
+
+//=========================================public api
+
 const validApiKeys = ['pong-api-key'];
 
 function isValidApiKey(key) {
@@ -668,6 +958,7 @@ fastify.delete('/api/public/request', async (request, reply) => {
     message: 'Request ' + request_id + ' will be processed'
   });
 });
+
 //======================================>listen
 fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
   if (err) {

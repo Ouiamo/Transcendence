@@ -4,7 +4,7 @@ const db = new sqlite3.Database('pong.db',  (err) => {
     if (err)
         console.error('DB connection error:', err);
     else
-        console.log('Database connected');
+        console.log('🗄️  ✅ Database connected successfully!');
 });
 
 db.serialize(() => {

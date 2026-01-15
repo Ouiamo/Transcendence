@@ -68,17 +68,32 @@ const keys: {[key:string] : boolean}={
     'ArrowDown' : false,
 };
 
-(function initGame() {
-    board = document.getElementById("board") as HTMLCanvasElement;
-    board.style.display = "block";
-    board.height = boardHeight;
-    board.width = boardWidth;
-    contex = board.getContext("2d");
+export function initGame( canvas: HTMLCanvasElement) {
+    //board = document.getElementById("board") as HTMLCanvasElement;
+    // board.style.display = "block";
+    board = canvas;
 
+  board.width = 900;
+  board.height = 450;
+    contex = board.getContext("2d");
+    
     draw();
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
-})();
+  document.addEventListener("keydown", handleKeyDown);
+  document.addEventListener("keyup", handleKeyUp);
+}
+
+
+//  ( function initGame() {
+//     board = document.getElementById("board") as HTMLCanvasElement;
+//     board.style.display = "block";
+//     board.height = boardHeight;
+//     board.width = boardWidth;
+//     contex = board.getContext("2d");
+
+//     draw();
+//     document.addEventListener("keydown", handleKeyDown);
+//     document.addEventListener("keyup", handleKeyUp);
+// })();
 
 function handleKeyDown(event: KeyboardEvent)
 {
@@ -255,7 +270,7 @@ function  resetBall()
 }
 
 
-function draw() {
+ function draw() {
 
     movePlayer();
     moveBall();

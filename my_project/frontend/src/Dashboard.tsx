@@ -2,21 +2,25 @@
 import { use, useState } from 'react';
 
 import { Sidebar } from './Sidebar';
+import {Grid} from './Grid';
 interface Dashboardtest {
     gotohome: () => void;
     gotoprofil: () => void;
     delete_obj: (data: any) => void;
+    gotogame : ()=>void;
     user: any;
+    gotogame_r : ()=>void;
 
 
 }
-function Dashboard({ gotohome, gotoprofil, user, delete_obj }: Dashboardtest) {
+function Dashboard({ gotohome, gotoprofil, user, delete_obj, gotogame , gotogame_r}: Dashboardtest) {
     const [username_search, setusernameshearch] = useState('');
     const [input_search, handelsearch] = useState(false);
  
     return (
 <div className=" flex h-screen w-full bg-[#0d0221] ">
    <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} />
+   <Grid  gotogame={gotogame} gotogame_r={gotogame_r}/>
    
 </div>
 

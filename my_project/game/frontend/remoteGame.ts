@@ -95,34 +95,6 @@ function drawWaitingForPlayer(
     context.shadowBlur = 0;
 }
 
-
-function connectAiServer() {
-    const serverUrl = `http://localhost:3004`;
-
-    socket = io(serverUrl);
-
-    socket?.emit("hello");
-        
-    socket?.emit("findGame");
-    socket.on("gameStart", (data: { roomID: string, role: string }) => {        
-        gameState.roomID = data.roomID;
-        gameState.role = data.role;
-        gameState.inGame = true; 
-        startGameLoop();
-    });
-
-    socket.on("gameUpdate", (data: any) => {
-        gameState.ballX = data.ballX;
-        gameState.ballY = data.ballY;
-        gameState.player1_Y = data.player1_Y;
-        gameState.player2_Y = data.player2_Y;
-        gameState.score1 = data.score1;
-        gameState.score2 = data.score2;
-        gameState.gameEnd = data.gameEnd;
-        gameState.winner = data.winner;
-    });
-}
-
 function connectServer() {
     const serverHost = import.meta.env.VITE_SERVER_HOST;
     const serverUrl = `http://${serverHost}:3001`;
@@ -155,36 +127,31 @@ function connectServer() {
     });
 }
 
-(function initGame() {
-    board = document.getElementById("board") as HTMLCanvasElement;
-    board.style.display = "block";
-    board.height = boardHeight;
-    board.width = boardWidth;
+export function initGame_remot(  canvas: HTMLCanvasElement) {
+   // board = document.getElementById("board") as HTMLCanvasElement;
+   // board.style.display = "block";
+     board = canvas;
+console.log("haniiiiii####");
+  board.width = 900;
+  board.height = 450;
     contex = board.getContext("2d");
 
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
-    const btn1v1 = document.getElementById("btn-1v1");
-    const btnlocal = document.getElementById("btn-local");
-    const btnvAI = document.getElementById("btn-vAI");
-    const menu = document.getElementById("game-menu");
-    const statusText = document.getElementById("status-text");
+    // const btn1v1 = document.getElementById("btn-1v1");
+    // const btnlocal = document.getElementById("btn-local");
+    // const btnvAI = document.getElementById("btn-vAI");
+    // const menu = document.getElementById("game-menu");
+    // const statusText = document.getElementById("status-text");
+    connectServer();
 
-    btn1v1?.addEventListener("click", () => {
-        gameMode = '1v1';
-        // if (statusText) statusText.textContent = "Connecting to 1v1 match...";
-        connectServer();
-        menu?.classList.add("hidden");
-        if (board) board.style.display = "block";
-    });
-    btnvAI?.addEventListener("click", () => {
-        gameMode = 'vAI';
-        // if (statusText) statusText.textContent = "Connecting to 1v1 match...";
-        connectAiServer();
-        menu?.classList.add("hidden");
-        if (board) board.style.display = "block";
-    });
-})();
+    // btn1v1?.addEventListener("click", () => {
+    //     gameMode = '1v1';
+    //     // if (statusText) statusText.textContent = "Connecting to 1v1 match...";
+    //     menu?.classList.add("hidden");
+    //     if (board) board.style.display = "block";
+    // });
+};
 
 function handleKeyDown(event: KeyboardEvent) {
     if(event.key in keys) {

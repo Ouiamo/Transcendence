@@ -1,6 +1,5 @@
 
 
-
 module.exports = async function (fastify) {
   fastify.post('/api/logout', async (request, reply) => {
     reply
@@ -8,7 +7,7 @@ module.exports = async function (fastify) {
         path: '/',
         httpOnly: true,
         sameSite: 'lax',
-        secure: false // 
+        secure: false  
       })
       .send({ success: true, message: 'Logged out successfully' });
   });

@@ -1,10 +1,14 @@
 const { dbRun} = require('../../utils/dbHelpers');
+const speakeasy = require('speakeasy');
+const QRCode = require('qrcode');
 
 module.exports = async function (fastify) {
-fastify.post('/api/2fa/enable', { preHandler: fastify.authenticate },  async (request, reply) => {
+fastify.post('/api/2fa/enable', 
+  { preHandler: fastify.authenticate },
+  async (request, reply) => {
   const method = request.body.method;
 
-  // const userId = request.user?.id;
+   const userId = request.user?.id;
   // if (!userId)
   //   return reply.code(401).send({ error: 'User not authenticated' });
 

@@ -4,12 +4,12 @@ const { dbGet, dbRun } = require('../../../utils/dbHelpers');
 module.exports = async function (fastify) {
 
   fastify.get('/api/auth/42', async (_, reply) => {
-    const url =
-      'https://api.intra.42.fr/oauth/authorize?' +
+    const url = 'https://api.intra.42.fr/oauth/authorize?' +
       new URLSearchParams({
         client_id: process.env.FORTYTWO_CLIENT_ID,
         redirect_uri: process.env.FORTYTWO_REDIRECT_URI,
-        response_type: 'code'
+        response_type: 'code',
+        scope: 'public',
       });
 
     reply.redirect(url);
@@ -18,7 +18,7 @@ module.exports = async function (fastify) {
   fastify.get('/api/auth/42/callback', async (request, reply) => {
     const { code } = request.query;
     if (!code)
-      return reply.code(400).send({ error: 'No code' });
+      return reply.code(400).send({ error: 'No authorization code' });
 
     // 1️⃣ Exchange token
     const tokenRes = await fetch('https://api.intra.42.fr/oauth/token', {
@@ -51,14 +51,16 @@ module.exports = async function (fastify) {
     if (!user) {
       await dbRun(
         `INSERT INTO users
-         (provider, provider_id, username, email, avatar_url, password_hash)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+         (provider, provider_id, username, email, avatar_url, firstname, lastname, password_hash) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           '42',
           user42.id,
-          user42.login,
+          user42.login ||'user' + Date.now(),
           user42.email,
-          user42.image.link,
+          user42.image.link || 'default-avatar.png',
+          user42.first_name || '',
+          user42.last_name || '',
           'OAUTH_USER'
         ]
       );
@@ -76,13 +78,11 @@ module.exports = async function (fastify) {
       { expiresIn: '1h' }
     );
 
-    reply
-      .setCookie('access_token', token, {
+    reply.setCookie('access_token', token, {
         httpOnly: true,
         sameSite: 'lax',
         secure: false,
         path: '/'
-      })
-      .redirect(process.env.FRONTEND_URL + '/Profil');
+      }).redirect(process.env.FRONTEND_URL + '/Profil');
   });
 };

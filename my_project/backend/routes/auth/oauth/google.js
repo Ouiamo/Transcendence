@@ -20,7 +20,7 @@ module.exports = async function (fastify) {
   fastify.get('/api/auth/google/callback', async (request, reply) => {
     const { code } = request.query;
     if (!code)
-      return reply.code(400).send({ error: 'No code' });
+      return reply.code(400).send({ error: 'No authorization code' });
 
     // 1️⃣ Exchange code → token
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
@@ -59,10 +59,12 @@ module.exports = async function (fastify) {
         [
           'google',
           googleUser.id,
-          googleUser.name,
+          googleUser.name || 'user' + Date.now(),
+          googleUser.given_name || '',
+          googleUser.family_name || '',
           googleUser.email,
-          googleUser.picture,
-          'OAUTH_USER'
+          'OAUTH_USER',
+          googleUser.picture || 'default-avatar.png'
         ]
       );
 
@@ -79,8 +81,7 @@ module.exports = async function (fastify) {
       { expiresIn: '1h' }
     );
 
-    reply
-      .setCookie('access_token', token, {
+    reply.setCookie('access_token', token, {
         httpOnly: true,
         sameSite: 'lax',
         secure: false,

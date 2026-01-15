@@ -39,13 +39,19 @@ module.exports = async function (fastify) {
       );
 
       // 6️⃣ Send email
-      await transporter.sendMail({
-        to: user.email,
-        subject: 'Your 2FA Code',
-        text: `Your verification code is ${code}`
-      });
-
-      return reply.send({ sent: true });
+      try{
+          await transporter.sendMail({
+            to: user.email,
+            subject: 'Your 2FA Code',
+            text: `Your verification code is ${code}`
+          });
+          return reply.send({ sent: true });
+      }
+      catch(err)
+      {
+        console.error('Email failed:', err);
+        reply.code(500).send({error: 'Email not sent'});
+      }
     }
   );
 
@@ -89,19 +95,12 @@ module.exports = async function (fastify) {
          WHERE id = ?`,
         [userId]
       );
-
       return reply.send({ success: true });
     }
   );
 
   // ✅ MAKE TOKEN OF AUTHENTICATION
-  fastify.post('/api/2fa/complete',  { preHandler: fastify.authenticate }, async (request, reply) => {
-  
-    // const userId = request.user?.id;
-    // if(!userId)
-    //     return reply.code(401).send({error: "User not authenticated"});
-    
-      const SECRET = process.env.JWT_SECRET;
+  fastify.post('/api/2fa/complete', async (request, reply) => {
       const token = jwt.sign(
         {id: user.id, username: user.username},
         process.env.JWT_SECRET,

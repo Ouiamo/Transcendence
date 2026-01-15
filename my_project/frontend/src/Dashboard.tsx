@@ -2,6 +2,7 @@
 import { use, useState } from 'react';
 
 import { Sidebar } from './Sidebar';
+import {Grid} from './Grid';
 interface Dashboardtest {
     gotohome: () => void;
     gotoprofil: () => void;
@@ -17,6 +18,7 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj }: Dashboardtest) {
     return (
 <div className=" flex h-screen w-full bg-[#0d0221] ">
    <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} />
+   <Grid />
    
 </div>
 

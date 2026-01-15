@@ -1,6 +1,7 @@
 
 import './style.css';
 import { use, useEffect,useState } from 'react';
+import { useRef } from "react";
 import Lottie from "lottie-react"
 import Signup from './Signup';
 import Home from './Home'
@@ -8,10 +9,17 @@ import Login from  './Login';
 import Dashboard from './Dashboard';
 import Profil from './Profil';
 import { loginUser } from './Api';
+import { Sidebar } from './Sidebar';
+import {initGame} from "../../game/frontend/game.ts"
+import { GamePage} from "./G.tsx"
+import { Gamepage_r } from './G.tsx';
+// import {G} from "./G.tsx"
+
 //import Home from './Home';
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL'
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R'
 function App(){
+
   const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
@@ -30,14 +38,25 @@ useEffect(() => {
         method: 'GET',
         credentials: 'include',
       });
-     
+      console.log("currente page  is ", {currentPage});
       if (res.ok) {
         const data = await res.json();
         console.log("data apes de json ", data.user);
         setdatauser(data.user)
-        setCurrentPage('DASHBOARD');
-      } else {
+        
+        // if(save1=== 'GAME_L')
+        // {
+        //   console.log("dkhaltttttttttt");
+        //   setCurrentPage('GAME_L');
+
+        // }
+        // else 
+         setCurrentPage('DASHBOARD');
+      } 
+      
+      else {
         setCurrentPage('HOME');
+        localStorage.setItem('page', 'HOME');
       }
     } catch (err) {
       setCurrentPage('HOME');
@@ -50,6 +69,9 @@ useEffect(() => {
 
   checkSession();
 }, []);
+       const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  console.log("currente page is :::::::::::", currentPage);
+ 
 if(loading) return <div>is loading</div>
   return (
     <div >
@@ -82,7 +104,7 @@ if(loading) return <div>is loading</div>
 
       currentPage === 'DASHBOARD'&&
       <div className="h-screen w-full">
-        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login}/>
+        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login} gotogame={()=>setCurrentPage('GAME_L')} gotogame_r={()=>setCurrentPage('GAME_R')} />
       </div>
     
     }
@@ -91,6 +113,35 @@ if(loading) return <div>is loading</div>
       <div> i m in profil
         <Profil gotohome={()=> setCurrentPage('HOME')}/>
          </div>
+    }
+    {
+      currentPage ==='GAME_L' &&
+      <div className=" flex    "> 
+
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login}/>
+          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
+          < GamePage  />
+
+        <canvas ref={canvasRef} id="board" />
+          </div>
+          
+        i m in game 
+      </div>
+
+    }
+    {
+      currentPage === 'GAME_R'&& 
+      <div>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login}/>
+
+        i m in remotttttttttttt 
+          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
+          < Gamepage_r  />
+          <canvas ref={canvasRef} id="board" />  
+        i m in game 
+      </div>
+      </div>
+
     }
     </div>
   );

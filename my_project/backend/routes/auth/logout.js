@@ -6,8 +6,8 @@ module.exports = async function (fastify) {
       .clearCookie('access_token', {
         path: '/',
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false  
+        sameSite: 'none',
+        secure: true  
       })
       .send({ success: true, message: 'Logged out successfully' });
   });

@@ -13,7 +13,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord}:sideb){
        const logout = async () => {
         try {
 
-            const logo = await fetch('http://localhost:3010/api/logout', {
+            const logo = await fetch('https://localhost:3010/api/logout', {
                 method: 'POST',
                 credentials: 'include',
             })

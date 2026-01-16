@@ -54,17 +54,17 @@ module.exports = async function (fastify) {
     if (!user) {
       await dbRun(
         `INSERT INTO users
-         (provider, provider_id, username, email, avatar_url, password_hash)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+         (provider, provider_id, username, email, avatar_url, firstname, lastname, password_hash) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           'google',
           googleUser.id,
           googleUser.name || 'user' + Date.now(),
+          googleUser.email,
+          googleUser.picture || 'default-avatar.png',
           googleUser.given_name || '',
           googleUser.family_name || '',
-          googleUser.email,
           'OAUTH_USER',
-          googleUser.picture || 'default-avatar.png'
         ]
       );
 
@@ -83,8 +83,8 @@ module.exports = async function (fastify) {
 
     reply.setCookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false,
+        sameSite: 'none',
+        secure: true,
         path: '/'
       })
       .redirect(process.env.FRONTEND_URL + '/Profil');

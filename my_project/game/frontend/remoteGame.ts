@@ -96,8 +96,8 @@ function drawWaitingForPlayer(
 }
 
 function connectServer() {
-    const serverHost = import.meta.env.VITE_SERVER_HOST;
-    const serverUrl = `http://${serverHost}:3001`;
+    console.log("in connect server");
+    const serverUrl = `http://localhost:3001`;
 
     socket = io(serverUrl);
 

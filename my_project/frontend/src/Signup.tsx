@@ -89,28 +89,28 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
                 <div className=" gap-y-2 ">
                     <p className="text-[8px]">Nom d'utilisateur</p>
                     <input style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Entrer votre nom" value={firstname} onChange={(e) => setfirstname(e.target.value)}></input>
+                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Entrer votre nom" autoComplete="off" spellCheck="false" value={firstname} onChange={(e) => setfirstname(e.target.value)}></input>
                 </div>
                 <div>
                     <p className="text-[8px]">Prenom d'utilisateur</p>
                     <input style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Enter  votre prenom" value={lastname} onChange={(e) => setlastname(e.target.value)}></input>
+                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Enter  votre prenom" autoComplete="off" spellCheck="false" value={lastname} onChange={(e) => setlastname(e.target.value)}></input>
                 </div>
                 <div>
                     <p className="text-[8px]">Username</p>
                     <input style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Enter votre username" value={username} onChange={(e) => setusername(e.target.value)}>
+                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Enter votre username" autoComplete="off" spellCheck="false" value={username} onChange={(e) => setusername(e.target.value)}>
                     </input>
                 </div>
                 <div>
                     <p className="text-[8px]">Gmali</p>
                     <input style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="gmail" placeholder="Entrer votre gamil" value={gmail} onChange={(e) => setgamil(e.target.value)}></input>
+                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="gmail" placeholder="Entrer votre gamil" autoComplete="off" spellCheck="false" value={gmail} onChange={(e) => setgamil(e.target.value)}></input>
                 </div>
                 <div>
                     <p className="text-[8px]">Mot de passe</p>
                     <input style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="password" placeholder="Créez un mot de passe" value={motdepass} onChange={(e) => setmotdepass(e.target.value)}></input>
+                        className=" caret-[#ff44ff] h-[44px]   w-[250px] rounded-full bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="password" placeholder="Créez un mot de passe"  autoComplete="off" spellCheck="false" value={motdepass} onChange={(e) => setmotdepass(e.target.value)}></input>
                 </div>
                 <footer className="flex-1 w-full h-auto mt-[15px] flex flex-col items-center gap-y-6">
                     <div className="flex flex-row items-center justify-between w-full max-w-[80px] mx-auto mt-10 px-2">

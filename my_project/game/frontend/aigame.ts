@@ -64,18 +64,24 @@ const aikeys: {[key:string] : boolean}={
     'ArrowDown' : false,
 };
 
-(function aiinitGame() {
-    console.log("heeeeeeeeeeeeeeeeere");
-    aiboard = document.getElementById("board") as HTMLCanvasElement;
-    aiboard.style.display = "block";
-    aiboard.height = aiboardHeight;
-    aiboard.width = aiboardWidth;
+export function aiinitGame(canvas: HTMLCanvasElement) {
+    // console.log("heeeeeeeeeeeeeeeeere");
+    // aiboard = document.getElementById("board") as HTMLCanvasElement;
+    // aiboard.style.display = "block";
+    // aiboard.height = aiboardHeight;
+    // aiboard.width = aiboardWidth;
+    // aicontex = aiboard.getContext("2d");
+        aiboard = canvas;
+
+  aiboard.width = 900;
+  aiboard.height = 450;
     aicontex = aiboard.getContext("2d");
+    
 
     aidraw();
     document.addEventListener("keydown", aihandleKeyDown);
     document.addEventListener("keyup", aihandleKeyUp);
-})();
+};
 
 function aihandleKeyDown(event: KeyboardEvent)
 {

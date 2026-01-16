@@ -1,5 +1,14 @@
 
-const fastify = require('fastify')({ logger: true });
+const fs = require('fs');
+const path = require('path');
+const fastify = require('fastify')({
+  logger: true,
+  https: {
+    key: fs.readFileSync(path.join(__dirname, './certs/.key.pem')),
+    cert: fs.readFileSync(path.join(__dirname, './certs/cert.pem')),
+  }
+});
+//fastify.setTrustProxy(true);
 
 require('dotenv').config();
 //db
@@ -9,6 +18,7 @@ require('./db/db');
 fastify.register(require('./plugins/auth'));
 
 // Routes
+fastify.register(require('./routes/auth/root'));
 fastify.register(require('./routes/auth/signup'));
 fastify.register(require('./routes/auth/login'));
 fastify.register(require('./routes/auth/logout'));
@@ -27,14 +37,11 @@ fastify.register(require('./routes/twofa/authenticator'));
 
 const {dbAll, dbGet, dbRun} = require ('./utils/dbHelpers');
 
-const fs = require('fs');
-const path = require('path');
 
 
 fastify.register(require('@fastify/cors'), {
-  //origin: true
   origin: 'http://localhost:5173',
-  credentials: true,               // obligatoire pour cookie
+  credentials: true,
   methods: ['GET','POST','PATCH','DELETE']
 });
 

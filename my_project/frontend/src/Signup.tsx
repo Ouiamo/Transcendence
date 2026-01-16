@@ -24,12 +24,12 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
     const [motdepass, setmotdepass] = useState('');
 
     const handel_auth_goole = async () => {
-        window.location.href = 'http://localhost:3010/api/auth/google'
-        // window.open('http://localhost:3010/api/auth/google');
+        window.location.href = 'https://localhost:3010/api/auth/google'
+        // window.open('https://localhost:3010/api/auth/google');
         //gotoDASHBOARD();
     }
     const handel_auth_42 = async () => {
-        window.open('http://localhost:3010/api/auth/42');
+        window.open('https://localhost:3010/api/auth/42');
         gotoDASHBOARD();
     }
     const handleSignup = async () => {

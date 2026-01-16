@@ -108,8 +108,8 @@ module.exports = async function (fastify) {
       );
       reply.setCookie('access_token', token, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         path: '/',
         maxAge: 60 * 60
       });

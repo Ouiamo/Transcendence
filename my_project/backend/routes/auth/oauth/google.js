@@ -83,8 +83,8 @@ module.exports = async function (fastify) {
 
     reply.setCookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false,
+        sameSite: 'none',
+        secure: true,
         path: '/'
       })
       .redirect(process.env.FRONTEND_URL + '/Profil');

@@ -19,9 +19,9 @@ export function Grid({ gotogame_r, goto, goto_ia }: gridinter) {
     const [searchfor, setusernameshearch] = useState('');
     return (
         <div className="flex flex-col items-center justify-center  bg-[rgba(45,27,105,0.7)]  h-screen w-full ">
-            <div className="bg-[#ffff]">
+            <div className=" bg-[rgba(45,27,105,0.7)] ">
             <div className="relative flex items-center  w-full ">
-                <IoSearch className="absolute  text-[#ff44ff] text-xl pointer-events-none z-10 " />
+                <IoSearch className="absolute  text-[#ff44ff]  bg-[rgba(45,27,105,0.7)]text-xl pointer-events-none z-10 " />
                 <input
                     style={{  paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
                     className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[rgba(45,27,105,0.7)]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="text" placeholder="Entrer votre gmail" autoComplete="off" spellCheck="false" value={searchfor} onChange={(e) => setusernameshearch(e.target.value)} ></input>

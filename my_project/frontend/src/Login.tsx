@@ -17,12 +17,12 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
     const [gmailogin, setgmailogin] = useState('');
 
     const handel_auth_goole = async () => {
-        window.location.href = 'http://localhost:3010/api/auth/google'
-        // window.open('http://localhost:3010/api/auth/google');
+        window.location.href = 'https://localhost:3010/api/auth/google'
+        // window.open('https://localhost:3010/api/auth/google');
         //gotoDASHBOARD();
     }
     const handel_auth_42 = async () => {
-        window.open('http://localhost:3010/api/auth/42');
+        window.open('https://localhost:3010/api/auth/42');
         gotoDASHBOARD();
     }
     const handelLogin = async () => {
@@ -68,7 +68,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
 
                         <input
                             style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                            className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" type="email" placeholder="Entrer votre gmail"value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
+                            className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Entrer votre gmail"value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
                     </div>
                 </div>
                 <div className="flex flex-col  ">
@@ -76,7 +76,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
                     <div className="relative flex items-center w-full  ">
                         <RiLockPasswordLine className="absolute left-3 text-[#ff44ff] text-xl pointer-events-none z-10" />
                         <input
-                            style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[33px] rounded-full  bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="password" placeholder="set password" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
+                            style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[33px] rounded-full  bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="password" placeholder="set password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
 
                     </div>
                 </div>

@@ -1,5 +1,5 @@
 const sqlite3 = require('sqlite3').verbose();
-// Create database connection
+
 const db = new sqlite3.Database('pong.db',  (err) => {
     if (err)
         console.error('DB connection error:', err);

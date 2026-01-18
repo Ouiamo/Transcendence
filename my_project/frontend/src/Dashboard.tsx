@@ -7,19 +7,24 @@ interface Dashboardtest {
     gotohome: () => void;
     gotoprofil: () => void;
     delete_obj: (data: any) => void;
-    gotogame : ()=>void;
+   
     user: any;
-    listfriends : ()=>void;
-}
+    // gotogame_r : ()=>void;
+    listfriends: ()=>void;
+    goto : ()=> void;
+    gotodashbord : ()=>void;
+    gotoia: ()=>void;
 
-function Dashboard({ gotohome, gotoprofil, user, delete_obj, gotogame , listfriends}: Dashboardtest) {
-    const [username_search, setusernameshearch] = useState('');
-    const [input_search, handelsearch] = useState(false);
+
+}
+function Dashboard({ gotohome, gotoprofil, user, delete_obj , listfriends, goto, gotodashbord, gotoia}: Dashboardtest) {
+
+    
  
     return (
-<div className=" flex h-screen w-full bg-[#0d0221] ">
-   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} />
-   <Grid  gotogame={gotogame} listfriends={listfriends}/>
+<div className=" flex h-screen w-full  ">
+   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} />
+   <Grid  listfriends={listfriends} goto={goto}  goto_ia={gotoia}/>
    
 </div>
 

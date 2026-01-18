@@ -40,7 +40,7 @@ export function Friendlist() {
   }, []);
 
   if (loading) return <div className="p-4">Loading friends…</div>;
-  if (error) return <div className="p-4 text-red-400">Error: {error}</div>;
+  if (error) return <div className="p-4 text-red-400">Errorrrrrrr: {error}</div>;
 
   return (
     <div className="p-4 w-72">

@@ -64,7 +64,7 @@ module.exports = async function (fastify) {
           googleUser.picture || 'default-avatar.png',
           googleUser.given_name || '',
           googleUser.family_name || '',
-          'OAUTH_USER'
+          'OAUTH_USER',
         ]
       );
 
@@ -83,8 +83,8 @@ module.exports = async function (fastify) {
 
     reply.setCookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'lax',
-        secure: false,
+        sameSite: 'none',
+        secure: true,
         path: '/'
       })
       .redirect(process.env.FRONTEND_URL + '/Profil');

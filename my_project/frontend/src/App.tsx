@@ -11,54 +11,65 @@ import Profil from './Profil';
 import { loginUser } from './Api';
 import { Sidebar } from './Sidebar';
 import {initGame} from "../../game/frontend/game.ts"
-import { GamePage} from "./G.tsx"
+import { GamePage, Gamepage_i} from "./G.tsx"
 import { Gamepage_r } from './G.tsx';
 import { Friendlist } from './Friendlist.tsx'
 
 // import {G} from "./G.tsx"
 
-//import Home from './Home';
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R'
+
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I'
 function App(){
-
   const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
+  const gotogamelocal = ()=>{
+    localStorage.setItem('page', 'GAME_L');
+    setCurrentPage('GAME_L');
+  }
+    const listfriends = ()=>{
+    localStorage.setItem('page', 'GAME_R');
+    setCurrentPage('GAME_R');
+  }
+     const gotogameia = ()=>{
+    localStorage.setItem('page', 'GAME_I');
+    setCurrentPage('GAME_I');
+  }
+  const gotodash = ()=>{
+    localStorage.setItem('page', 'DASHBOARD');
+    setCurrentPage('DASHBOARD');
+  }
   const obj_login = (data : any | any)=>{
     if(data)
       setdatauser(data.user);
    else
        setdatauser(null);
-    console.log("App*********** received data:", user_data)
   }
 
 useEffect(() => {
   const checkSession = async () => {
     try {
-      const res = await fetch('http://localhost:3010/api/me', {
+      const res = await fetch('https://localhost:3010/api/me', {
         method: 'GET',
         credentials: 'include',
       });
-      console.log("currente page  is ", {currentPage});
+
       if (res.ok) {
         const data = await res.json();
-        console.log("data apes de json ", data.user);
         setdatauser(data.user)
-        
-        // if(save1=== 'GAME_L')
-        // {
-        //   console.log("dkhaltttttttttt");
-        //   setCurrentPage('GAME_L');
-
-        // }
-        // else 
-         setCurrentPage('DASHBOARD');
+        const save = localStorage.getItem('page');
+        if(save === 'GAME_L')
+          setCurrentPage('GAME_L');
+        else if(save === 'GAME_R')
+          setCurrentPage('GAME_R');
+        else if(save == 'GAME_I')
+          setCurrentPage('GAME_I')
+        else
+           setCurrentPage('DASHBOARD');
       } 
-      
       else {
         setCurrentPage('HOME');
-        localStorage.setItem('page', 'HOME');
       }
     } catch (err) {
       setCurrentPage('HOME');
@@ -72,7 +83,6 @@ useEffect(() => {
   checkSession();
 }, []);
        const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  console.log("currente page is :::::::::::", currentPage);
  
 if(loading) return <div>is loading</div>
   return (
@@ -106,7 +116,7 @@ if(loading) return <div>is loading</div>
 
       currentPage === 'DASHBOARD'&&
       <div className="h-screen w-full">
-        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login} gotogame={()=>setCurrentPage('GAME_L')} listfriends={()=>setCurrentPage('GAME_R')} />
+        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login}  listfriends={listfriends}  goto={gotogamelocal} gotoia={gotogameia} gotodashbord={gotodash}/>
       </div>
     
     }
@@ -120,7 +130,7 @@ if(loading) return <div>is loading</div>
       currentPage ==='GAME_L' &&
       <div className=" flex    "> 
 
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
           < GamePage  />
 
@@ -134,14 +144,33 @@ if(loading) return <div>is loading</div>
     {
       currentPage === 'GAME_R'&& 
       <div>
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login}/>
-
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
         i m in remotttttttttttt 
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">
           < Friendlist />
           {/* < Gamepage_r  />
           <canvas ref={canvasRef} id="board" />    */}
           </div>
+       
+          {/* <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
+          < Gamepage_r  />
+          <canvas ref={canvasRef} id="board" />  
+     
+      </div> */}
+      </div>
+
+    }
+     {
+      currentPage === 'GAME_I'&& 
+      <div>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
+
+       
+          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
+          < Gamepage_i  />
+          <canvas ref={canvasRef} id="board" />  
+     
+      </div>
       </div>
 
     }

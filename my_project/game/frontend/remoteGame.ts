@@ -78,34 +78,33 @@ const keys: {[key:string] : boolean}={
     'ArrowDown' : false,
 }
 
-function drawWaitingForPlayer(
-    context: CanvasRenderingContext2D,
-    boardWidth: number,
-    boardHeight: number
-) {
-    context.fillStyle = "rgba(0, 0, 0, 0.9)";
-    context.fillRect(0, 0, boardWidth, boardHeight);
-    context.shadowBlur = 20;
-    // context.shadowColor = "#9e58eeff";
-    context.fillStyle = "white";
-    context.font = "40px Arial";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillText("Waiting for opponent...", boardWidth / 2, boardHeight / 2);
-    context.shadowBlur = 0;
-}
+// function drawWaitingForPlayer(
+//     context: CanvasRenderingContext2D,
+//     boardWidth: number,
+//     boardHeight: number
+// ) {
+//     context.fillStyle = "rgba(0, 0, 0, 0.9)";
+//     context.fillRect(0, 0, boardWidth, boardHeight);
+//     context.shadowBlur = 20;
+//     // context.shadowColor = "#9e58eeff";
+//     context.fillStyle = "white";
+//     context.font = "40px Arial";
+//     context.textAlign = "center";
+//     context.textBaseline = "middle";
+//     context.fillText("Waiting for opponent...", boardWidth / 2, boardHeight / 2);
+//     context.shadowBlur = 0;
+// }
 
 function connectServer() {
-    const serverHost = import.meta.env.VITE_SERVER_HOST;
-    const serverUrl = `http://${serverHost}:3001`;
+    const serverUrl = `http://localhost:3001`;
 
     socket = io(serverUrl);
 
     socket?.emit("hello", "Hi server!");
 
-    if (contex) {
-        drawWaitingForPlayer(contex, boardWidth, boardHeight);
-    }
+    // if (contex) {
+    //     drawWaitingForPlayer(contex, boardWidth, boardHeight);
+    // }
         
     socket?.emit("findGame");
     socket.on("gameStart", (data: { roomID: string, role: string }) => {        

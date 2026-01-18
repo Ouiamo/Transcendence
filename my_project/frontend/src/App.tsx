@@ -13,6 +13,8 @@ import { Sidebar } from './Sidebar';
 import {initGame} from "../../game/frontend/game.ts"
 import { GamePage} from "./G.tsx"
 import { Gamepage_r } from './G.tsx';
+import { Friendlist } from './Friendlist.tsx'
+
 // import {G} from "./G.tsx"
 
 //import Home from './Home';
@@ -104,7 +106,7 @@ if(loading) return <div>is loading</div>
 
       currentPage === 'DASHBOARD'&&
       <div className="h-screen w-full">
-        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login} gotogame={()=>setCurrentPage('GAME_L')} gotogame_r={()=>setCurrentPage('GAME_R')} />
+        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login} gotogame={()=>setCurrentPage('GAME_L')} listfriends={()=>setCurrentPage('GAME_R')} />
       </div>
     
     }
@@ -135,11 +137,11 @@ if(loading) return <div>is loading</div>
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login}/>
 
         i m in remotttttttttttt 
-          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
-          < Gamepage_r  />
-          <canvas ref={canvasRef} id="board" />  
-        i m in game 
-      </div>
+          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">
+          < Friendlist />
+          {/* < Gamepage_r  />
+          <canvas ref={canvasRef} id="board" />    */}
+          </div>
       </div>
 
     }

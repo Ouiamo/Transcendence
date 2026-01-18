@@ -69,7 +69,7 @@ fastify.post('/api/avatar', async (request, reply) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = fastify.jwt.verify(token);
     const userId = payload.id;
 
     const data = await request.file();
@@ -137,7 +137,7 @@ fastify.post('/api/friends/add', async (request, reply) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = fastify.jwt.verify(token);
     const userId = payload.id;
     const { friendUsername } = request.body;
 
@@ -194,7 +194,7 @@ fastify.delete('/api/friends/remove', async (request, reply) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = fastify.jwt.verify(token);
     const userId = payload.id;
     const { friendId } = request.body;
 
@@ -227,7 +227,7 @@ fastify.get('/api/friends', async (request, reply) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = fastify.jwt.verify(token);
     const userId = payload.id;
 
     const friends = await dbAll(`
@@ -248,7 +248,7 @@ fastify.get('/api/friends', async (request, reply) => {
       WHERE (f.user_id = ? OR f.friend_id = ?)
         AND u.id != ?
     `, [userId, userId, userId, userId, userId, userId]);
-
+    // console.log("hiiiiiiiiiii");
     const formattedFriends = friends.map(friend => ({
       id: friend.id,
       username: friend.username,
@@ -275,7 +275,7 @@ fastify.get('/api/friends/check/:username', async (request, reply) => {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = fastify.jwt.verify(token);
     const userId = payload.id;
     const friendUsername = request.params.username;
 

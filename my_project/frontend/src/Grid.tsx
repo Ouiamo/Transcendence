@@ -7,9 +7,10 @@ import {initGame} from "../../game/frontend/game.ts"
 
 interface gridinter {
     gotogame : ()=> void;
-    gotogame_r : ()=>void;
+    // gotogame_r : ()=>void;
+    listfriends : ()=>void;
 }
-export function Grid( {gotogame, gotogame_r}:gridinter) {
+export function Grid( {gotogame, listfriends}:gridinter) {
 
 
     return (
@@ -28,7 +29,7 @@ export function Grid( {gotogame, gotogame_r}:gridinter) {
                 </h2>
             </div>
             <div className="grid grid-cols-2 w-fite  gap-[30px] text-[#ff99ff]  justify-items-center h-[200px] ">
-                <div onClick={gotogame_r} className="w-[250px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-2xl p-8 border-2 border-[#ff44ff] transition-all duration-300 hover:scale-105 hover:border-[#ff99ff] border-[1px] border-[#ff44ff]/70  rounded-[30px] justify-content-center  shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
+                <div onClick={listfriends} className="w-[250px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-2xl p-8 border-2 border-[#ff44ff] transition-all duration-300 hover:scale-105 hover:border-[#ff99ff] border-[1px] border-[#ff44ff]/70  rounded-[30px] justify-content-center  shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
                     <div className="flex justify-center items-center flex-col">
                         <FiGlobe className=" h-[50px] w-[30px]" />
                         <p className="text-[#ffff] font-['Courier_New',monospace] ">REMOTE GAME</p>

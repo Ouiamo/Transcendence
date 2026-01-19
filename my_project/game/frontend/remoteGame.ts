@@ -96,7 +96,7 @@ const keys: {[key:string] : boolean}={
 // }
 
 function connectServer() {
-    const serverUrl = `http://localhost:3001`;
+    const serverUrl = `https://localhost:3010`;
 
     socket = io(serverUrl);
 
@@ -143,7 +143,6 @@ console.log("haniiiiii####");
     // const menu = document.getElementById("game-menu");
     // const statusText = document.getElementById("status-text");
     connectServer();
-
     // btn1v1?.addEventListener("click", () => {
     //     gameMode = '1v1';
     //     // if (statusText) statusText.textContent = "Connecting to 1v1 match...";

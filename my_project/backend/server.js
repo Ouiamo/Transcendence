@@ -27,7 +27,11 @@ fastify.register(require('./routes/auth/oauth/fortytwo'));
 
 fastify.register(require('./routes/profile/getProfile'));
 fastify.register(require('./routes/profile/updateProfile'));
+fastify.register(require('./routes/game/gameSocket'));
 //fastify.register(require('./routes/profile/avatar'));
+
+// Game Socket.IO
+fastify.register(require('./routes/game/gameSocket'));
 
 //fastify.register(require('./routes/friends/'));
 
@@ -124,7 +128,7 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
   }
 });
 
-//=========================================>friends
+// =========================================>friends
 // db.serialize(() => {
 //   db.run(`
 //     CREATE TABLE IF NOT EXISTS friends (

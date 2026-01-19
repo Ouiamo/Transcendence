@@ -16,7 +16,7 @@ export function Friendlist() {
     let mounted = true;
     const fetchFriends = async () => {
       try {
-        const res = await fetch('http://localhost:3010/api/friends', {
+        const res = await fetch('https://localhost:3010/api/friends', {
           method: 'GET',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
@@ -53,7 +53,7 @@ export function Friendlist() {
                 <div className="w-10 h-10 rounded-full bg-gray-700 overflow-hidden flex-shrink-0">
                   {f.avatarUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={`http://localhost:3010${f.avatarUrl}`} alt={f.username} className="w-full h-full object-cover" />
+                    <img src={`https://localhost:3010${f.avatarUrl}`} alt={f.username} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-xs text-gray-300">{f.username?.charAt(0).toUpperCase()}</div>
                   )}

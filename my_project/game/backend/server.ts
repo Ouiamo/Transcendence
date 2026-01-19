@@ -1,5 +1,4 @@
-import Fastify from "fastify";
-import fastifyCors from "@fastify/cors";
+
 import { Server as SocketIOServer } from "socket.io";  
 
 const waitingPlayers : string[] = [];
@@ -24,23 +23,23 @@ const boardHeight = 450;
 const paddleHeight = 80;
 const ballRadius = 15;
 
-const server = Fastify({
-    logger: true
-});
+// const server = Fastify({
+//     logger: true
+// });
 
 
-server.get("/", async(request, reply) => {
-    return {message: "Hello THERE !!"};
-});
+// fastify.get("/", async(request, reply) => {
+//     return {message: "Hello THERE !!"};
+// });
 
-await server.register(fastifyCors, {
-   origin: true,
-    credentials: true
-});
+// await server.register(fastifyCors, {
+//    origin: true,
+//     credentials: true
+// });
 
-await server.listen({ port: 3001, host: '0.0.0.0' });
-
-const gameSocket = new SocketIOServer(server.server, {
+// await server.listen({ port: 3010, host: '0.0.0.0' });
+module.exports = async function (fastify) {
+const gameSocket = new SocketIOServer(fastify.server, {
     cors: {
         origin: "*",
         methods: ["GET", "POST"]
@@ -200,4 +199,5 @@ function resetBall(state: any) {
     state.ballStepY = Math.random() < 0.5 ? -5 : 5;
 }
 
-console.log("🚀 Server running on http://localhost:3001");
+console.log("🚀 Server running on https://localhost:3010");
+};

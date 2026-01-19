@@ -147,9 +147,9 @@ if(loading) return <div>is loading</div>
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
         i m in remotttttttttttt 
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">
-          < Friendlist />
-          {/* < Gamepage_r  />
-          <canvas ref={canvasRef} id="board" />    */}
+          {/* < Friendlist /> */}
+          < Gamepage_r  />
+          <canvas ref={canvasRef} id="board" />   
           </div>
        
           {/* <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  

@@ -19,11 +19,13 @@ import { Friendlist } from './Friendlist.tsx'
 
 
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I'
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'
 function App(){
   const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
+    console.log("Current Page is:", currentPage);
+
   const gotogamelocal = ()=>{
     localStorage.setItem('page', 'GAME_L');
     setCurrentPage('GAME_L');
@@ -35,6 +37,11 @@ function App(){
      const gotogameia = ()=>{
     localStorage.setItem('page', 'GAME_I');
     setCurrentPage('GAME_I');
+  }
+  const gotoprofil =()=>
+  {
+    localStorage.setItem('page', 'PROFIL');
+    setCurrentPage('PROFIL');
   }
   const gotodash = ()=>{
     localStorage.setItem('page', 'DASHBOARD');
@@ -64,7 +71,9 @@ useEffect(() => {
         else if(save === 'GAME_R')
           setCurrentPage('GAME_R');
         else if(save == 'GAME_I')
-          setCurrentPage('GAME_I')
+          setCurrentPage('GAME_I');
+        else if(save == 'PROFIL')
+            setCurrentPage('PROFIL');
         else
            setCurrentPage('DASHBOARD');
       } 
@@ -115,22 +124,17 @@ if(loading) return <div>is loading</div>
     {
 
       currentPage === 'DASHBOARD'&&
-      <div className="h-screen w-full">
-        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login}  listfriends={listfriends}  goto={gotogamelocal} gotoia={gotogameia} gotodashbord={gotodash}/>
+      <div className="h-screen w-full flex-row ">
+        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login}  listfriends={listfriends}  goto={gotogamelocal} gotoia={gotogameia} gotodashbord={gotodash} />
       </div>
     
     }
-    {
-      currentPage === 'PROFIL' &&
-      <div> i m in profil
-        <Profil gotohome={()=> setCurrentPage('HOME')}/>
-         </div>
-    }
+  
     {
       currentPage ==='GAME_L' &&
       <div className=" flex    "> 
 
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil}/>
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
           < GamePage  />
 
@@ -144,7 +148,7 @@ if(loading) return <div>is loading</div>
     {
       currentPage === 'GAME_R'&& 
       <div>
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil}/>
         i m in remotttttttttttt 
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">
           < Friendlist />
@@ -162,8 +166,8 @@ if(loading) return <div>is loading</div>
     }
      {
       currentPage === 'GAME_I'&& 
-      <div>
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash}/>
+      <div className="flex  ">
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil}/>
 
        
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
@@ -173,6 +177,17 @@ if(loading) return <div>is loading</div>
       </div>
       </div>
 
+    }
+    {
+        currentPage === 'PROFIL' &&
+      <div className="flex flex-row gap-[140px] ">
+        <div>
+           <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil}/>
+        </div>
+        <div className="flex w-full h-full">
+        <Profil user={user_data}/>
+        </div>
+      </div>
     }
     </div>
   );

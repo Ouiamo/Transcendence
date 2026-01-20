@@ -45,7 +45,7 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                         <p className="text-xs text-gray-400 font-['Courier_New',monospace] text-center  ">Play against players worldwide</p>
 ======= */}
             </div>
-            <div className="flex flex-col items-center justify-center bg-[rgba(45,27,105,0.7)]  h-screen w-full     ">
+            <div className="flex flex-col items-center justify-center h-screen w-full     ">
 
                 <div className="h-[80px]">
 

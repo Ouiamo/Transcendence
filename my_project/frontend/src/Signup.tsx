@@ -38,7 +38,6 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
             return;
         }
         const cleangmail = gmail.trim();
-        console.log(cleangmail, "....");
         if (!cleangmail.includes('@') || !cleangmail.includes('.')) {
             alert("syntax error gmail");
             return;
@@ -58,16 +57,22 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
         }
         try {
             const result = await signupUser(data_user);
+            console.error("signupppppppppppppppP**** ", result.code);
+            if(result.code == 400)
+            {
+                alert("compet deja existe ");
+                return ;
+            }
             if (result.success) {
                 alert("signup sucess");
                 gotologin();
             }
             else
-                alert("error serveur ");
+                alert("error serveuwwwwr ");
 
         }
         catch (error) {
-            alert("error serveur ");
+            alert("error serveureeeeee ");
         }
         // console.log(data_user);
     }

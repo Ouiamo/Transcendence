@@ -7,8 +7,9 @@ interface sideb{
     gotohome : ()=>void;
     delete_obj: (data: any) => void;
     gotodashbord: ()=>void;
+    gotoprofil : ()=>void;
 }
-export function Sidebar({user_, gotohome, delete_obj, gotodashbord}:sideb){
+export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil}:sideb){
     console.log(user_);
        const logout = async () => {
         try {
@@ -45,7 +46,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord}:sideb){
                         <li><IoGameControllerOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoSettingsOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoHomeOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"onClick={gotodashbord} /></li>
-                        <li><IoPersonCircleOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" /></li>
+                        <li><IoPersonCircleOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotoprofil} /></li>
                     </ul>
                 </nav>
 

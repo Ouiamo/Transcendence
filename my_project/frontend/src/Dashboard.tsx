@@ -14,6 +14,7 @@ interface Dashboardtest {
     goto : ()=> void;
     gotodashbord : ()=>void;
     gotoia: ()=>void;
+    
 
 
 }
@@ -22,9 +23,15 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj , listfriends, goto,
     
  
     return (
-<div className=" flex h-screen w-full  ">
-   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} />
+<div className=" flex h-screen w-full flex-row gap-[200px]">
+ <div className="flex ">
+
+   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil}  />
+    </div>
+    <div className="flex">
+
    <Grid  listfriends={listfriends} goto={goto}  goto_ia={gotoia}/>
+    </div>
    
 </div>
 

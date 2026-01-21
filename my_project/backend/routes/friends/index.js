@@ -138,7 +138,7 @@ module.exports = async function(fastify, options) {
       
       for (const friendId of allFriendIds) {
         const friend = await dbGet(`
-          SELECT id, username, avatar_url 
+          SELECT id, username, avatar_url, provider
           FROM users 
           WHERE id = ?
         `, [friendId]);
@@ -151,13 +151,21 @@ module.exports = async function(fastify, options) {
           } else {
             friendshipType = 'They added you';
           }
+          let avatarUrl = null;
+          if (friend.avatar_url) {
+            if (friend.provider === 'local') {
+              avatarUrl = `https://localhost:3010/api/avatar/file/${friend.avatar_url}`;
+            } else {
+              avatarUrl = friend.avatar_url; // google / 42
+            }
           myFriends.push({
             id: friend.id,
             username: friend.username,
-            avatarUrl: friend.avatar_url ? `/api/avatar/file/${friend.avatar_url}` : '/api/avatar/file/default-avatar.png',
+            avatarUrl: avatarUrl,
             friendshipType: friendshipType
           });
         }
+      }
       }
 
       return reply.send({

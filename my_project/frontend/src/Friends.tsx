@@ -74,7 +74,7 @@ function Friends() {
         }
     };
 
-
+console.log(" avatr fried isssssssssss** ", friends);
     return (
         <div className="flex flex-row  w-full h-full gap-[40px] mt-[80px] ">
             <div className=" flex flex-col w-[500px] h-fitt bg-[#ffff]">
@@ -90,7 +90,7 @@ function Friends() {
                         <div className="flex  gap-[40px]  ">
                             <div className="flex w-full flex-row items-center justify-between gap-[40px] mt-[10px]">
                                 <div className="flex flex-row gap-[20px]">
-                                    <img src={"https://api.dicebear.com/7.x/avataaars/svg?seed=Lucky"} alt="avatar"
+                                    <img src={`${f.avatarUrl}   `} alt="avatar"
                                         className=" w-[60px] h-[60px] rounded-full" ></img>
                                     <div className="flex flex-col w-[100px] h-[50px] mt-[20px] ">
                                         <p className="flex text-[#ff99ff] font-extrabold  text-[16px] font-bold  m-[0px] p-[0px] " style={{ fontWeight: 900 }}> {f.username}</p>

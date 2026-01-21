@@ -12,15 +12,20 @@ fastify.get('/api/profile', async (request, reply) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     
     const user = await dbGet(
-      'SELECT id, username, email, avatar_url FROM users WHERE id = ?',
-      [payload.id]
-    );
-    
-    let avatarUrl = null;
-    if (user.avatar_url && user.avatar_url !== 'default-avatar.png') {
-      avatarUrl = `/api/avatar/file/${user.avatar_url}`;
-    }
-    
+        'SELECT id, username, email, avatar_url, provider FROM users WHERE id = ?',
+        [payload.id]
+      );
+
+      let avatarUrl = null;
+
+      if (user.avatar_url) {
+        if (user.provider === 'local') {
+          avatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
+        } else {
+          avatarUrl = user.avatar_url; // google / 42
+        }
+      }
+
     return reply.send({
       success: true,
       message: 'Profile fetched successfully',

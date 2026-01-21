@@ -12,9 +12,11 @@ interface profil_iterface {
 }
 
 function Profil({ user }: profil_iterface) {
-
+// `https://localhost:3010${user.avatarUrl}`
+  console.log("xihaja bax t", user);
+  console.log("avatarrrrrr is ", user.avatarUrl);
   localStorage.setItem('page', 'PROFIL');
-  console.log("avatr gooogl is ", user.avatar_url);
+  // console.log("avatr gooogl is ", user.avatar_url);
   const mockHistory = [
   { id: 1, opponent: "Ghost_Rider", myScore: 5, oppScore: 2, type: "REMOTE", date: "2 hours ago", isWin: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
   { id: 2, opponent: "AI_Master", myScore: 3, oppScore: 5, type: "AI", date: "Yesterday", isWin: false, avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=2" },
@@ -43,7 +45,7 @@ function Profil({ user }: profil_iterface) {
 
           <div className="w-full h-full rounded-full border-2 border-[#ff44ff] shadow-[0_0_15px_#ff44ff] overflow-hidden">
             <img
-              src={user.avatar_url || "/avatar_test.jpg"}
+              src={`${user.avatarUrl}` || "/avatar_test.jpg"}
               className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <span className={`absolute bottom-[4px] right-[4px] w-[6px] h-[6px]  rounded-full border-[3px] border-[#1a1033] z-10 ${statusColor}`}></span>

@@ -15,7 +15,7 @@ import { GamePage, Gamepage_i} from "./G.tsx"
 import { Gamepage_r } from './G.tsx';
 import { Friendlist } from './Friendlist.tsx'
 import Friends from './Friends.tsx';
-
+import Setting from './Setting.tsx';
 // import {G} from "./G.tsx"
 
 
@@ -216,12 +216,12 @@ if(loading) return <div>is loading</div>
     }
     {
       currentPage === 'SETTING' &&
-      <div className="flex flex-row w-full f-full" >
-        <div className="flex ">
-<Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting}/>
+      <div className="flex flex-row w-full f-full gap-[150px]" >
+        <div className="flex  ">
+            <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting}/>
         </div>
-        <div>
-i  i settttttttttttttttttting 
+        <div className="flex ">
+        <Setting />
         </div>
       </div>
     }

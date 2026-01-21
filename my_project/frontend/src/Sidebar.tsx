@@ -10,8 +10,9 @@ interface sideb{
     gotodashbord: ()=>void;
     gotoprofil : ()=>void;
     gotofriends :()=> void;
+    gotosetting : ()=> void;
 }
-export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends}:sideb){
+export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends , gotosetting}:sideb){
     // console.log(user_);
        const logout = async () => {
         try {
@@ -46,7 +47,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                         <li><IoSearch  className="!text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li>
                         <li><IoNotificationsOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoGameControllerOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
-                        <li><IoSettingsOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
+                        <li><IoSettingsOutline  onClick={gotosetting} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoHomeOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"onClick={gotodashbord} /></li>
                         <li><IoPersonCircleOutline className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotoprofil} /></li>
                         <li><FaUsers className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotofriends} /></li>

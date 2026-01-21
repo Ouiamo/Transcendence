@@ -15,11 +15,12 @@ interface Dashboardtest {
     gotodashbord : ()=>void;
     gotoia: ()=>void;
     gotofriends :() => void;
+    gotosetting : () =>void;
     
 
 
 }
-function Dashboard({ gotohome, gotoprofil, user, delete_obj , listfriends, goto, gotodashbord, gotoia, gotofriends}: Dashboardtest) {
+function Dashboard({ gotohome, gotoprofil, user, delete_obj , listfriends, goto, gotodashbord, gotoia, gotofriends, gotosetting}: Dashboardtest) {
 
     
  
@@ -27,7 +28,7 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj , listfriends, goto,
 <div className=" flex h-screen w-full flex-row gap-[200px]">
  <div className="flex ">
 
-   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil} gotofriends={gotofriends}  />
+   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotosetting}  />
     </div>
     <div className="flex">
 

@@ -124,6 +124,10 @@ function connectServer() {
         gameState.gameEnd = data.gameEnd;
         gameState.winner = data.winner;
     });
+    
+}
+export function getSocket() {
+  return socket;
 }
 
 export function initGame_remot(  canvas: HTMLCanvasElement) {

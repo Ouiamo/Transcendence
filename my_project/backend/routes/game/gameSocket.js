@@ -25,7 +25,26 @@ module.exports = async function (fastify) {
     socket.on("hello", (msg) => {
       console.log("!!!!!!!! Received from front:", msg);
     });
-    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+     socket.on("inviting", (data) => {
+      console.log("+++++++ invite msg Received :", data.id, data.username);
+      const { idFriend } = data;
+
+      // socket.id = data.idFriend;
+
+    console.log("📨 Invitation from", socket.username, "to friend :", data.username);
+
+    gameSocket.to(data.idFriend).emit("invitation_received", {
+    fromId: socket.userId,
+    fromUsername: socket.username,
+    });
+    console.log("✅ Invitation sent to socket:", data.idFriend);
+
+      
+    });
+    ///////////////////////////////////////
+     
+
     console.log("🎮 New game client:", socket.id);
     waitingPlayers.push(socket.id);
     

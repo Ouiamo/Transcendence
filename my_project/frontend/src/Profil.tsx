@@ -3,6 +3,7 @@ import React from "react";
 import { useState } from "react";
 import { FaTrophy, FaSkull, FaGamepad, FaPercentage } from "react-icons/fa";
 import { FiEdit, FiCheck, FiTrendingUp, FiTrendingDown, FiAward, FiTarget } from "react-icons/fi";
+import { useEffect, useRef } from "react";
 
 
 interface profil_iterface {
@@ -11,7 +12,38 @@ interface profil_iterface {
 
 }
 
+interface Stats {
+  user_id: number;
+  wins: number;
+  loss: number;
+  total_matches: number;
+  win_rate: number;
+} 
+
 function Profil({ user }: profil_iterface) {
+
+const [stats, setStats] = useState<Stats | null>(null);
+
+useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const res = await fetch('https://localhost:3010/api/stats', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setStats(data);
+      }
+    } catch (err) {
+      console.error('Failed to load stats', err);
+    }
+  };
+  
+  fetchStats();
+}, []);
+
 // `https://localhost:3010${user.avatarUrl}`
   console.log("xihaja bax t", user);
   console.log("avatarrrrrr is ", user.avatarUrl);
@@ -74,6 +106,9 @@ function Profil({ user }: profil_iterface) {
               <FaTrophy className="text-[#00ff88]" size={20} />
             </div>
             <p className="text-gray-500 text-xs font-bold tracking-widest uppercase">Total Wins</p>
+            <h3 className="text-white text-3xl font-black">
+              {stats?.wins || 0}
+            </h3>
           </div>
 
           <div className="flex flex-col justify-center items-center w-[200px] h-[150px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-[10px] ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]">
@@ -83,6 +118,9 @@ function Profil({ user }: profil_iterface) {
             </div>
             <div>
               <p className="text-gray-500 text-xs font-bold tracking-widest uppercase">Total loss</p>
+              <h3 className="text-white text-3xl font-black">
+                {stats?.loss || 0}
+              </h3>
             </div>
           </div>
           <div className="flex flex-col justify-center items-center w-[200px] h-[150px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-[10px] ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]">
@@ -90,12 +128,18 @@ function Profil({ user }: profil_iterface) {
               <FaGamepad size={20} />
             </div>
             <p className="text-gray-500 text-xs font-bold tracking-widest uppercase">Total match</p>
+            <h3 className="text-white text-3xl font-black">
+              {stats?.total_matches || 0}
+            </h3>
           </div>
             <div className="flex flex-col justify-center items-center w-[200px] h-[150px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-[10px] ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]">
             <div className="flex items-center justify-center w-[40px] h-[40px] rounded-full bg-[#FFE52A]/30 text-white mb-3">
               <FaPercentage size={20} />
             </div>
             <p className="text-gray-500 text-xs font-bold tracking-widest uppercase">Win Rate</p>
+            <h3 className="text-white text-3xl font-black">
+              {stats?.win_rate || 0}
+            </h3>
           </div>
 
         </div>

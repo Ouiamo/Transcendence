@@ -16,6 +16,13 @@ input:-webkit-autofill:active{
     -webkit-text-fill-color: white !important; 
     transition: background-color 5000s ease-in-out 0s;
 }
+
+.shrink-img {
+  width: 90px;
+  height: auto; /* Ensures the aspect ratio is preserved */
+  /* Or use object-fit if you need specific container fitting */
+  /* object-fit: cover; */ 
+}
 /* 
 .container {
     background: rgba(45, 27, 105, 0.7);

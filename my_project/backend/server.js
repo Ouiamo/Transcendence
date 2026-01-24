@@ -56,7 +56,7 @@ fastify.register(require('./routes/friends/index'));
 fastify.register(require('./routes/twofa/enable'));
 fastify.register(require('./routes/twofa/email'));
 fastify.register(require('./routes/twofa/authenticator'));
-
+fastify.register(require('./routes/stats/stats'));
 
 fastify.register(require('./routes/public-api/index'));
 

@@ -219,4 +219,20 @@ module.exports = async function(fastify, options) {
       return reply.code(500).send({ error: 'Server error' });
     }
   });
+
+/// zadat had rout bash nserch ala user 
+  fastify.get('/api/users/search/:query', async (request, reply) => {
+    try {
+      const { query } = request.params;
+      const users = await dbAll(`
+        SELECT id ,avatar_url, username FROM users 
+        WHERE username LIKE ? 
+        LIMIT 10
+      `, [`%${query}%`]);
+      return { success: true, users };
+    } catch (error) {
+      console.error('Search error:', error);
+      return reply.code(500).send({ error: 'Database error' });
+    }
+  });
 };

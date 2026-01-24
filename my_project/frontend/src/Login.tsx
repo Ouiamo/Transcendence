@@ -26,8 +26,8 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
         //gotoDASHBOARD();
     }
     const handel_auth_42 = async () => {
-        window.open('https://localhost:3010/api/auth/42');
-        gotoDASHBOARD();
+        window.location.href =('https://localhost:3010/api/auth/42');
+       // gotoDASHBOARD();
     }
     const handelLogin = async () => {
         const cleangmail_login = gmailogin.trim();

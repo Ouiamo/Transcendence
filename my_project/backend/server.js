@@ -23,7 +23,11 @@ fastify.register(require('@fastify/cookie'), {
 });
 
 fastify.register(require('@fastify/jwt'), {
-  secret: process.env.JWT_SECRET
+  secret: process.env.JWT_SECRET,
+  cookie: {
+    cookieName: 'access_token',
+    signed: false
+  }
 });
 
 fastify.register(require('fastify-multipart'));

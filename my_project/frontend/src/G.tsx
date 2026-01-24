@@ -9,7 +9,8 @@ export function GamePage() {
 
   useEffect(() => {
     if (canvasRef.current) {
-      initGame(canvasRef.current);
+      const winner = initGame(canvasRef.current);
+      
     }
   }, []);
 

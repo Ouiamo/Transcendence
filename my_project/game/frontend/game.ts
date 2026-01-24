@@ -68,7 +68,7 @@ const keys: {[key:string] : boolean}={
     'ArrowDown' : false,
 };
 
-export function initGame( canvas: HTMLCanvasElement) {
+export function initGame(canvas: HTMLCanvasElement) {
     //board = document.getElementById("board") as HTMLCanvasElement;
     // board.style.display = "block";
     board = canvas;
@@ -80,6 +80,8 @@ export function initGame( canvas: HTMLCanvasElement) {
     draw();
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
+  console.log("winner is ", winner);
+  return winner;
 }
 
 

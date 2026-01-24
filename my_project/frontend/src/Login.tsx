@@ -9,12 +9,16 @@ interface Logintest {
     gotoDASHBOARD: () => void;
     onloginsucces: (data: any) => void;
     gotosingup: () => void;
+    gotwofa: () => void ;
 }
 
-function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest) {
+function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: Logintest) {
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
+    const [twofa, settwofa] = useState('');
+
+    const two = localStorage.getItem('twofa');
 
     const handel_auth_goole = async () => {
         window.location.href = 'https://localhost:3010/api/auth/google'
@@ -31,10 +35,15 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
             email: cleangmail_login,
             password: passlogin,
         }
-        try {
+        try { 
             const result = await loginUser(data_login);
             console.log("resultaaaaaaaaaaaaaaa", result);
-            if (result.success) {
+            if(two === 'authenticator')
+            {
+                console.log("ouiiiiiiiiiiiiiii");
+                gotwofa();
+            }
+            else if (result.success) {
                 alert("login sucess");
                 onloginsucces(result)
                 console.log("haniiiiiiiiiii");
@@ -99,8 +108,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup }: Logintest
                     <button className=" mt-[10px] w-full py-3 px-6 mt-4 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
     "
                         onClick={handelLogin} > se connecter</button>
-
-
+                       
                 </div>
                 <div className="flex flex-row items-center justify-center gap-x-2 mt-[10px]">
 

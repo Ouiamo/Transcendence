@@ -28,6 +28,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                 delete_obj(null);
                 // console.log(user)
                 gotohome();
+                 localStorage.removeItem('page');  
                 // user = null;
             }
         }

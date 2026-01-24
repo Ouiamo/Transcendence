@@ -17,17 +17,18 @@ module.exports = async function (fastify) {
   if (!user || !(await bcrypt.compare(password, user.password_hash)))
     return reply.code(401).send({ error: 'Invalid credentials' });
 
-  if(user.twofa_enabled)
-  {
-    return reply.send({
-      requires2FA: true,
-      method: user.twofa_method
-    });
-  }
+  // if(user.twofa_enabled)
+  // {
+  //   console.log("hani %%%%%%%%%%%%%%%");
+  //   return reply.send({
+  //     requires2FA: true,
+  //     method: user.twofa_method
+  //   });
+  // }
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '100h' }
     );
     
     reply.setCookie('access_token', token, {

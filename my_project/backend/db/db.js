@@ -11,30 +11,37 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-      -- AUTH
       provider TEXT NOT NULL,
       provider_id TEXT UNIQUE,
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
-
-      -- PROFILE
       username TEXT UNIQUE NOT NULL,
       firstname TEXT,
       lastname TEXT,
       avatar_url TEXT DEFAULT 'default-avatar.png',
-
-      -- 2FA
-      twofa_enabled BOOLEAN DEFAULT 0,
-      twofa_method TEXT,
-      twofa_secret TEXT,
-      twofa_email_code TEXT,
-      twofa_email_expires INTEGER,
-
-      -- META
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
   `);
+   // Check existing columns
+  db.all(`PRAGMA table_info(users);`, (err, columns) => {
+    if (err) throw err;
+    const columnNames = columns.map(c => c.name);
+    if (!columnNames.includes('twofa_enabled')) {
+      db.run(`ALTER TABLE users ADD COLUMN twofa_enabled BOOLEAN DEFAULT 0;`);
+    }
+    if (!columnNames.includes('twofa_method')) {
+      db.run(`ALTER TABLE users ADD COLUMN twofa_method TEXT;`);
+    }
+    if (!columnNames.includes('twofa_secret')) {
+      db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT;`);
+    }
+    if (!columnNames.includes('twofa_email_code')) {
+      db.run(`ALTER TABLE users ADD COLUMN twofa_email_code TEXT;`);
+    }
+    if (!columnNames.includes('twofa_email_expires')) {
+      db.run(`ALTER TABLE users ADD COLUMN twofa_email_expires INTEGER;`);
+    }
+  });
 });
 
 db.serialize(() => {

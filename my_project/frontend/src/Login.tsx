@@ -19,7 +19,6 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
     const [twofa, settwofa] = useState('');
 
     const two = localStorage.getItem('twofa');
-
     const handel_auth_goole = async () => {
         window.location.href = 'https://localhost:3010/api/auth/google'
         // window.open('https://localhost:3010/api/auth/google');
@@ -37,10 +36,12 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
         }
         try { 
             const result = await loginUser(data_login);
+            localStorage.setItem("jwt", result.token); // also save JWT for normal login
             console.log("resultaaaaaaaaaaaaaaa", result);
             if(two === 'authenticator')
             {
                 console.log("ouiiiiiiiiiiiiiii");
+            //    localStorage.setItem("jwt", result.token);// <-- make sure your backend returns a token
                 gotwofa();
             }
             else if (result.success) {

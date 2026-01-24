@@ -3,10 +3,8 @@ const { dbGet, dbRun } = require('../../utils/dbHelpers');
 
 module.exports = async function (fastify) {
   fastify.post('/api/2fa/authenticator/verify',
-    
-    { preHandler: fastify.authenticate },
     async (request, reply) => {
-      console.error("haniiiii666666666");
+      console.log("haniiiii666666666");
       const { code } = request.body;
       const userId = request.user?.id;
       if (!userId) 

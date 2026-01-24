@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 
 module.exports = async function (fastify) {
   fastify.decorate('authenticate', async (request, reply) => {

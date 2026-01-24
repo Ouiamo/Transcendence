@@ -25,6 +25,16 @@ module.exports = async function (fastify) {
   //     method: user.twofa_method
   //   });
   // }
+  if(user.twofa_enabled) {
+  // Generate a temporary token just to identify the user for 2FA verification
+  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '100h' });
+
+  return reply.send({
+    requires2FA: true,
+    method: user.twofa_method,
+    token // <-- send it to frontend
+  });
+}
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
@@ -46,7 +56,8 @@ module.exports = async function (fastify) {
         id: user.id,
         username: user.username,
         email: user.email
-      }
+      },
+      token 
     });
 
   } catch (err) {

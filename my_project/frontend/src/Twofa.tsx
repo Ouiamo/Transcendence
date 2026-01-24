@@ -6,13 +6,21 @@ import React, { useState } from "react";
 function Twofa()  {
     const [code, settwofa] = useState('');
     const verify_twofa= async(code: any) =>{
-
+    const token = localStorage.getItem("jwt"); // add tken here
+      // ✅ Check if token exists
+    if (!token) {
+        alert("No token found. Please login first.");
+        return;
+    }
         try {
    console.log(" code isssss ________________-+ ", code);
          const res = await fetch("https://localhost:3010/api/2fa/authenticator/verify", {
            method: "POST",
            credentials: "include",
-           headers: { "Content-Type": "application/json" },
+             headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            },
            body: JSON.stringify({ code }),
          })
    

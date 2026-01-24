@@ -28,19 +28,16 @@ fastify.post('/api/2fa/enable',
     try
     {
       await dbRun(
-        `UPDATE users SET twofa_enabled = 0, twofa_method = 'authenticator', twofa_secret = ? WHERE id = ?`,
+        `UPDATE users SET twofa_method = 'authenticator', twofa_secret = ? WHERE id = ?`,
         [secret.base32, userId]);
-  
-        console.log('qrCodeeeeeeeeeeeeeeeeeeeee:');
-
       }
       catch(err)
       {
         console.log("error f database", err);
       }
     const qrCode = await QRCode.toDataURL(secret.otpauth_url);
+    console.log("qrcode------------------>",qrCode);
     return reply.send({ qrCode });
-
   }
 });
 };

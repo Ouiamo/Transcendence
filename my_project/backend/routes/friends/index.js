@@ -14,8 +14,8 @@ module.exports = async function(fastify, options) {
   `).catch(err => {
     console.error('Error creating friends table:', err);
   });
-
-  fastify.post('/api/friends/add', async (request, reply) => {
+// hadi fetchi 3liah fax tabghit tsifti invitation
+  fastify.post('/api/friends/invitation', async (request, reply) => {
     const token = request.cookies.access_token;
     if (!token) {
       return reply.code(401).send({ error: 'Please login first' });
@@ -53,22 +53,102 @@ module.exports = async function(fastify, options) {
       );
       
       if (existing) {
-        return reply.code(400).send({ error: 'Already friends' });
+        return reply.code(400).send({ error: 'Already friends or invitation pending' });
       }
+
 
       await dbRun(
         'INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)',
-        [userId, friendId, 'accepted']
+        [userId, friendId, 'pending']
       );
 
       return reply.send({
         success: true,
-        message: `Added ${friendUsername} as friend!`
+        message: `Friend invitation sent to ${friendUsername}!`
       });
 
     } catch (err) {
-      console.error('Add friend error:', err);
+      console.error('Send invitation error:', err);
       return reply.code(500).send({ error: 'Server error: ' + err.message });
+    }
+  });
+// hadi fetchi 3liha fax taccepti
+  fastify.post('/api/friends/accept', async (request, reply) => {
+    const token = request.cookies.access_token;
+    if (!token) {
+      return reply.code(401).send({ error: 'Please login first' });
+    }
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = payload.id;
+      const { requestId } = request.body;
+
+      if (!requestId) {
+        return reply.code(400).send({ error: 'Request ID required' });
+      }
+
+      const requestData = await dbGet(
+        `SELECT * FROM friends 
+         WHERE id = ? AND friend_id = ? AND status = 'pending'`,
+        [requestId, userId]
+      );
+
+      if (!requestData) {
+        return reply.code(404).send({ error: 'Friend invitation not found' });
+      }
+
+
+      await dbRun(
+        'UPDATE friends SET status = ? WHERE id = ?',
+        ['accepted', requestId]
+      );
+
+      return reply.send({
+        success: true,
+        message: 'Friend invitation accepted!'
+      });
+
+    } catch (err) {
+      console.error('Accept friend error:', err);
+      return reply.code(500).send({ error: 'Server error' });
+    }
+  });
+
+// hadi fetchi 3liha bax tal3i lih notificxation bali flan sifat lih invitation
+  fastify.get('/api/friends/requests', async (request, reply) => {
+    const token = request.cookies.access_token;
+    if (!token) {
+      return reply.code(401).send({ error: 'Please login first' });
+    }
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const myId = payload.id;
+
+      const incoming = await dbAll(`
+        SELECT f.id as request_id, u.username, u.id as user_id
+        FROM friends f
+        JOIN users u ON u.id = f.user_id
+        WHERE f.friend_id = ? AND f.status = 'pending'
+      `, [myId]);
+
+      const outgoing = await dbAll(`
+        SELECT f.id as request_id, u.username, u.id as user_id
+        FROM friends f
+        JOIN users u ON u.id = f.friend_id
+        WHERE f.user_id = ? AND f.status = 'pending'
+      `, [myId]);
+
+      return reply.send({
+        success: true,
+        incoming: incoming,
+        outgoing: outgoing
+      });
+
+    } catch (err) {
+      console.error('Get friend invitations error:', err);
+      return reply.code(500).send({ error: 'Server error' });
     }
   });
 
@@ -156,8 +236,9 @@ module.exports = async function(fastify, options) {
             if (friend.provider === 'local') {
               avatarUrl = `https://localhost:3010/api/avatar/file/${friend.avatar_url}`;
             } else {
-              avatarUrl = friend.avatar_url; // google / 42
+              avatarUrl = friend.avatar_url;
             }
+          }
           myFriends.push({
             id: friend.id,
             username: friend.username,
@@ -165,7 +246,6 @@ module.exports = async function(fastify, options) {
             friendshipType: friendshipType
           });
         }
-      }
       }
 
       return reply.send({
@@ -217,22 +297,6 @@ module.exports = async function(fastify, options) {
     } catch (err) {
       console.error('Check friends error:', err);
       return reply.code(500).send({ error: 'Server error' });
-    }
-  });
-
-/// zadat had rout bash nserch ala user 
-  fastify.get('/api/users/search/:query', async (request, reply) => {
-    try {
-      const { query } = request.params;
-      const users = await dbAll(`
-        SELECT id ,avatar_url, username FROM users 
-        WHERE username LIKE ? 
-        LIMIT 10
-      `, [`%${query}%`]);
-      return { success: true, users };
-    } catch (error) {
-      console.error('Search error:', error);
-      return reply.code(500).send({ error: 'Database error' });
     }
   });
 };

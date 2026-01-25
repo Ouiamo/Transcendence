@@ -235,13 +235,13 @@ if(loading) return <div>is loading</div>
     }
     {
       currentPage === 'SETTING' &&
-      <div className="flex flex-row w-full f-full gap-[150px]" >
+      <div className="flex flex-row  gap-[150px]" >
         <div className="flex  ">
             <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting}/>
         </div>
-        <div className="flex ">
-        <Setting />
-        </div>
+        <div className="flex w-full h-full ">
+        <Setting user={user_data}/>
+        </div> 
       </div>
     }
     </div>

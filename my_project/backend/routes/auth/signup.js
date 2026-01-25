@@ -7,7 +7,7 @@ fastify.post('/api/signup', async (request, reply) => {
     
     if (!username || !email || !password) {
       return reply.code(400).send({ error: 'Username, email and password required' });
-    }// hadi rah kayna heta fal front kantcheki 3liha  okayna heta hna
+    }
     
     try {
       const existingUser = await dbGet(

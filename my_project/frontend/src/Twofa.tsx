@@ -40,7 +40,7 @@ function Twofa()  {
 
             <div className="  flex flex-col   justify-center items-center   h-[500px] ">
                 <h2 className="text-[#ff99ff] text-[70px]  ">Verify your identity</h2>
-                <p className="flex ">Check your preferred one-time password application for a code</p>
+                <p className="flex ">Enter the code from your authenticator to join the Ping Pong arena!</p>
                 <input
                     style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }} className=" mt-[30px] flex justify-center items-center caret-[#ff44ff]  w-[400px] h-[50px] rounded-full  bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="input" placeholder="set code..." autoComplete="off" spellCheck="false" value={code} onChange={(e) => settwofa(e.target.value)}></input>
                      <button className=" mt-[30px] w-[400px] h-[50px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]

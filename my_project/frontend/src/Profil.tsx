@@ -77,7 +77,7 @@ useEffect(() => {
 
           <div className="w-full h-full rounded-full border-2 border-[#ff44ff] shadow-[0_0_15px_#ff44ff] overflow-hidden">
             <img
-              src={`${user.avatarUrl}` || "/avatar_test.jpg"}
+              src={`${user.avatarUrl}` || "avatar_test.jpg"}
               className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </div>
           <span className={`absolute bottom-[4px] right-[4px] w-[6px] h-[6px]  rounded-full border-[3px] border-[#1a1033] z-10 ${statusColor}`}></span>

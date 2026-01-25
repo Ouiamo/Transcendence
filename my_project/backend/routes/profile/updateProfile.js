@@ -1,20 +1,24 @@
 
 const { dbGet, dbRun } = require('../../utils/dbHelpers');
+const jwt = require('jsonwebtoken');
+ module.exports = async function (fastify) {
 
-module.exports = async function (fastify) {
-
-fastify.patch('/api/profile', async(request, reply) => {
-  const token = request.cookies.access_token;
+ fastify.patch('/api/profile', async(request, reply) => {
+   const token = request.cookies.access_token;
+  
   if (!token) {
     return reply.code(401).send({ error: 'Not authenticated' });
   }
   
-  let payload;
-  try {
-    payload = jwt.verify(token, process.env.JWT_SECRET);
-  } catch {
-    return reply.code(401).send({ error: 'Invalid or expired token' });
-  }
+   let payload;
+    try{
+      payload = jwt.verify(token, process.env.JWT_SECRET);
+    }
+    catch (err) 
+    {
+      console.error("JWT Verification Error:", err.message);
+      return reply.code(401).send({ error: 'Invalid or expired token' });
+    }
   
   try {
     const { firstname, lastname, username, email } = request.body;

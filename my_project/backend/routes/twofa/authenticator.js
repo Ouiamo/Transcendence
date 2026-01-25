@@ -4,9 +4,23 @@ const { dbGet, dbRun } = require('../../utils/dbHelpers');
 module.exports = async function (fastify) {
   fastify.post('/api/2fa/authenticator/verify',
     async (request, reply) => {
-      console.log("haniiiii666666666");
+      console.log("haniiiii666666666", request);
+      console.log("^^^^^^^request.body", request.body);
+      console.log("*******request.user", request.user);
+      console.log('RAW COOKIE HEADER:', request.headers.cookie);
+      console.log('PARSED COOKIES:', request.cookies);
+        try {
+        const decoded = await request.jwtVerify({
+          onlyCookie: true
+        });
+        console.log('✅ JWT DECODED:', decoded);
+        request.user = decoded;
+      } catch (err) {
+        console.error('❌ JWT VERIFY FAILED', err.message);
+        return reply.code(401).send({ error: 'Unauthorized', reason: err.message });
+      }
       const { code } = request.body;
-      const userId = request.user?.id;
+      const userId = decoded.id;
       if (!userId) 
           return reply.code(401).send({ error: "User not authenticated" });
         

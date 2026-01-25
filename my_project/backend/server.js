@@ -13,7 +13,7 @@ require('./db/db');
 fastify.register(require('./plugins/auth'));
 
 fastify.register(require('@fastify/cors'), {
-  origin: 'http://localhost:5173',
+  origin: 'https://localhost:5173',
   credentials: true,
   methods: ['GET','POST','PATCH','DELETE']
 });
@@ -23,7 +23,11 @@ fastify.register(require('@fastify/cookie'), {
 });
 
 fastify.register(require('@fastify/jwt'), {
-  secret: process.env.JWT_SECRET
+  secret: process.env.JWT_SECRET,
+  cookie: {
+    cookieName: 'access_token',
+    signed: false
+  }
 });
 
 fastify.register(require('fastify-multipart'));
@@ -52,7 +56,7 @@ fastify.register(require('./routes/friends/index'));
 fastify.register(require('./routes/twofa/enable'));
 fastify.register(require('./routes/twofa/email'));
 fastify.register(require('./routes/twofa/authenticator'));
-
+fastify.register(require('./routes/stats/stats'));
 
 fastify.register(require('./routes/public-api/index'));
 

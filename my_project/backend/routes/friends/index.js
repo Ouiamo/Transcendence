@@ -112,7 +112,7 @@ module.exports = async function(fastify, options) {
     }
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
       const myId = payload.id;
 
       const friendships1 = await dbAll(`

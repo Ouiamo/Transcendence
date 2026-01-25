@@ -25,20 +25,29 @@ module.exports = async function (fastify) {
   //     method: user.twofa_method
   //   });
   // }
-  if(user.twofa_enabled) {
-  // Generate a temporary token just to identify the user for 2FA verification
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '100h' });
+  if (user.twofa_enabled) {
+  const token = jwt.sign(
+    { id: user.id, twofa: true },
+    process.env.JWT_SECRET,
+    { expiresIn: '10h' }
+  );
+
+  reply.setCookie('access_token', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+    path: '/'
+  });
 
   return reply.send({
     requires2FA: true,
-    method: user.twofa_method,
-    token // <-- send it to frontend
+    method: user.twofa_method
   });
 }
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: '100h' }
+      { expiresIn: '10h' }
     );
     
     reply.setCookie('access_token', token, {
@@ -56,8 +65,7 @@ module.exports = async function (fastify) {
         id: user.id,
         username: user.username,
         email: user.email
-      },
-      token 
+      }
     });
 
   } catch (err) {

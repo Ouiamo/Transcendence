@@ -36,12 +36,10 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
         }
         try { 
             const result = await loginUser(data_login);
-            localStorage.setItem("jwt", result.token); // also save JWT for normal login
             console.log("resultaaaaaaaaaaaaaaa", result);
             if(two === 'authenticator')
             {
                 console.log("ouiiiiiiiiiiiiiii");
-            //    localStorage.setItem("jwt", result.token);// <-- make sure your backend returns a token
                 gotwofa();
             }
             else if (result.success) {

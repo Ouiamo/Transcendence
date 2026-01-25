@@ -18,7 +18,16 @@ interface Stats {
   loss: number;
   total_matches: number;
   win_rate: number;
-} 
+}
+
+interface History {
+  user_id: number;
+  opp_username: string;
+  user_score: number;
+  opp_score: number;
+  match_type: string;
+  isWin: boolean;
+}
 
 function Profil({ user }: profil_iterface) {
 
@@ -44,16 +53,38 @@ useEffect(() => {
   fetchStats();
 }, []);
 
+const [history, setHistory] = useState<History[] | null>(null);
+
+useEffect(() => {
+  const fetchStats = async () => {
+    try {
+      const res = await fetch('https://localhost:3010/api/history/get_history', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setHistory(data);
+      }
+    } catch (err) {
+      console.error('Failed to load history', err);
+    }
+  };
+  
+  fetchStats();
+}, []);
+
 // `https://localhost:3010${user.avatarUrl}`
   console.log("xihaja bax t", user);
   console.log("avatarrrrrr is ", user.avatarUrl);
   localStorage.setItem('page', 'PROFIL');
   // console.log("avatr gooogl is ", user.avatar_url);
-  const mockHistory = [
-  { id: 1, opponent: "Ghost_Rider", myScore: 5, oppScore: 2, type: "REMOTE", date: "2 hours ago", isWin: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
-  { id: 2, opponent: "AI_Master", myScore: 3, oppScore: 5, type: "AI", date: "Yesterday", isWin: false, avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=2" },
-  { id: 3, opponent: "Local_Guest", myScore: 5, oppScore: 4, type: "LOCAL", date: "3 days ago", isWin: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3" },
-];
+  // const mockHistory = [
+  // { id: 1, opponent: "Ghost_Rider", myScore: 5, oppScore: 2, match_type: "REMOTE", date: "2 hours ago", isWin: false, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1" },
+  // { id: 2, opponent: "AI_Master", myScore: 3, oppScore: 5, type: "AI", date: "Yesterday", isWin: false, avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=2" },
+  // { id: 3, opponent: "Local_Guest", myScore: 5, oppScore: 4, type: "LOCAL", date: "3 days ago", isWin: true, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=3" },
+// ];
   type t = 'STATS' | 'HISTORY' | 'ACHIEVEMENTS';
   const [activetable, setactivetable] = useState<t>('STATS');
   const gotostats = () => {
@@ -147,26 +178,25 @@ useEffect(() => {
     {activetable === 'HISTORY' && (
   <div className="flex flex-col gap-4 mt-[25px] w-full max-w-[900px] animate-fadeIn">
     
-    {mockHistory.map((match) => (
+    {history?.map((match) => (
       <div 
-        key={match.id} 
+        key={match.user_id} 
         className="flex items-center justify-between bg-[#2d2159] hover:bg-[#35276b] border border-white/10 p-4 rounded-[25px] transition-all duration-300 shadow-lg group">
         
         {/* 1. Left: Opponent Info */}
         <div className="flex items-center gap-4 flex-1">
           <div className={`w-[50px] h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
-            <img src={match.avatar} alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
+            <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=2`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
           </div>
           <div className="flex flex-col">
-            <h4 className="text-white font-bold text-[14px] uppercase tracking-wide">{match.opponent}</h4>
+            <h4 className="text-white font-bold text-[14px] uppercase tracking-wide">{match.opp_username}</h4>
             <div className="flex items-center gap-2">
               <span className={`text-[9px] px-2 py-[1px] rounded-md font-bold ${
-                match.type === 'REMOTE' ? 'bg-blue-500/20 text-blue-400' : 
-                match.type === 'AI' ? 'bg-purple-500/20 text-purple-400' : 'bg-orange-500/20 text-orange-400'
+                match.match_type === 'REMOTE' ? 'bg-blue-500/20 text-blue-400' : 
+                match.match_type === 'AI' ? 'bg-purple-500/20 text-purple-400' : 'bg-orange-500/20 text-orange-400'
               }`}>
-                {match.type}
+                {match.match_type}
               </span>
-              <span className="text-[10px] text-gray-500 font-medium">{match.date}</span>
             </div>
           </div>
         </div>
@@ -174,9 +204,9 @@ useEffect(() => {
         {/* 2. Center: Score */}
         <div className="flex flex-col items-center flex-1">
           <div className="text-2xl font-black text-white flex items-center gap-3">
-            <span className={match.isWin ? 'text-[#00ff88]' : 'text-white'}>{match.myScore}</span>
+            <span className={match.isWin ? 'text-[#00ff88]' : 'text-white'}>{match.user_score}</span>
             <span className="text-gray-600 font-light">-</span>
-            <span className={!match.isWin ? 'text-[#ff4444]' : 'text-white'}>{match.oppScore}</span>
+            <span className={!match.isWin ? 'text-[#ff4444]' : 'text-white'}>{match.opp_score}</span>
           </div>
           <p className="text-[10px] text-gray-500 uppercase font-bold tracking-[2px]">Score</p>
         </div>
@@ -196,11 +226,11 @@ useEffect(() => {
     ))}
     
     {/* Optional: Show message if no history */}
-    {mockHistory.length === 0 && (
+    {/* {History.length === 0 && (
       <div className="text-center p-10 bg-[#2d2159]/50 rounded-[30px] border border-dashed border-white/10 text-gray-500">
         No matches played yet.
       </div>
-    )}
+    )} */}
   </div>
 )}
       {

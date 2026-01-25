@@ -6,15 +6,31 @@ module.exports = async function(fastify, options) {
   await dbRun(`
     CREATE TABLE IF NOT EXISTS stats (
         user_id INTEGER NOT NULL,
-        opponent_id INTEGER NOT NULL,
+        opp_username STRING NOT NULL,
+        opp_id INTEGER NOT NULL DEFAULT 0,
         wins INTEGER NOT NULL DEFAULT 0,
         loss INTEGER NOT NULL DEFAULT 0,
         total_matches NOT NULL DEFAULT 0,
-        win_rate INTEGER NOT NULL DEFAULT 0
+        win_rate INTEGER NOT NULL DEFAULT 0,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
     `).catch(err => {
     console.error('Error creating stats table:', err);
   })
+
+  const statsCount = await dbGet('SELECT COUNT(*) as count FROM stats');
+
+if (statsCount.count === 0) {
+  await dbRun(`
+    INSERT INTO stats (user_id, opp_username, opp_id, wins, loss, win_rate)
+    SELECT id, "none", 0, 0, 0, 0
+    FROM users
+  `).then(() => {
+    console.log('Stats table populated with existing users');
+  }).catch(err => {
+    console.error('Error populating stats table:', err);
+  });
+}
 
   fastify.post('/api/stats/game_results', async (request, reply) => {
     const token = request.cookies.access_token;
@@ -24,17 +40,19 @@ module.exports = async function(fastify, options) {
     try{
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const userId = payload.id;
-        const {winner} = request.body;
-        if(winner === userId){
+        const {winner, opponent_username} = request.body;
+        console.log("usrIDddddddddddddd ", userId, " ooooooooooooooo ", winner);
+        const user = await dbGet('SELECT username FROM users WHERE id = ?', [userId]);
+        if(winner === user.username){
             await dbRun(
-                'UPDATE stats SET wins = wins + 1, total_matches = total_matches + 1 WHERE user_id = ?',
-                [userId]
+                'UPDATE stats SET wins = wins + 1, total_matches = total_matches + 1, opp_username = ? WHERE user_id = ?',
+                [opponent_username, userId]
             );
         }
         else{
             await dbRun(
-                'UPDATE stats SET loss = loss + 1, total_matches = total_matches + 1 WHERE user_id = ?',
-                [userId]
+                'UPDATE stats SET loss = loss + 1, total_matches = total_matches + 1, opp_username = ? WHERE user_id = ?',
+                [opponent_username, userId]
             );
         }
         await dbRun(`

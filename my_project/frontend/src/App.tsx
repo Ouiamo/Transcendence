@@ -67,8 +67,9 @@ const gotowfa =() =>{
     setCurrentPage('DASHBOARD');
   }
   const obj_login = (data : any | any)=>{
-    if(data)
+    if(data){
       setdatauser(data.user);
+      }
    else
        setdatauser(null);
   }
@@ -115,7 +116,6 @@ useEffect(() => {
       setLoading(false);
     }
   };
-
   checkSession();
 }, []);
        const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -203,7 +203,7 @@ if(loading) return <div>is loading</div>
 
        
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
-          < Gamepage_i  />
+          < Gamepage_i  username={user_data.username}/>
           <canvas ref={canvasRef} id="board" />  
      
       </div>

@@ -55,7 +55,7 @@ const ball = {
 const score={
     x_l : boardWidth/4,
     x_r : 3 * boardWidth/4,
-    y : boardHeight/5,
+    y : boardHeight/8 ,
     color: "white",
 }
 
@@ -68,7 +68,14 @@ const keys: {[key:string] : boolean}={
     'ArrowDown' : false,
 };
 
-export function initGame(canvas: HTMLCanvasElement) {
+export function getLocalWinner() {
+    const player1score = player1.score;
+    const player2score = player2.score;
+    const data = {winner, player1score, player2score}
+  return data;
+}
+
+export function initGame(canvas: HTMLCanvasElement, player:string) {
     //board = document.getElementById("board") as HTMLCanvasElement;
     // board.style.display = "block";
     board = canvas;
@@ -77,7 +84,7 @@ export function initGame(canvas: HTMLCanvasElement) {
   board.height = 450;
     contex = board.getContext("2d");
     
-    draw();
+    draw(player);
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
   console.log("winner is ", winner);
@@ -168,7 +175,7 @@ function movePlayer()
     }
 }
 
-function moveBall()
+function moveBall(player:string)
 {
 
     if(gameStart && !gameCountDown)
@@ -213,28 +220,28 @@ function moveBall()
         {
             player2.score++;
             resetBall();
-            checkWinner();
+            checkWinner(player);
         }
         else if(ball.x + ball.radius >= boardWidth)
         {
             player1.score++;
             resetBall();
-            checkWinner();
+            checkWinner(player);
         }
     }
        
 }
 
-function checkWinner()
+function checkWinner(player:string)
 {
     if(player1.score == maxScore)
     {
-        winner = "player1";
+        winner = "GUEST";
         gameStart = false;
     }
     else if(player2.score == maxScore)
     {
-        winner = "player2";
+        winner = player;
         gameStart = false;
     }
 }
@@ -272,18 +279,18 @@ function  resetBall()
 }
 
 
- function draw() {
+ function draw(player:string) {
 
     movePlayer();
-    moveBall();
+    moveBall(player);
 
     drawBoard(0, 0, board.width, board.height);
     drawRect(player1.x, player1.y, paddleWidth, paddleHeight, player1.color);
     drawRect(player2.x, player2.y, paddleWidth, paddleHeight, player2.color);
     drawNet();
     drawBall(ball.x, ball.y, ball.radius, ball.color);
-    drawScore(score.x_l, score.y, player1.score, score.color);
-    drawScore(score.x_r, score.y, player2.score, score.color);
+    drawScore(score.x_l, score.y, player1.score, score.color, "GUEST");
+    drawScore(score.x_r, score.y, player2.score, score.color, player);
     drawCountDown();
     drawWinner();
     if(!gameStart && !gameCountDown && !winner)
@@ -292,7 +299,7 @@ function  resetBall()
     }
    
 
-    requestAnimationFrame(draw);
+    requestAnimationFrame(() => draw(player));
 }
 
 function drawBoard(x: number, y: number, w:number, h:number)
@@ -338,13 +345,14 @@ function drawBall(x: number, y: number, radius: number, color:string)
 
 //draw score
 
-function drawScore(x: number, y:number, score: number, color: string)
+function drawScore(x: number, y:number, score: number, color: string, player:string)
 {
     if (!contex) return;
     contex.fillStyle = color;
     contex.font = "48px Arial";
-    contex.textAlign = "center"; 
-    contex.fillText(score.toString(), x, y);
+    contex.textAlign = "center";
+    contex.fillText(player, x, y);
+    contex.fillText(score.toString(), x, y+50);
 }
 
 function drawCountDown()

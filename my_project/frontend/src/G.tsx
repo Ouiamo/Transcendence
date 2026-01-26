@@ -1,16 +1,38 @@
 import { useEffect, useRef } from "react";
-import { initGame } from "../../game/frontend/game";
+import { initGame, getLocalWinner } from "../../game/frontend/game";
 import { initGame_remot } from "../../game/frontend/remoteGame";
-import {   aiinitGame, getWinner, isGameOver } from "../../game/frontend/aigame";
+import {   aiinitGame, getaiWinner, isGameOver } from "../../game/frontend/aigame";
 
 
-export function GamePage() {
+export function GamePage(userdata:any) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastWinnerRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (canvasRef.current) {
-      initGame(canvasRef.current);
-      
+      initGame(canvasRef.current, userdata.username);
+      const interval = setInterval(() => {
+          const data = getLocalWinner();
+          // console.log("winneeeeeeeer is: ", data.aiwinner);
+          
+          if (data.winner !== null && data.winner !== lastWinnerRef.current)
+          {
+            lastWinnerRef.current = data.winner;
+            const winner = data.winner;
+            const opponent_username = "LOCAL_GUEST";
+            const user_score = data.player1score;
+            const opp_score = data.player2score;
+            const match_type = "LOCAL";
+            gameResults({winner, opponent_username});
+            // console.log("hadxiiiii li 3ndi f front ::::: ", opponent_username, user_score, opp_score, match_type);
+            gamescore({opponent_username, user_score, opp_score, match_type})
+          }
+          else if (data.winner === null && lastWinnerRef.current !== null)
+          {
+            lastWinnerRef.current = null;
+          }
+      }, 1000);
+      return () => clearInterval(interval);
     }
   }, []);
 
@@ -41,12 +63,12 @@ export function Gamepage_i(userdata:any) {
   // console.log("player issssssssssss ", userdata.username);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastWinnerRef = useRef<string | null>(null);
-  
+
   useEffect(() => {
     if (canvasRef.current) {
       aiinitGame (canvasRef.current, userdata.username);
       const interval = setInterval(() => {
-          const data = getWinner();
+          const data = getaiWinner();
           // console.log("winneeeeeeeer is: ", data.aiwinner);
           
           if (data.aiwinner !== null && data.aiwinner !== lastWinnerRef.current)

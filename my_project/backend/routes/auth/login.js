@@ -40,7 +40,7 @@ module.exports = async function (fastify) {
   });
 
   return reply.send({
-    requires2FA: true,
+    twofa_required: true,
     method: user.twofa_method
   });
 }

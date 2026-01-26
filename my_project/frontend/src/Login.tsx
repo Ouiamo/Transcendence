@@ -9,24 +9,21 @@ interface Logintest {
     gotoDASHBOARD: () => void;
     onloginsucces: (data: any) => void;
     gotosingup: () => void;
-    gotwofa: () => void ;
+    gotwofa: () => void;
+    gotoemail: () => void;
 }
 
-function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: Logintest) {
+function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, gotoemail }: Logintest) {
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
-    const [twofa, settwofa] = useState('');
 
-    const two = localStorage.getItem('twofa');
     const handel_auth_goole = async () => {
         window.location.href = 'https://localhost:3010/api/auth/google'
-        // window.open('https://localhost:3010/api/auth/google');
-        //gotoDASHBOARD();
+        
     }
     const handel_auth_42 = async () => {
-        window.location.href =('https://localhost:3010/api/auth/42');
-       // gotoDASHBOARD();
+        window.location.href = ('https://localhost:3010/api/auth/42');
     }
     const handelLogin = async () => {
         const cleangmail_login = gmailogin.trim();
@@ -34,53 +31,54 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
             email: cleangmail_login,
             password: passlogin,
         }
-        try { 
+        try {
             const result = await loginUser(data_login);
-            console.log("resultaaaaaaaaaaaaaaa", result);
-            if(two === 'authenticator')
-            {
-                console.log("ouiiiiiiiiiiiiiii");
-                gotwofa();
+            if (result.twofa_required) {
+                if (result.method === "authenticator") {
+                    gotwofa();
+                } 
+                else if (result.method === "email") {
+                    gotoemail();
+                }
             }
             else if (result.success) {
                 alert("login sucess");
                 onloginsucces(result)
-                console.log("haniiiiiiiiiii");
                 gotoDASHBOARD();
             }
             else {
-                alert("error serveur");
+                alert("❌ Invalid credentials");
                 return;
             }
         }
         catch (erro) {
-            alert("error server");
+            alert("🚨 Server error");
         }
 
     }
     return (
-        <div className=" flex  flex-col gap-y-10 items-center h-auto w-[300px] min-h-[400px]  shrink-0 border-[2px] border-[#ff44ff]/30 rounded-[30px] shadow-[0_0_20px_rgba(255,68,255,0.8)] pt-10 pb-10 px-8">
-            <header className="flex flex-col gap-y-5 items-center justify-center w-full mt-[10px] ">
-                <div className="py-3 flex w-[40px] h-[40px] bg-gradient-to-br from-[#ff44ff] to-[#ff99ff] items-center justify-center rounded-full shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
+        <div className=" flex  flex-col gap-y-10 items-center h-auto w-[400px] min-h-[500px]  shrink-0 border-[2px] border-[#ff44ff]/30 rounded-[50px] shadow-[0_0_20px_rgba(255,68,255,0.8)] pt-10 pb-10 px-8">
+            <header className="flex flex-col gap-y-5 items-center justify-center w-full mt-[30px] ">
+                <div className="py-3 flex w-[50px] h-[50px] bg-gradient-to-br from-[#ff44ff] to-[#ff99ff] items-center justify-center rounded-full shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
                     < IoPersonCircleOutline className=" text-white " />
                 </div>
-                <p className="text-white text-2xl font-[900]">Connexion</p>
-                <p className="text-[#ff44ff]/70 text-[8px] ">Bienvenue ! Connectez-vous à votre compte</p>
+                <p className="text-white text-20xl font-[900]">Login</p>
+                <p className="text-[#ff44ff]/90 text-[14px] ">Welcome! Log in to your account</p>
             </header>
             <section className="flex flex-col gap-y-5 bg-red-500/10">
                 <div className="flex flex-col  ">
-                    <p className="text-white text-[8px]">Gmail d'utilisateur</p>
+                    <p className="text-white text-[12px]">Email address</p>
                     <div className="relative flex items-center w-full">
 
                         <IoPersonCircleOutline className="absolute left-3 text-[#ff44ff] text-xl pointer-events-none z-10" />
 
                         <input
                             style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                            className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Entrer votre gmail"value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
+                            className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Entrer votre gmail" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
                     </div>
                 </div>
                 <div className="flex flex-col  ">
-                    <p className="text- text-[8px]">Enter votre Mot de passe</p>
+                    <p className="text- text-[12px]">Enter your password</p>
                     <div className="relative flex items-center w-full  ">
                         <RiLockPasswordLine className="absolute left-3 text-[#ff44ff] text-xl pointer-events-none z-10" />
                         <input
@@ -104,20 +102,26 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
 
                     </div>
 
-                    <button className=" mt-[10px] w-full py-3 px-6 mt-4 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
+                    <button className=" mt-[20px] w-full py-3 px-6 mt-4 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
     "
                         onClick={handelLogin} > se connecter</button>
-                       
-                </div>
-                <div className="flex flex-row items-center justify-center gap-x-2 mt-[10px]">
 
-                    <p className="text-white/60 text-[10px]">
-                        Vous n'avez pas de compte ?
+                </div>
+                <div className="flex flex-row items-center justify-center gap-[10px] mt-[10px]">
+
+                    <p className="text-white/60 text-[12px]">
+                        Don’t have an account?
                     </p>
                     <a onClick={gotosingup}
-                        className="text-[#ff44ff] text-[10px] font-bold hover:underline hover:text-[#ff99ff]  transition-all"
+                        className="text-[#ff44ff] text-[12px] font-bold hover:underline hover:text-[#ff99ff]  transition-all"
                     >
-                        S'inscrire
+                        Sign up
+
+                    </a>
+                    <a onClick={gotohome}
+                        className="text-[#ff44ff] text-[12px] font-bold hover:underline hover:text-[#ff99ff]  transition-all"
+                    >
+                        Go home
 
                     </a>
                 </div>

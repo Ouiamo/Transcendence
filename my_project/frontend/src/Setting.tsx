@@ -85,13 +85,32 @@ function TwoFASetting({ user }: intersetting) {
         const data = await res.json()
         if (mthd === "authenticator") {
           setQrCode(data.qrCode)
-          localStorage.setItem('twofa', 'authenticator');
           // enable(data.qrCode);
           console.log("ana hnaaaaaaaaaaaaaaa ", data.qrCode);
         }
+        else if(mthd === 'email')
+        {
+          // try {
+          //   const res = await fetch("https://localhost:3010/api/2fa/email/send", {
+          //       method: "POST",
+          //       credentials: "include",
+          //       headers: { "Content-Type": "application/json" }
+          //   });
+          //   if (res.ok) {
+          //       alert("📧 A verification code has been sent to your email.");
+          //   } else {
+          //       alert("❌ Failed to send email 2FA code.");
+          //   }
+          //   } catch (err) {
+          //       console.error("Error sending email 2FA:", err);
+          //       alert("🚨 Network error while sending 2FA email.");
+          //   }
+        }
       }
       else {
+         alert("❌ Failed to enable 2FA");
         console.log("erro akhotiii");
+        return;
       }
     }
     catch (err) {

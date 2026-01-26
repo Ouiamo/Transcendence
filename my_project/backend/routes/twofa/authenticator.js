@@ -23,7 +23,7 @@ module.exports = async function (fastify) {
 
     if (!verified) {
       console.log("❌ Invalid 2FA code")
-      return reply.code(200).send({ success: false, message: 'Invalid 2FA code' });
+      return reply.code(401).send({ success: false, message: 'Invalid 2FA code' });
     }
     console.log("✅ 2FA code is valid")
     if (!user.twofa_enabled) {

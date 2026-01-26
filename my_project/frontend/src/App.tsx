@@ -179,7 +179,7 @@ if(loading) return <div>is loading</div>
 
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting}/>
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
-          < GamePage  />
+          < GamePage  username={user_data.username}/>
 
         <canvas ref={canvasRef} id="board" />
           </div>

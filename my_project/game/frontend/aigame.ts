@@ -64,7 +64,7 @@ const aikeys: {[key:string] : boolean}={
 };
 let aiwinner : string | null = null;
 
-export function getWinner() {
+export function getaiWinner() {
     const playerscore = realplayer.score;
     const aiscore = aiplayer.score;
     const data = {aiwinner, playerscore, aiscore}

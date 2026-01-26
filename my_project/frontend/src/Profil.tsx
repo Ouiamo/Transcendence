@@ -100,7 +100,7 @@ useEffect(() => {
   return (
 
     <div className="flex flex-col w-full h-screen">
-      <div className="flex flex-row mt-[40px] gap-[20px] w-[90%] max-w-[900px] p-[20px] bg-[rgba(25,16,51,0.8)] rounded-[40px] border-[1px] border-white/20 shadow-2xl ">
+      <div className="ml-[50px] flex flex-row mt-[40px] gap-[20px] w-[90%] max-w-[900px] p-[20px] bg-[rgba(25,16,51,0.8)] rounded-[40px] border-[1px] border-white/20 shadow-2xl ">
 
         <div className="relative w-[80px] h-[80px]">
 
@@ -120,7 +120,7 @@ useEffect(() => {
           <FiEdit className="text-[#ff44ff] hover:text-white transition-colors cursor-pointer" size={16} />
         </div>
       </div>
-      <div className="flex flex-row w-[90%] max-w-[900px] gap-[20px] ">
+      <div className="ml-[50px] flex flex-row w-[90%] max-w-[900px] gap-[20px] ">
         <button className="mt-[20px] w-[200px] h-[44px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold  uppercase ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]" onClick={gotostats}>STATE</button>
         <button className="mt-[20px] w-[200px] h-[44px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold  uppercase ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]" onClick={gotohis}>HISTORY</button>
 
@@ -175,17 +175,17 @@ useEffect(() => {
         </div>
       }
     {activetable === 'HISTORY' && (
-  <div className="flex flex-col gap-4 mt-[25px] w-full max-w-[900px] animate-fadeIn">
+  <div className="ml-[50px] flex flex-col gap-4 mt-[25px] w-full max-w-[900px] animate-fadeIn">
     
     {history?.map((match) => (
       <div 
         key={match.user_id} 
-        className="flex items-center justify-between bg-[#2d2159] hover:bg-[#35276b] border border-white/10 p-4 rounded-[25px] transition-all duration-300 shadow-lg group">
+        className="mt-[15px] flex items-center justify-between bg-[#2d2159] hover:bg-[#35276b] border border-white/10 p-4 rounded-[25px] transition-all duration-300 shadow-lg group">
         
         {/* 1. Left: Opponent Info */}
         <div className="flex items-center gap-4 flex-1">
           <div className={`w-[50px] h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
-            <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=2`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
+            <img src={match.opp_username === 'AI' ? `https://api.dicebear.com/7.x/bottts/svg?seed=2` : `https://api.dicebear.com/7.x/avataaars/svg?seed=3`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
           </div>
           <div className="flex flex-col">
             <h4 className="text-white font-bold text-[14px] uppercase tracking-wide">{match.opp_username}</h4>
@@ -225,11 +225,11 @@ useEffect(() => {
     ))}
     
     {/* Optional: Show message if no history */}
-    {/* {History.length === 0 && (
+    {History.length === 0 && (
       <div className="text-center p-10 bg-[#2d2159]/50 rounded-[30px] border border-dashed border-white/10 text-gray-500">
         No matches played yet.
       </div>
-    )} */}
+    )}
   </div>
 )}
       {

@@ -57,8 +57,7 @@ module.exports = async function(fastify, options) {
           'SELECT * FROM history WHERE user_id = ?',
           [userId]
       );
-  
-      
+
       return reply.send(history);
       }
       catch(err){

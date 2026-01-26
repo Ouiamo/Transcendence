@@ -1,11 +1,11 @@
-import React from "react";
+// import React from "react";
 // 
-import { use, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 
 function Friends() {
     localStorage.setItem('page', 'FRIENDS');
     const [friends, setFriends] = useState<any[]>([]);
-    const [newfriend, setnewFriends] = useState('');
+    // const [newfriend, setnewFriends] = useState('');
     const [searchfriend, setsearchFriends] = useState('');
     const [datafriend, setdatafriend] = useState<any[] | null>(null);
     const [is_friend, setisfriend] = useState(false);
@@ -228,14 +228,3 @@ function Friends() {
 }
 
 export default Friends;
-{/* <input
-    type="text" placeholder="Enter username..." value={newfriend} onChange={(e) => setnewFriends(e.target.value)}
-    className="w-[200px] bg-black/20 border border-white/10 rounded-xl px-4 py-2 text-white outline-none focus:border-[#ff99ff] transition-all"
-    /> */}
-{/* <button
-        onClick={addnewfriend}
-        className="flex w-[200px]   h-[40px] mt-[10px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white  uppercase  transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
-    "
-    >
-        Add Friend
-    </button> */}

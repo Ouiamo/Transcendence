@@ -1,43 +1,44 @@
 
-import { use, useState } from 'react';
+// import { use, useState } from 'react';
 
 import { Sidebar } from './Sidebar';
-import {Grid} from './Grid';
+import { Grid } from './Grid';
 interface Dashboardtest {
     gotohome: () => void;
     gotoprofil: () => void;
     delete_obj: (data: any) => void;
-   
+
     user: any;
     // gotogame_r : ()=>void;
-    listfriends: ()=>void;
-    goto : ()=> void;
-    gotodashbord : ()=>void;
-    gotoia: ()=>void;
-    gotofriends :() => void;
-    gotosetting : () =>void;
-    
+    listfriends: () => void;
+    goto: () => void;
+    gotodashbord: () => void;
+    gotoia: () => void;
+    gotofriends: () => void;
+    gotosetting: () => void;
+
 
 
 }
-function Dashboard({ gotohome, gotoprofil, user, delete_obj , listfriends, goto, gotodashbord, gotoia, gotofriends, gotosetting}: Dashboardtest) {
+function Dashboard({ gotohome, gotoprofil, user, delete_obj, listfriends, goto, gotodashbord, gotoia, gotofriends, gotosetting }: Dashboardtest) {
 
-    
- 
+
+
     return (
-<div className=" flex h-screen w-full flex-row gap-[200px]">
- <div className="flex ">
+        <div className=" flex h-screen w-full flex-row bg-[rgba(45,27,105,0.7)] ">
+            <div className="flex gap-[200px] w-full">
+                <div>
 
-   <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotosetting}  />
-    </div>
-    <div className="flex">
+                    <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotosetting} />
+                </div>
+                <div className="flex w-full">
 
-   <Grid  listfriends={listfriends} goto={goto}  goto_ia={gotoia}/>
-    </div>
-   
-</div>
+                    <Grid listfriends={listfriends} goto={goto} goto_ia={gotoia} />
+                </div>
+            </div>
+        </div>
 
-  
+
     )
 }
 

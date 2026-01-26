@@ -14,7 +14,6 @@ let aicountDown = 3;
 let aigameCountDown : boolean = false;
 let aigameGO : boolean = false;
 
-let aiwinner : string | null = null;
 const aimaxScore : number = 3;
 
 
@@ -55,7 +54,7 @@ const aiball = {
 const aiscore={
     x_l : aiboardWidth/4,
     x_r : 3 * aiboardWidth/4,
-    y : aiboardHeight/5,
+    y : aiboardHeight/8,
     color: "white",
 }
 
@@ -63,22 +62,34 @@ const aikeys: {[key:string] : boolean}={
     'ArrowUp' : false,
     'ArrowDown' : false,
 };
+let aiwinner : string | null = null;
 
-export function aiinitGame(canvas: HTMLCanvasElement) {
+export function getWinner() {
+    const playerscore = realplayer.score;
+    const aiscore = aiplayer.score;
+    const data = {aiwinner, playerscore, aiscore}
+  return data;
+}
+
+export function isGameOver() {
+  return aiwinner !== null;
+}
+
+export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
     // console.log("heeeeeeeeeeeeeeeeere");
     // aiboard = document.getElementById("board") as HTMLCanvasElement;
     // aiboard.style.display = "block";
     // aiboard.height = aiboardHeight;
     // aiboard.width = aiboardWidth;
     // aicontex = aiboard.getContext("2d");
-        aiboard = canvas;
+    aiboard = canvas;
 
-  aiboard.width = 900;
-  aiboard.height = 450;
+    aiboard.width = 900;
+    aiboard.height = 450;
     aicontex = aiboard.getContext("2d");
     
 
-    aidraw();
+    aidraw(player1);
     document.addEventListener("keydown", aihandleKeyDown);
     document.addEventListener("keyup", aihandleKeyUp);
 };
@@ -152,7 +163,7 @@ function aimovePlayer()//this will move the ai aipaddle
     }
 }
 
-function aimoveBall()
+function aimoveBall(player: string)
 {
 
     if(aigameStart && !aigameCountDown)
@@ -197,19 +208,19 @@ function aimoveBall()
         {
             realplayer.score++;
             airesetBall();
-            aicheckWinner();
+            aicheckWinner(player);
         }
         else if(aiball.x + aiball.radius >= aiboardWidth)
         {
             aiplayer.score++;
             airesetBall();
-            aicheckWinner();
+            aicheckWinner(player);
         }
     }
        
 }
 
-function aicheckWinner()
+function aicheckWinner(player: string)
 {
     if(aiplayer.score == aimaxScore)
     {
@@ -218,7 +229,7 @@ function aicheckWinner()
     }
     else if(realplayer.score == aimaxScore)
     {
-        aiwinner = "YOU";
+        aiwinner = player;
         aigameStart = false;
     }
 }
@@ -236,12 +247,11 @@ function airestartGame()
     aiplayer.y = aiboardHeight / 2 - aipaddleHeight / 2;
     realplayer.y = aiboardHeight / 2 - aipaddleHeight / 2;
 
-    aiwinner = null;
     aicountDown = 3;
     aigameCountDown = true;
+    aiwinner = null;
     
     aihandleCountDown();
-
 }
 
 
@@ -256,27 +266,28 @@ function airesetBall()
 }
 
 
-function aidraw() {
+function aidraw(player1:string) {
 
+    
     aimovePlayer();
-    aimoveBall();
+    aimoveBall(player1);
 
     aidrawBoard(0, 0, aiboard.width, aiboard.height);
     aidrawRect(aiplayer.x, aiplayer.y, aipaddleWidth, aipaddleHeight, aiplayer.color);
     aidrawRect(realplayer.x, realplayer.y, aipaddleWidth, aipaddleHeight, realplayer.color);
     aidrawNet();
     aidrawBall(aiball.x, aiball.y, aiball.radius, aiball.color);
-    aidrawScore(aiscore.x_l, aiscore.y, aiplayer.score, aiscore.color);
-    aidrawScore(aiscore.x_r, aiscore.y, realplayer.score, aiscore.color);
+    aidrawScore(aiscore.x_l, aiscore.y, aiplayer.score, aiscore.color, "bot");
+    aidrawScore(aiscore.x_r, aiscore.y, realplayer.score, aiscore.color, player1);
     aidrawCountDown();
-    aidrawWinner();
+    // if(aiwinner !== null)
+    //     aidrawWinner();
     if(!aigameStart && !aigameCountDown && !aiwinner)
     {
         aidrawStart();
     }
    
-
-    requestAnimationFrame(aidraw);
+    requestAnimationFrame(() => aidraw(player1));
 }
 
 function aidrawBoard(x: number, y: number, w:number, h:number)
@@ -319,13 +330,15 @@ function aidrawBall(x: number, y: number, radius: number, color:string)
     aicontex.shadowBlur = 0;
 }
 
-function aidrawScore(x: number, y:number, score: number, color: string)
+function aidrawScore(x: number, y:number, score: number, color: string, player: string)
 {
     if (!aicontex) return;
     aicontex.fillStyle = color;
     aicontex.font = "48px Arial";
-    aicontex.textAlign = "center"; 
-    aicontex.fillText(score.toString(), x, y);
+    aicontex.textAlign = "center";
+    // console.log("player is  ", player);
+    aicontex.fillText(player, x, y);
+    aicontex.fillText(score.toString(), x, y + 50);
 }
 
 function aidrawCountDown()
@@ -378,7 +391,7 @@ function aidrawWinner()
     aicontex.font = "bold 70px Arial";
     aicontex.textAlign = "center"; 
     aicontex.textBaseline = "middle";
-    aicontex.fillText(`${aiwinner} WINS!`, aiboardWidth/2, aiboardHeight/2 - 50);
+    aicontex.fillText(`${aiwinner} WON!`, aiboardWidth/2, aiboardHeight/2 - 50);
         
     aicontex.shadowBlur = 15;
     aicontex.fillStyle = "white";

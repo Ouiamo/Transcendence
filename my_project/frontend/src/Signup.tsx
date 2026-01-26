@@ -1,14 +1,10 @@
 import { useState } from "react";
 import { signupUser } from './Api';
-import { loginUser } from './Api';
 import { FaGoogle } from "react-icons/fa";
 import { Si42 } from "react-icons/si";
-import Tst from "./Tst.json"
 import Login3 from "./Login3.json"
 
-import Tstt from "./Tstt.json"
 import Lottie from "lottie-react"
-import TT from "./TT.json"
 interface Sinuptest {
     gotohome: () => void;
     gotologin: () => void;

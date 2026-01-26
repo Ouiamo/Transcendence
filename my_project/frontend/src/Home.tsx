@@ -1,4 +1,3 @@
-import React from "react";
 import Pong2 from "./Pong2.json"
 import Lottie from "lottie-react"
 import { GiPingPongBat } from "react-icons/gi";

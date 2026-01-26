@@ -1,4 +1,3 @@
-import React from "react";
 import { IoSearch, IoHomeOutline, IoSettingsOutline, IoNotificationsOutline, IoPersonCircleOutline, IoLogOutOutline } from "react-icons/io5";
 import { IoGameControllerOutline } from "react-icons/io5";
 import {FaUsers } from "react-icons/fa";
@@ -38,7 +37,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
     }
     return(
               
-            <aside className=" fixed top-0 left-0 w-[80px] h-full   bg-[rgba(45,27,105,0.7)] flex flex-col items-center py-10 justify-between shrink-0 border-r-[1px] border-[#ff44ff]/30">
+            <aside className=" fixed top-0 left-0 w-[80px] h-full   flex flex-col items-center py-10 justify-between shrink-0 border-r-[1px] border-[#ff44ff]/30">
                 <div className=" w-[60px] h-[20px] bg-gradient-to-br from-[#ff44ff] to-[#ff99ff] flex items-center justify-center shadow-[0_0_10px_#ff44ff]">
                     <span className="text-white text-[10px] font-bold truncate px-1 items-center">{user_?.username}</span>
                 </div>

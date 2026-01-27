@@ -13,10 +13,10 @@ services:
       context: .  
       dockerfile: frontend/Dockerfile
       args:
-        - VITE_API_URL=backend
+        - VITE_API_URL=localhost:3010
     ports:
       - "5173:5173"
     depends_on:
       - backend
     environment:
-      - VITE_API_URL=backend
+      - VITE_API_URL=localhost:3010

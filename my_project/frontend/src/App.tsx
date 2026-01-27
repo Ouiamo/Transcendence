@@ -138,7 +138,7 @@ if(loading) return <div>is loading</div>
       {
         currentPage === 'twofa' &&(
         <div className="fex flex-col w-full h-full ">
-          <Twofa gotoDASHBOARD={gotodash}/>
+          <Twofa gotoDASHBOARD={gotodash} gotohome={gotoHome}/>
         </div>
       )}
       {currentPage === 'HOME' && (

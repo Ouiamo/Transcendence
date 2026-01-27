@@ -1,6 +1,6 @@
 // import React from "react";
 // 
-import {  useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Friends() {
     localStorage.setItem('page', 'FRIENDS');
@@ -10,28 +10,49 @@ function Friends() {
     const [datafriend, setdatafriend] = useState<any[] | null>(null);
     const [is_friend, setisfriend] = useState(false);
 
+    const appending_f = async () => {
+        try {
+            const app = await fetch("https://localhost:3010/api/friends/requests", {
+                method: 'GET',
+                credentials: 'include',
+            })
+            if(app.ok)
+            {
+                const append = await app.json();
+                console.log(" append result is  _____>>", append); 
+            }
+             else {
+                    console.log("error a khoyii ", app);
+                }
+        }
+        catch (err) {
+            console.log("catch errrrorr in append ");
+        }
+    }
     const serch = async (searchfriend: any) => {
         try {
-            const ser = await fetch(`https://backend:3010/api/users/search/${searchfriend}`, {
+            const ser = await fetch(`https://localhost:3010/api/users/search/${searchfriend}`, {
                 method: 'GET',
                 credentials: 'include',
             });
+            console.log("ana likfiliyyyyyyyyyyyyy");
             if (ser.ok) {
                 const serc = await ser.json();
                 setdatafriend(serc.users);
+                console.log("resultaaa ::: >>>> ",)
                 if (serc.users && serc.users.length > 0) {
                     const check = await fetch(`https://backend:3010/api/friends/check_friendship/${searchfriend}`, {
                         method: 'GET',
                         credentials: 'include',
                     });
-                    
+
                     if (check.ok) {
                         const checkResult = await check.json();
                         setisfriend(checkResult.areFriends);
                         console.log("Status with this user********:", checkResult.areFriends);
                     }
-                    const friendId = serc.users[0].id; 
-                console.log("The ID of the user is:", friendId);
+                    const friendId = serc.users[0].id;
+                    console.log("The ID of the user is:", friendId);
                 }
                 else {
                     console.log("error a khoyii ", ser);
@@ -51,7 +72,7 @@ function Friends() {
 
 
         try {
-            const response = await fetch('https://backend:3010/api/friends', {
+            const response = await fetch('https://localhost:3010/api/friends', {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -70,7 +91,7 @@ function Friends() {
     };
     const addnewfriend = async () => {
         try {
-            const response = await fetch('https://backend:3010/api/friends/add', {
+            const response = await fetch('https://localhost:3010/api/friends/invitation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendUsername: searchfriend }),
@@ -80,10 +101,14 @@ function Friends() {
             if (response.ok) {
                 const data = await response.json();
                 console.log(" add Success! Friends data:", data);
+
                 setnewFriends("");
                 fetchFriends();
                 ;
             } else {
+                const data = await response.json();
+
+                console.log("feild to adddd ", data, searchfriend)
                 alert("field to add  ");
             }
         } catch (error) {
@@ -152,7 +177,7 @@ function Friends() {
                 </div>
 
             </div>
-            <div className="flex   w-[700px] h-fit ">
+            <div className=" w-[700px] h-fit gap-[20px]  grid dgrid-cols-2 gap-[80px] ">
 
 
                 <div className="flex flex-col  w-[700px] h-fit bg-[#ffffff] ">
@@ -179,7 +204,7 @@ function Friends() {
                             {
                                 datafriend && datafriend.length > 0 ?
                                     (
-                                        
+
                                         <div className=" flex-1 flex flex-row  justify-between  border border-[#ff99ff]">
                                             <div className="flex  gap-[10px]">
                                                 <img className="flex w-[50px] h-[50px] rounded-full " src={`${datafriend?.[0]?.avatar_url}`}></img>
@@ -195,7 +220,7 @@ function Friends() {
                                                     >add</button>
                                                 ) : (
                                                     <button
-                                                        onClick={()=>handleRemoveFriend(datafriend[0].id)}
+                                                        onClick={() => handleRemoveFriend(datafriend[0].id)}
                                                         className="flex items-center justify-center w-[200px] h-[40px] mt-[10px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase transition-all duration-300 shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:scale-[1.02]"
                                                     >
                                                         remov
@@ -224,6 +249,14 @@ function Friends() {
                         </div>
                     </div>
                 </div>
+                <div className="w-[200px] text-[#ff99ff] border-[2px] border-[#ff99ff] w-[700px] h-fit"> heloooo
+                    <button
+                onClick={appending_f}
+                className="flex items-center justify-center w-[200px] h-[40px] mt-[10px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase transition-all duration-300 shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:scale-[1.02]"
+                >
+appending
+                    </button>
+                     </div>
             </div>
         </div>
     )

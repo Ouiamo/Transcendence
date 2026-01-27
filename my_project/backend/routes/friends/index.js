@@ -132,18 +132,24 @@ module.exports = async function(fastify, options) {
         JOIN users u ON u.id = f.user_id
         WHERE f.friend_id = ? AND f.status = 'pending'
       `, [myId]);
+      // const user = await dbGet(
+      //   'SELECT id FROM users WHERE id = ?',
+      //   []
+      // );
+      
+      
 
-      const outgoing = await dbAll(`
-        SELECT f.id as request_id, u.username, u.id as user_id
-        FROM friends f
-        JOIN users u ON u.id = f.friend_id
-        WHERE f.user_id = ? AND f.status = 'pending'
-      `, [myId]);
+      // const outgoing = await dbAll(`
+      //   SELECT f.id as request_id, u.username, u.id as user_id
+      //   FROM friends f
+      //   JOIN users u ON u.id = f.friend_id
+      //   WHERE f.user_id = ? AND f.status = 'pending'
+      // `, [myId]);
 
       return reply.send({
         success: true,
         incoming: incoming,
-        outgoing: outgoing
+        // outgoing: outgoing
       });
 
     } catch (err) {
@@ -299,4 +305,20 @@ module.exports = async function(fastify, options) {
       return reply.code(500).send({ error: 'Server error' });
     }
   });
+    fastify.get('/api/users/search/:query', async (request, reply) => {
+    try {
+      const { query } = request.params;
+      const users = await dbAll(`
+        SELECT id ,avatar_url, username FROM users 
+        WHERE username LIKE ? 
+        LIMIT 10
+      `, [`%${query}%`]);
+      return { success: true, users };
+    } catch (error) {
+      console.error('Search error:', error);
+      return reply.code(500).send({ error: 'Database error' });
+    }
+  });
 };
+
+

@@ -6,11 +6,15 @@ interface intersetting {
 }
 
 function TwoFASetting({ user }: intersetting) {
+  console.log("user f setting tsx hiiiiiiiiiiiiiiiii ", user);
   const [twoFactor, setTwoFactor] = useState<boolean>(user?.twofa_enabled ?? false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
+  const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '', '']);
+  const [showVerification, setShowVerification] = useState<boolean>(false);
+  
   useEffect(() => {
     if (user?.twofa_enabled !== undefined) {
       setTwoFactor(user.twofa_enabled);
@@ -18,11 +22,12 @@ function TwoFASetting({ user }: intersetting) {
   }, [user]);
 
   const toggle2FA = async () => {
-  if (!twoFactor) {
+  if (!twoFactor) 
+  {
     await enable2FA("authenticator");
-    setTwoFactor(true);
-  } else {
-    //setTwoFactor(false);
+  } 
+  else 
+  {
         try {
       const res = await fetch("https://localhost:3010/api/2fa/disable", {
         method: "POST",
@@ -32,6 +37,8 @@ function TwoFASetting({ user }: intersetting) {
       if (res.ok) {
         setTwoFactor(false);
         setQrCode(null);
+        setShowVerification(false);
+        setVerificationCode(['', '', '', '', '', '']);
         alert("2FA disabled");
       }
     } catch (err) {
@@ -107,15 +114,12 @@ function TwoFASetting({ user }: intersetting) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mthd }),
       })
-
       if (res.ok) {
-        
         const data = await res.json()
         console.log("data lijattt hiya $$$$$$$$$$$$$ ", data);
         if (mthd === "authenticator") {
-          setTwoFactor(data.twofa_enabled); //save last stat 
           setQrCode(data.qrCode)
-          // enable(data.qrCode);
+          setShowVerification(true);
           console.log("ana hnaaaaaaaaaaaaaaa ", data.qrCode);
         }
       }
@@ -129,9 +133,63 @@ function TwoFASetting({ user }: intersetting) {
       console.log("errror fetchhhhhhh");
       return;
     }
-
-
   }
+
+  const handleCodeChange = (index: number, value: string) => {
+    if (value.length > 1) return; // Only allow single digit
+    if (!/^\d*$/.test(value)) return; // Only allow numbers
+    
+    const newCode = [...verificationCode];
+    newCode[index] = value;
+    setVerificationCode(newCode);
+    
+    // Auto-focus next input
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`code-input-${index + 1}`);
+      nextInput?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !verificationCode[index] && index > 0) {
+      const prevInput = document.getElementById(`code-input-${index - 1}`);
+      prevInput?.focus();
+    }
+  };
+
+  const verifyCode = async () => {
+    const code = verificationCode.join('');
+    if (code.length !== 6) {
+      alert("Please enter all 6 digits");
+      return;
+    }
+
+    try {
+      const res = await fetch("https://localhost:3010/api/2fa/authenticator/verify", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        setTwoFactor(true);
+        setShowVerification(false);
+        setQrCode(null);
+        setVerificationCode(['', '', '', '', '', '']);
+        alert("✅ 2FA enabled successfully");
+      } else {
+        alert("❌ " + (data.message || "Invalid code"));
+        setVerificationCode(['', '', '', '', '', '']);
+        document.getElementById('code-input-0')?.focus();
+      }
+    } catch (err) {
+      console.error("Verification failed", err);
+      alert("❌ Verification failed");
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] justify-center  items-center w-full h-full ">
@@ -142,7 +200,7 @@ function TwoFASetting({ user }: intersetting) {
             <div className=" relative  w-[50px] h-[50px]  ">
 
               <img
-                src={previewUrl || user.avatarUrl}
+                src={previewUrl || user?.avatarUrl || 'https://localhost:3010/api/avatar/file/default-avatar.png'}
                 className="w-full h-full rounded-full object-cover border-2 border-[#ff99ff]"
                 alt="Avatar Preview"
               />
@@ -200,28 +258,74 @@ function TwoFASetting({ user }: intersetting) {
         </div>
       </div>
       <div className="flex flex-col  ">
-        <div className="flex flex-col  border border-[#ff99ff] w-[700px]">
-          <h3>TwoFASetting</h3>
-          <button onClick={() => {toggle2FA()}}> {twoFactor ? "Disable 2FA" : "Enable 2FA"}</button>
-          <p>2FA is: {twoFactor ? "ON" : "OFF"}</p>
+        <div className="flex flex-col  border border-[#ff99ff] w-[700px] p-6">
+          <h3 className="text-xl font-bold mb-4">Two-Factor Authentication</h3>
+          <button 
+            onClick={() => {toggle2FA()}}
+            className="mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold hover:shadow-[0_0_25px_rgba(255,68,255,0.7)]"
+          > 
+            {twoFactor ? "Disable 2FA" : "Enable 2FA"}
+          </button>
+          <p className="mb-4">2FA is: <span className="font-bold">{twoFactor ? "ON" : "OFF"}</span></p>
 
-          {twoFactor && (
-            <div>
-              {/* <p>Choose 2FA method:</p> */}
-              {/* <button onClick={() => enable2FA("email")}>Email</button> */}
-              {/* <button onClick={() => enable2FA("authenticator")}>
-                Authenticator App
-              </button> */}
+          {showVerification && (
+            <div className="flex flex-col items-center gap-8">
               {qrCode && (
-                <div>
-                  <p>Scan this QR code with your Authenticator app:</p>
-                  <img src={qrCode} alt="Scan this QR code" />
+                <div className="flex flex-col items-center gap-2 mb-4">
+                  <p className="text-center">Scan this QR code with your Authenticator app:</p>
+                  <img src={qrCode} alt="Scan this QR code" className="border-2 border-[#ff99ff] rounded-lg p-2" />
                 </div>
               )}
+              
+              <p className="text-center font-semibold">Enter the 6-digit code from your app:</p>
+              <div className="flex gap-2 justify-center">
+                {verificationCode.map((digit, index) => (
+                  <input
+                    style={{
+                      width: '32px',
+                      height: '32px',
+                      backgroundColor: 'black',
+                      color: 'white',
+                      textAlign: 'center',
+                      fontSize: '18px',
+                      border: '2px solid #ff99ff',
+                      boxShadow: '0 0 10px rgba(255,68,255,0.5)',
+                      borderRadius: '8px',
+                    }}
+                    key={index}
+                    id={`code-input-${index}`}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleCodeChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)}
+                    //  className="
+                    //             w-9 h-9
+                    //             text-center
+                    //             text-lg
+                    //             font-bold
+                    //             bg-black/40
+                    //             text-white
+                    //             border-2 border-[#ff99ff]
+                    //             rounded-md
+                    //             outline-none
+                    //             focus:border-[#ff44ff]
+                    //             focus:shadow-[0_0_10px_rgba(255,68,255,0.5)]
+                    //             "
+                    // autoFocus={index === 0}
+                  />
+                ))}
+              </div>
+              
+              <button 
+                onClick={verifyCode}
+                className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]">
+
+                Verify Code
+              </button>
             </div>
           )}
-
-
         </div>
       </div>
     </div>

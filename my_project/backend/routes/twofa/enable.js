@@ -18,14 +18,14 @@ module.exports = async function (fastify) {
 
       const secret = speakeasy.generateSecret({ length: 20 });
       await dbRun(
-        `UPDATE users SET twofa_enabled = true, twofa_method = 'authenticator', twofa_secret = ? WHERE id = ?`,
+        `UPDATE users SET twofa_method = 'authenticator', twofa_secret = ? WHERE id = ?`,
         [secret.base32, user.id]
       );
 
       const qrCode = await QRCode.toDataURL(secret.otpauth_url, {color: {
       dark: '#ff99ff', light: '#0f0f0f' }});
       return reply.send({ qrCode, secret: secret.base32,
-        twofa_enabled: true,
+        twofa_enabled: false,
       });
     } 
     catch (err) 

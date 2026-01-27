@@ -1,8 +1,24 @@
 
 const jwt = require('jsonwebtoken');
 const { dbGet } = require('../../utils/dbHelpers');
+const path = require('path');
+const fs = require('fs');
+
 
 module.exports = async function (fastify) {
+
+  fastify.get('/api/avatar/file/default-avatar.png', 
+    async (request, reply) => {
+  const filePath = path.join(__dirname,'../../avatar/file/default-avatar.png');
+
+  if (!fs.existsSync(filePath)) {
+    return reply.code(404).send({ error: 'File not found' });
+  }
+
+   reply.type('image/png');
+  return reply.send(fs.createReadStream(filePath));
+});
+
 fastify.get('/api/profile', async (request, reply) => {
   const token = request.cookies.access_token;
   if (!token)
@@ -12,16 +28,17 @@ fastify.get('/api/profile', async (request, reply) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     
     const user = await dbGet(
-        'SELECT id, username, email, avatar_url, provider FROM users WHERE id = ?',
+        'SELECT id, username, email, avatar_url, provider , twofa_enabled FROM users WHERE id = ?',
         [payload.id]
       );
 
-      let avatarUrl = null;
+      let avatarUrl =  `https://localhost:3010/api/avatar/file/default-avatar.png`;
 
       if (user.avatar_url) {
         if (user.provider === 'local') {
           avatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
-        } else {
+        } 
+        else {
           avatarUrl = user.avatar_url; // google / 42
         }
       }
@@ -33,13 +50,15 @@ fastify.get('/api/profile', async (request, reply) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        avatarUrl: avatarUrl
+        avatarUrl: avatarUrl,
+        twofa_enabled: user.twofa_enabled,
       }
     });
   } catch(err) {
     return reply.code(401).send({ error: 'Invalid or expired token' });
   }
 });
+
 
 
 fastify.get('/api/me', async (request, reply) => {

@@ -43,20 +43,20 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                 <nav className="flex-1 flex items-center justify-center">
                     <ul style={{ display: 'flex', flexDirection: 'column', gap: '50px' , color:'white !important'}} className="text-white text-2xl list-none">
                         {/* <IconContext.Provider value={{ color: "white", size: "1.5em", className: "global-class-name" }}></IconContext.Provider> */}
-                        <li><IoSearch size={40} className="mr-[40px] !text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li>
-                        <li><IoNotificationsOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
+                        <li><IoSearch size={35} className="mr-[40px] !text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li>
+                        <li><IoNotificationsOutline size={35} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         {/* <li><IoGameControllerOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li> */}
-                        <li><IoSettingsOutline size={40} onClick={gotosetting} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
-                        <li><IoHomeOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"onClick={gotodashbord} /></li>
-                        <li><IoPersonCircleOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotoprofil} /></li>
-                        <li><FaUsers size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotofriends} /></li>
+                        <li><IoSettingsOutline size={35} onClick={gotosetting} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
+                        <li><IoHomeOutline size={35} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"onClick={gotodashbord} /></li>
+                        <li><IoPersonCircleOutline size={35} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotoprofil} /></li>
+                        <li><FaUsers size={35} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotofriends} /></li>
 
 
                         
                     </ul>
                 </nav>
             <button className=" w-[90px] h-[50px]   bg-[rgba(45,27,105,0.7)] flex items-center justify-center shadow-[0_0_10px_#ff44ff] border border-[#ff44ff]/30 cursor-pointer hover:scale-110 transition-all duration-200 rounded-full" onClick={logout} > 
-                <IoLogOutOutline size={40} className="!text-[#ff44ff] text-3xl " /></button>
+                <IoLogOutOutline size={35} className="!text-[#ff44ff] text-3xl " /></button>
             </aside>
        
     );

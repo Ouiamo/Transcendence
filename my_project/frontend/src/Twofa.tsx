@@ -1,8 +1,9 @@
 import { useState } from "react";
 interface twotinter{
   gotoDASHBOARD :()=>void;
+  gotohome : ()=>void;
 }
-function Twofa( {gotoDASHBOARD}:twotinter)  {
+function Twofa( {gotoDASHBOARD, gotohome}:twotinter)  {
     const [code, settwofa] = useState('');
     const verify_twofa= async(code: string) =>{
     try {
@@ -48,7 +49,10 @@ function Twofa( {gotoDASHBOARD}:twotinter)  {
                      <button className=" mt-[30px] w-[400px] h-[50px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
     "
                 onClick={() => verify_twofa(code)} > se connecter</button>
-                       
+                
+                   <button className=" mt-[30px] w-[400px] h-[50px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
+    "
+                onClick={gotohome} > Go home</button>     
             </div>
             </div>
         </div>

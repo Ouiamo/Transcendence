@@ -1,6 +1,6 @@
 // import React from "react";
 // 
-import {  useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function Friends() {
     localStorage.setItem('page', 'FRIENDS');
@@ -9,29 +9,52 @@ function Friends() {
     const [searchfriend, setsearchFriends] = useState('');
     const [datafriend, setdatafriend] = useState<any[] | null>(null);
     const [is_friend, setisfriend] = useState(false);
+    const [is_append, setappendfriend] = useState<any[]>([]);
 
+
+    const appending_f = async () => {
+        try {
+            const app = await fetch("https://localhost:3010/api/friends/requests", {
+                method: 'GET',
+                credentials: 'include',
+            })
+            if (app.ok) {
+                const append = await app.json();
+                setappendfriend(append.incoming);
+                console.log(" append result is  _____>>", append);
+            }
+            else {
+                console.log("error a khoyii ", app);
+            }
+        }
+        catch (err) {
+            console.log("catch errrrorr in append ");
+        }
+    }
     const serch = async (searchfriend: any) => {
         try {
-            const ser = await fetch(`https://backend:3010/api/users/search/${searchfriend}`, {
+            const ser = await fetch(`https://localhost:3010/api/users/search/${searchfriend}`, {
                 method: 'GET',
                 credentials: 'include',
             });
+            console.log("ana likfiliyyyyyyyyyyyyy");
             if (ser.ok) {
                 const serc = await ser.json();
                 setdatafriend(serc.users);
+                console.log("resultaaa ::: >>>> ",)
                 if (serc.users && serc.users.length > 0) {
                     const check = await fetch(`https://backend:3010/api/friends/check_friendship/${searchfriend}`, {
                         method: 'GET',
                         credentials: 'include',
                     });
-                    
+
                     if (check.ok) {
                         const checkResult = await check.json();
                         setisfriend(checkResult.areFriends);
                         console.log("Status with this user********:", checkResult.areFriends);
                     }
-                    const friendId = serc.users[0].id; 
-                console.log("The ID of the user is:", friendId);
+                    const friendId = serc.users[0].id;
+                    console.log("The ID of the user is:", friendId);
                 }
                 else {
                     console.log("error a khoyii ", ser);
@@ -51,7 +74,7 @@ function Friends() {
 
 
         try {
-            const response = await fetch('https://backend:3010/api/friends', {
+            const response = await fetch('https://localhost:3010/api/friends', {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -70,7 +93,7 @@ function Friends() {
     };
     const addnewfriend = async () => {
         try {
-            const response = await fetch('https://backend:3010/api/friends/add', {
+            const response = await fetch('https://localhost:3010/api/friends/invitation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendUsername: searchfriend }),
@@ -80,10 +103,14 @@ function Friends() {
             if (response.ok) {
                 const data = await response.json();
                 console.log(" add Success! Friends data:", data);
+
                 setnewFriends("");
                 fetchFriends();
                 ;
             } else {
+                const data = await response.json();
+
+                console.log("feild to adddd ", data, searchfriend)
                 alert("field to add  ");
             }
         } catch (error) {
@@ -92,12 +119,13 @@ function Friends() {
     };
     useEffect(() => {
         fetchFriends();
+        appending_f();
     }, []);
 
     const handleRemoveFriend = async (id: number) => {
         try {
 
-            const del = await fetch('https://backend:3010/api/friends/remove', {
+            const del = await fetch('https://localhost:3010/api/friends/remove', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendId: id }),
@@ -116,7 +144,7 @@ function Friends() {
     console.log("firend isssssss herrrrrrrrr ", datafriend);
 
 
-    // console.log(" avatr fried isssssssssss** ", friends);
+    console.log("incoming isssssssssss ", is_append);
     return (
         <div className="flex  w-full h-full gap-[40px] mt-[80px] ">
             <div>
@@ -152,7 +180,7 @@ function Friends() {
                 </div>
 
             </div>
-            <div className="flex   w-[700px] h-fit ">
+            <div className=" w-[700px] h-fit gap-[20px]  grid dgrid-cols-2 gap-[80px] ">
 
 
                 <div className="flex flex-col  w-[700px] h-fit bg-[#ffffff] ">
@@ -179,7 +207,7 @@ function Friends() {
                             {
                                 datafriend && datafriend.length > 0 ?
                                     (
-                                        
+
                                         <div className=" flex-1 flex flex-row  justify-between  border border-[#ff99ff]">
                                             <div className="flex  gap-[10px]">
                                                 <img className="flex w-[50px] h-[50px] rounded-full " src={`${datafriend?.[0]?.avatar_url}`}></img>
@@ -195,7 +223,7 @@ function Friends() {
                                                     >add</button>
                                                 ) : (
                                                     <button
-                                                        onClick={()=>handleRemoveFriend(datafriend[0].id)}
+                                                        onClick={() => handleRemoveFriend(datafriend[0].id)}
                                                         className="flex items-center justify-center w-[200px] h-[40px] mt-[10px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase transition-all duration-300 shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:scale-[1.02]"
                                                     >
                                                         remov
@@ -224,8 +252,44 @@ function Friends() {
                         </div>
                     </div>
                 </div>
+                <div className="w-[700px] h-fit border-[2px] border-[#ff99ff] text-[#ff99ff] p-4">
+                    <h2 className="mb-[4px]  text-xl">Friend Requests</h2>
+
+                    <div className="flex flex-col gap-[20px]">
+                        {is_append.length === 0 ? (
+                            <div className="text-gray-400 text-center">No pending invitations</div>
+                        ) : (
+
+                            is_append.map((f) => (
+                                <div key={f.request_id} className=" mt-[20px] flex w-full flex-row items-center justify-between gap-[40px] bg-[#2a2a2a]  rounded-full">
+
+
+                                    <div className="flex items-center gap-[4px]">
+                                        <img
+                                            src={f.avatarUrl || '/default-avatar.png'}
+                                            alt="avatar"
+                                            className="w-[50px] h-[50px] rounded-full object-cover border border-[#ff99ff]"
+                                        />
+                                        <span className="text-white font-semibold">{f.username}</span>
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <button className="bg-[#ff99ff] text-black px-4 py-1 rounded-md font-bold hover:bg-white transition-all">
+                                            Accept
+                                        </button>
+                                        <button className="border border-red-500 text-red-500 px-4 py-1 rounded-md hover:bg-red-500 hover:text-white transition-all">
+                                            Decline
+                                        </button>
+                                    </div>
+
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
+    
     )
 }
 

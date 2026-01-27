@@ -378,33 +378,33 @@ function aidrawCountDown()
     }
 }
 
-function aidrawWinner()
-{
+// function aidrawWinner()
+// {
     
-    if (!aicontex || !aiwinner) return;
-    aicontex.fillStyle = "rgba(0, 0, 0, 0.85)";
-    aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
+//     if (!aicontex || !aiwinner) return;
+//     aicontex.fillStyle = "rgba(0, 0, 0, 0.85)";
+//     aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
 
-    aicontex.shadowBlur = 20;
-    aicontex.shadowColor = "#0244bdff";
-    aicontex.fillStyle = "white";
-    aicontex.font = "bold 70px Arial";
-    aicontex.textAlign = "center"; 
-    aicontex.textBaseline = "middle";
-    aicontex.fillText(`${aiwinner} WON!`, aiboardWidth/2, aiboardHeight/2 - 50);
+//     aicontex.shadowBlur = 20;
+//     aicontex.shadowColor = "#0244bdff";
+//     aicontex.fillStyle = "white";
+//     aicontex.font = "bold 70px Arial";
+//     aicontex.textAlign = "center"; 
+//     aicontex.textBaseline = "middle";
+//     aicontex.fillText(`${aiwinner} WON!`, aiboardWidth/2, aiboardHeight/2 - 50);
         
-    aicontex.shadowBlur = 15;
-    aicontex.fillStyle = "white";
-    aicontex.font = "40px Arial";
-    aicontex.fillText(`${aiplayer.score} - ${realplayer.score}`, aiboardWidth / 2, aiboardHeight / 2 + 30);
+//     aicontex.shadowBlur = 15;
+//     aicontex.fillStyle = "white";
+//     aicontex.font = "40px Arial";
+//     aicontex.fillText(`${aiplayer.score} - ${realplayer.score}`, aiboardWidth / 2, aiboardHeight / 2 + 30);
 
-    aicontex.shadowBlur = 10;
-    aicontex.fillStyle = "white";
-    aicontex.font = "25px Arial";
-    aicontex.fillText("Press SPACE to play again", aiboardWidth / 2, aiboardHeight / 2 + 100);
+//     aicontex.shadowBlur = 10;
+//     aicontex.fillStyle = "white";
+//     aicontex.font = "25px Arial";
+//     aicontex.fillText("Press SPACE to play again", aiboardWidth / 2, aiboardHeight / 2 + 100);
     
-    aicontex.shadowBlur = 0;
-}
+//     aicontex.shadowBlur = 0;
+// }
 
 function aidrawStart()
 {

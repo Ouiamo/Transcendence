@@ -4,13 +4,13 @@ interface twoemailinter{
   gotoemail : ()=>void;
   gotohome: ()=>void;
 }
-function TwofaEmail( {gotoemail, gotohome}:twoemailinter)  {
+function TwofaEmail( { gotohome}:twoemailinter)  {
     const [code, settwofa] = useState('');
 
    const send_email = async()=>{
         try {
           console.log("dkahltttttttt");
-            const res = await fetch("https://localhost:3010/api/2fa/email/send", {
+            const res = await fetch("https://backend:3010/api/2fa/email/send", {
                 method: "GET",
                 credentials: "include",
             });
@@ -32,7 +32,7 @@ function TwofaEmail( {gotoemail, gotohome}:twoemailinter)  {
       try {
         console.log(" code isssss ________________-+ ", code);
         const res = await fetch(
-          "https://localhost:3010/api/2fa/email/verify",
+          "https://backend:3010/api/2fa/email/verify",
           {
             method: "POST",
             credentials: "include",

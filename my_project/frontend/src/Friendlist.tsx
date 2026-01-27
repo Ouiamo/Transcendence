@@ -16,7 +16,7 @@ export function Friendlist() {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await fetch('https://localhost:3010/api/friends', {
+        const res = await fetch('https://backend:3010/api/friends', {
           method: 'GET',
           credentials: 'include',
         });

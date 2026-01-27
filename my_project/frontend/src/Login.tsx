@@ -52,7 +52,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, go
             }
         }
         catch (erro) {
-            alert("🚨 Server error");
+            alert("🚨 Server erroreeeeeeeeeeeee");
         }
 
     }

@@ -5,14 +5,14 @@ import {  useEffect, useState } from 'react';
 function Friends() {
     localStorage.setItem('page', 'FRIENDS');
     const [friends, setFriends] = useState<any[]>([]);
-    // const [newfriend, setnewFriends] = useState('');
+    const [newfriend, setnewFriends] = useState('');
     const [searchfriend, setsearchFriends] = useState('');
     const [datafriend, setdatafriend] = useState<any[] | null>(null);
     const [is_friend, setisfriend] = useState(false);
 
     const serch = async (searchfriend: any) => {
         try {
-            const ser = await fetch(`https://localhost:3010/api/users/search/${searchfriend}`, {
+            const ser = await fetch(`https://backend:3010/api/users/search/${searchfriend}`, {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -20,7 +20,7 @@ function Friends() {
                 const serc = await ser.json();
                 setdatafriend(serc.users);
                 if (serc.users && serc.users.length > 0) {
-                    const check = await fetch(`https://localhost:3010/api/friends/check_friendship/${searchfriend}`, {
+                    const check = await fetch(`https://backend:3010/api/friends/check_friendship/${searchfriend}`, {
                         method: 'GET',
                         credentials: 'include',
                     });
@@ -42,6 +42,8 @@ function Friends() {
             console.log("catsh eroror ");
         }
         console.log("data dyl frien issssssss ", datafriend);
+        console.log("data dyl frien issssssss ", newfriend);
+
         // check_is_friend(searchfriend);
     }
 
@@ -49,7 +51,7 @@ function Friends() {
 
 
         try {
-            const response = await fetch('https://localhost:3010/api/friends', {
+            const response = await fetch('https://backend:3010/api/friends', {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -68,7 +70,7 @@ function Friends() {
     };
     const addnewfriend = async () => {
         try {
-            const response = await fetch('https://localhost:3010/api/friends/add', {
+            const response = await fetch('https://backend:3010/api/friends/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendUsername: searchfriend }),
@@ -95,7 +97,7 @@ function Friends() {
     const handleRemoveFriend = async (id: number) => {
         try {
 
-            const del = await fetch('https://localhost:3010/api/friends/remove', {
+            const del = await fetch('https://backend:3010/api/friends/remove', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendId: id }),

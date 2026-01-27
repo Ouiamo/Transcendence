@@ -1,6 +1,6 @@
 
 import './style.css';
-import { use, useEffect,useState } from 'react';
+import { useEffect,useState } from 'react';
 import { useRef } from "react";
 import Twofa from './Twofa.tsx';
 // import Lottie from "lottie-react"

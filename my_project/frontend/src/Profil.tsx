@@ -35,7 +35,7 @@ const [stats, setStats] = useState<Stats | null>(null);
 useEffect(() => {
   const fetchStats = async () => {
     try {
-      const res = await fetch('https://localhost:3010/api/stats', {
+      const res = await fetch('https://backend:3010/api/stats', {
         method: 'GET',
         credentials: 'include',
       });
@@ -57,7 +57,7 @@ const [history, setHistory] = useState<History[] | null>(null);
 useEffect(() => {
   const fetchStats = async () => {
     try {
-      const res = await fetch('https://localhost:3010/api/history/get_history', {
+      const res = await fetch('https://backend:3010/api/history/get_history', {
         method: 'GET',
         credentials: 'include',
       });
@@ -74,7 +74,7 @@ useEffect(() => {
   fetchStats();
 }, []);
 
-// `https://localhost:3010${user.avatarUrl}`
+// `https://backend:3010${user.avatarUrl}`
   console.log("xihaja bax t", user);
   console.log("avatarrrrrr is ", user.avatarUrl);
   localStorage.setItem('page', 'PROFIL');

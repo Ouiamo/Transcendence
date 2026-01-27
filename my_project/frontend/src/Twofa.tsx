@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 interface twotinter{
   gotoDASHBOARD :()=>void;
 }
@@ -8,7 +8,7 @@ function Twofa( {gotoDASHBOARD}:twotinter)  {
     try {
           console.log(" code isssss ________________-+ ", code);
           const res = await fetch(
-          "https://localhost:3010/api/2fa/authenticator/verify",
+          "https://backend:3010/api/2fa/authenticator/verify",
           {
             method: "POST",
             credentials: "include",

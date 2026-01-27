@@ -1,4 +1,4 @@
-const API_URL = 'https://localhost:3010';
+const API_URL = `https://${import.meta.env.VITE_API_URL || 'backend:3010'}`;
 
 // export function showMessage(app: HTMLElement, text: string, type: 'success' | 'error' = 'error') {
 //     const msg = document.createElement('div');

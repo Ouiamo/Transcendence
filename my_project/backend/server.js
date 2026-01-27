@@ -25,7 +25,7 @@ fastify.register(require('@fastify/jwt'), {
 fastify.register(require('./plugins/auth'));
 
 fastify.register(require('@fastify/cors'), {
-  origin: 'https://localhost:5173',
+  origin: 'https://frontend:5173',
   credentials: true,
   methods: ['GET','POST','PATCH','DELETE']
 });

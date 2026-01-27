@@ -9,26 +9,26 @@ const boardWidth: number = 900;
 const boardHeight: number = 450;
 let contex : CanvasRenderingContext2D | null = null;
 
-let gameMode: '1v1' | 'vAI' | 'local' | null = null;
+// let gameMode: '1v1' | 'vAI' | 'local' | null = null;
 
 const paddleWidth: number = 15; 
 const paddleHeight: number = 80;
 const paddleSpeed: number = 6; 
 
-let gameStart : boolean = false;
-let countDown = 3;
-let gameCountDown : boolean = false;
-let gameGO : boolean = false;
+// let gameStart : boolean = false;
+// let countDown = 3;
+// let gameCountDown : boolean = false;
+// let gameGO : boolean = false;
 
 let winner : number = 0;
-const maxScore : number = 3;
+// const maxScore : number = 3;
 
 const player1_X : number = 20;
 const player2_X : number = boardWidth - 20 - paddleWidth;
 const ballColor: string = "white";
 const ballRadius : number = 15;
-const ballStepX :number= 5;
-const ballStepY :number = 5;
+// const ballStepX :number= 5;
+// const ballStepY :number = 5;
 const  playerColor: string ="#829cbdff";
 let gameEnd: boolean = false;
 

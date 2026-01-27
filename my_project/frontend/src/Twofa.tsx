@@ -8,7 +8,7 @@ function Twofa( {gotoDASHBOARD}:twotinter)  {
     try {
           console.log(" code isssss ________________-+ ", code);
           const res = await fetch(
-          "https://backend:3010/api/2fa/authenticator/verify",
+          "https://localhost:3010/api/2fa/authenticator/verify",
           {
             method: "POST",
             credentials: "include",

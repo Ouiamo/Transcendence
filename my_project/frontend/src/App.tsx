@@ -14,7 +14,7 @@ import { Sidebar } from './Sidebar';
 // import {initGame} from "../../game/frontend/game.ts"
 import { GamePage, Gamepage_i} from "./G.tsx"
 // import { Gamepage_r } from './G.tsx';
-import TwofaEmail from './TwofaEmail.tsx';
+// import TwofaEmail from './TwofaEmail.tsx';
 import { Friendlist } from './Friendlist.tsx'
 import Friends from './Friends.tsx';
 import Setting from './Setting.tsx';
@@ -22,7 +22,7 @@ import Setting from './Setting.tsx';
 
 
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email'
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa'
 function App(){
   // const [twoFactor, setTwoFactor] = useState(false)
  
@@ -42,10 +42,10 @@ const gotoHome =() =>{
     localStorage.setItem('page', 'HOME');
   setCurrentPage( 'HOME');
 }
-const gotoemail =() =>{
-    localStorage.setItem('page', 'email');
-  setCurrentPage( 'email');
-}
+// const gotoemail =() =>{
+//     localStorage.setItem('page', 'email');
+//   setCurrentPage( 'email');
+// }
   const gotogamelocal = ()=>{
     localStorage.setItem('page', 'GAME_L');
     setCurrentPage('GAME_L');
@@ -103,8 +103,6 @@ useEffect(() => {
           setCurrentPage('GAME_R');
         else if(save === 'SETTING')
           setCurrentPage('SETTING');
-        else if(save === 'email')
-          setCurrentPage('email');
         else if(save == 'GAME_I')
           setCurrentPage('GAME_I');
         else if(save == 'PROFIL')
@@ -152,7 +150,7 @@ if(loading) return <div>is loading</div>
         <div className="min-h-screen w-full flex items-center justify-center bg-[#0d0221] ">
     
       
-           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa} gotoemail={gotoemail}/>
+           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa}/>
        
         </div>
       )}
@@ -255,13 +253,13 @@ if(loading) return <div>is loading</div>
         </div> 
       </div>
     }
-    {
-      currentPage === 'email' &&(
-        <div className="fex flex-col w-full h-full ">
-          <TwofaEmail gotoemail={gotoemail} gotohome={gotoHome}/>
-        </div>
+    {/* {
+      // currentPage === 'email' &&(
+      //   <div className="fex flex-col w-full h-full ">
+      //     <TwofaEmail gotoemail={gotoemail} gotohome={gotoHome}/>
+      //   </div>
       )
-    }
+    } */}
     </div>
   );
 }

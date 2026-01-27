@@ -10,10 +10,9 @@ interface Logintest {
     onloginsucces: (data: any) => void;
     gotosingup: () => void;
     gotwofa: () => void;
-    gotoemail: () => void;
 }
 
-function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, gotoemail }: Logintest) {
+function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa}: Logintest) {
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
@@ -33,13 +32,14 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, go
         }
         try {
             const result = await loginUser(data_login);
+            console.log("login resulttttttttttttaaaaaaaaa ", result);
             if (result.twofa_required) {
-                if (result.method === "authenticator") {
+                if (result.method === "authenticator" && result.twofa_enabled) {
                     gotwofa();
                 } 
-                else if (result.method === "email") {
-                    gotoemail();
-                }
+                // else if (result.method === "email") {
+                //     gotoemail();
+                // }
             }
             else if (result.success) {
                 alert("login sucess");

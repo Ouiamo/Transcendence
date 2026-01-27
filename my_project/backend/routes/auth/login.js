@@ -41,7 +41,8 @@ module.exports = async function (fastify) {
 
   return reply.send({
     twofa_required: true,
-    method: user.twofa_method
+    method: user.twofa_method,
+    twofa_enabled: user.twofa_enabled
   });
 }
     const token = jwt.sign(
@@ -65,7 +66,8 @@ module.exports = async function (fastify) {
         id: user.id,
         username: user.username,
         email: user.email
-      }
+      },
+      twofa_enabled: user.twofa_enabled
     });
 
   } catch (err) {

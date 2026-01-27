@@ -30,3 +30,9 @@ npm install speakeasy qrcode nodemailer
   qrcode → generates QR code for user to scan with Authenticator app
   nodemailer → sends email OTPs
 }
+
+
+
+you can run docker with :
+
+docker compose up --build

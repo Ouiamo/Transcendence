@@ -1,15 +1,44 @@
 import  { useState } from "react"
+import { useEffect } from "react";
+
 interface intersetting {
   user: any;
 }
 
 function TwoFASetting({ user }: intersetting) {
-  const [twoFactor, setTwoFactor] = useState(false)
+  const [twoFactor, setTwoFactor] = useState<boolean>(user?.twofa_enabled ?? false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
+  useEffect(() => {
+    if (user?.twofa_enabled !== undefined) {
+      setTwoFactor(user.twofa_enabled);
+    }
+  }, [user]);
 
+  const toggle2FA = async () => {
+  if (!twoFactor) {
+    await enable2FA("authenticator");
+    setTwoFactor(true);
+  } else {
+    //setTwoFactor(false);
+        try {
+      const res = await fetch("https://localhost:3010/api/2fa/disable", {
+        method: "POST",
+        credentials: "include",
+      });
+      
+      if (res.ok) {
+        setTwoFactor(false);
+        setQrCode(null);
+        alert("2FA disabled");
+      }
+    } catch (err) {
+      console.error("Failed to disable 2FA", err);
+    }
+  }
+};
 
   const handelupdateprofile = async () => {
     // console.log(" jitttttttttt ");
@@ -46,7 +75,7 @@ function TwoFASetting({ user }: intersetting) {
   return;
  }
     try {
-      const response = await fetch('https://backend:3010/api/profile', {
+      const response = await fetch('https://localhost:3010/api/profile', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -69,42 +98,25 @@ function TwoFASetting({ user }: intersetting) {
     }
 
   }
-  const enable2FA = async (mthd: "email" | "authenticator") => {
+  const enable2FA = async (mthd: "authenticator") => {
     try {
 
-      const res = await fetch("https://backend:3010/api/2fa/enable", {
+      const res = await fetch("https://localhost:3010/api/2fa/enable", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mthd }),
       })
 
-      console.log("data lijattt hiya $$$$$$$$$$$$$ ", res);
       if (res.ok) {
-
+        
         const data = await res.json()
+        console.log("data lijattt hiya $$$$$$$$$$$$$ ", data);
         if (mthd === "authenticator") {
+          setTwoFactor(data.twofa_enabled); //save last stat 
           setQrCode(data.qrCode)
           // enable(data.qrCode);
           console.log("ana hnaaaaaaaaaaaaaaa ", data.qrCode);
-        }
-        else if(mthd === 'email')
-        {
-          // try {
-          //   const res = await fetch("https://backend:3010/api/2fa/email/send", {
-          //       method: "POST",
-          //       credentials: "include",
-          //       headers: { "Content-Type": "application/json" }
-          //   });
-          //   if (res.ok) {
-          //       alert("📧 A verification code has been sent to your email.");
-          //   } else {
-          //       alert("❌ Failed to send email 2FA code.");
-          //   }
-          //   } catch (err) {
-          //       console.error("Error sending email 2FA:", err);
-          //       alert("🚨 Network error while sending 2FA email.");
-          //   }
         }
       }
       else {
@@ -190,25 +202,25 @@ function TwoFASetting({ user }: intersetting) {
       <div className="flex flex-col  ">
         <div className="flex flex-col  border border-[#ff99ff] w-[700px]">
           <h3>TwoFASetting</h3>
-          <button onClick={() => setTwoFactor(!twoFactor)}>2FA</button>
+          <button onClick={() => {toggle2FA()}}> {twoFactor ? "Disable 2FA" : "Enable 2FA"}</button>
           <p>2FA is: {twoFactor ? "ON" : "OFF"}</p>
 
           {twoFactor && (
             <div>
-              <p>Choose 2FA method:</p>
-              <button onClick={() => enable2FA("email")}>Email</button>
-              <button onClick={() => enable2FA("authenticator")}>
+              {/* <p>Choose 2FA method:</p> */}
+              {/* <button onClick={() => enable2FA("email")}>Email</button> */}
+              {/* <button onClick={() => enable2FA("authenticator")}>
                 Authenticator App
-              </button>
+              </button> */}
+              {qrCode && (
+                <div>
+                  <p>Scan this QR code with your Authenticator app:</p>
+                  <img src={qrCode} alt="Scan this QR code" />
+                </div>
+              )}
             </div>
           )}
 
-          {qrCode && (
-            <div>
-              <p>Scan this QR code with your Authenticator app:</p>
-              <img src={qrCode} alt="Scan this QR code" />
-            </div>
-          )}
 
         </div>
       </div>

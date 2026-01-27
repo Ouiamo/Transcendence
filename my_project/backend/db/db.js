@@ -27,7 +27,7 @@ db.serialize(() => {
     if (err) throw err;
     const columnNames = columns.map(c => c.name);
     if (!columnNames.includes('twofa_enabled')) {
-      db.run(`ALTER TABLE users ADD COLUMN twofa_enabled BOOLEAN DEFAULT 0;`);
+      db.run(`ALTER TABLE users ADD COLUMN twofa_enabled BOOLEAN DEFAULT false;`);
     }
     if (!columnNames.includes('twofa_method')) {
       db.run(`ALTER TABLE users ADD COLUMN twofa_method TEXT;`);
@@ -35,12 +35,12 @@ db.serialize(() => {
     if (!columnNames.includes('twofa_secret')) {
       db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT;`);
     }
-    if (!columnNames.includes('twofa_email_code')) {
-      db.run(`ALTER TABLE users ADD COLUMN twofa_email_code TEXT;`);
-    }
-    if (!columnNames.includes('twofa_email_expires')) {
-      db.run(`ALTER TABLE users ADD COLUMN twofa_email_expires INTEGER;`);
-    }
+    // if (!columnNames.includes('twofa_email_code')) {
+    //   db.run(`ALTER TABLE users ADD COLUMN twofa_email_code TEXT;`);
+    // }
+    // if (!columnNames.includes('twofa_email_expires')) {
+    //   db.run(`ALTER TABLE users ADD COLUMN twofa_email_expires INTEGER;`);
+    // }
   });
 });
 

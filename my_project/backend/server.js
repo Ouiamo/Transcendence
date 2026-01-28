@@ -57,10 +57,11 @@ fastify.register(require('./routes/twofa/enable'));
 // fastify.register(require('./routes/twofa/email'));
 fastify.register(require('./routes/twofa/authenticator'));
 fastify.register(require('./routes/stats/stats'));
+fastify.register(require('./routes/stats/ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
 
-fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
+fastify.listen({ port: 3010, host: 'localhost' }, (err) => {
   if (err) {
     console.error('Server error:', err);
     process.exit(1);

@@ -5,6 +5,7 @@ import { FiEdit } from "react-icons/fi";
 import { useEffect } from "react";
 
 
+
 interface profil_iterface {
 
   user: any;
@@ -17,6 +18,7 @@ interface Stats {
   loss: number;
   total_matches: number;
   win_rate: number;
+  // points: number;
 }
 
 interface History {
@@ -28,14 +30,16 @@ interface History {
   isWin: boolean;
 }
 
+
 function Profil({ user }: profil_iterface) {
 
 const [stats, setStats] = useState<Stats | null>(null);
+// const [avatar1, setAvatar] =useState('');
 
 useEffect(() => {
   const fetchStats = async () => {
     try {
-      const res = await fetch('https://backend:3010/api/stats', {
+      const res = await fetch('https://localhost:3010/api/stats', { // kant backend
         method: 'GET',
         credentials: 'include',
       });
@@ -57,7 +61,7 @@ const [history, setHistory] = useState<History[] | null>(null);
 useEffect(() => {
   const fetchStats = async () => {
     try {
-      const res = await fetch('https://backend:3010/api/history/get_history', {
+      const res = await fetch('https://localhost:3010/api/history/get_history', {// kant backend
         method: 'GET',
         credentials: 'include',
       });
@@ -74,9 +78,9 @@ useEffect(() => {
   fetchStats();
 }, []);
 
-// `https://backend:3010${user.avatarUrl}`
+// `https://localhost:3010${user.avatarUrl}`
   console.log("xihaja bax t", user);
-  console.log("avatarrrrrr is ", user.avatarUrl);
+  console.log("avatarrrrrr is ", user.avatar_url);
   localStorage.setItem('page', 'PROFIL');
   // console.log("avatr gooogl is ", user.avatar_url);
   // const mockHistory = [
@@ -96,7 +100,20 @@ useEffect(() => {
     setactivetable('ACHIEVEMENTS');
   }
   const statusColor = user.status === 1 ? "bg-[#00ff88]" : user.status === 2 ? "bg-[#bc13fe]" : "bg-[#00ff88]";
-  // console.error("user is in profl ", user);
+
+//   useEffect(() => {
+//   // حتى لو كان عندك 'user' من الـ Context، عاودي جيبيه من الباكيند باش تتأكدي
+//   const fetchFreshData = async () => {
+//     const res = await fetch("https://localhost:3010/api/profile", { credentials: "include" });
+//     const data = await res.json();
+//     if (data.success) {
+//        // تحديث الـ State المحلي للصورة
+//        setAvatar(data.user.avatarUrl);
+//     }
+//   };
+//   fetchFreshData();
+// }, []);
+  console.log("user is in profl ", user.avatarUrl);
   return (
 
     <div className="flex flex-col w-full h-screen">
@@ -235,7 +252,7 @@ useEffect(() => {
       {
         activetable === 'ACHIEVEMENTS' &&
         <div>
-          hello fromm achivvvvvvvvvvvvv
+          hello from achivvvvvvvvvvvvv:::: 
         </div>
       }
     </div>

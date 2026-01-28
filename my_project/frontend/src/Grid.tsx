@@ -3,6 +3,7 @@
 import { FiGlobe, } from "react-icons/fi";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { RiRobot2Line } from "react-icons/ri";
+import StatsCharts from './graph';
 // import { useRef } from "react";
 // import { initGame } from "../../game/frontend/game.ts"
 
@@ -45,7 +46,7 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                         SELECT GAME MODE
                     </h2>
                 </div>
-                <div className="grid grid-cols-3 w-full  gap-[px] text-[#ff99ff]  items-center justify-center h-[800px]  ">
+                <div className="grid grid-cols-3 w-full  gap-[px] text-[#ff99ff]  items-center justify-center h-[500px]  ">
                     <div onClick={listfriends} className="w-[350px] h-[300px]  justify-center items-center bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-2xl  border-2 border-[#ff44ff] transition-all duration-300 hover:scale-105 hover:border-[#ff99ff] border-[1px] border-[#ff44ff]/70  rounded-[30px]   shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff] " >
 
                         <div className="flex justify-center items-center  w-[350px] h-[300px] flex-col">
@@ -95,11 +96,13 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                         </div>
                         </div>
                     </div>
-
+                </div>
+                <div className="flex justify-center">
+                    <StatsCharts />
                 </div>
             </div>
         </div>
-
+        
 
     )
 

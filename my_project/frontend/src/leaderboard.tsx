@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Trophy, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 
 interface User {
     user_id: number;
@@ -8,7 +8,7 @@ interface User {
     points: number;
     wins: number;
     loss: number;
-    winRate: number;
+    win_rate: number;
 }
 
 export function Leaderboard() {
@@ -84,10 +84,10 @@ export function Leaderboard() {
                                 <div
                                     key={player.user_id}
                                     className={`${index === 0
-                                            ? "md:order-2 border-[rgba(234,179,8,0.5)] bg-[rgba(234,179,8,0.05)]"
+                                            ? "order-2 border-[rgba(234,179,8,0.5)] bg-[rgba(234,179,8,0.05)]"
                                             : index === 1
-                                                ? "md:order-1 border-[rgba(156,163,175,0.5)] bg-[rgba(156,163,175,0.05)]"
-                                                : "md:order-3 border-[rgba(249,115,22,0.5)] bg-[rgba(249,115,22,0.05)]"
+                                                ? "order-1 border-[rgba(156,163,175,0.5)] bg-[rgba(156,163,175,0.05)]"
+                                                : "order-3 border-[rgba(249,115,22,0.5)] bg-[rgba(249,115,22,0.05)]"
                                         } border-2 rounded-lg p-6 backdrop-blur-sm`}
                                 >
                                     <div className="text-center">
@@ -123,7 +123,7 @@ export function Leaderboard() {
                                                 <p className="text-[rgba(216,180,254,0.7)]">Wins</p>
                                             </div>
                                             <div>
-                                                <p className="text-2xl font-bold text-[rgb(192,132,252)]">{player.winRate}%</p>
+                                                <p className="text-2xl font-bold text-[rgb(192,132,252)]">{player.win_rate}</p>
                                                 <p className="text-[rgba(216,180,254,0.7)]">Win Rate</p>
                                             </div>
                                         </div>
@@ -190,7 +190,7 @@ export function Leaderboard() {
                                                 <p className="text-xs text-[rgba(216,180,254,0.7)]">Losses</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="font-bold text-[rgb(192,132,252)]">{player.winRate}%</p>
+                                                <p className="font-bold text-[rgb(192,132,252)]">{player.win_rate}</p>
                                                 <p className="text-xs text-[rgba(216,180,254,0.7)]">Win Rate</p>
                                             </div>
                                         </div>

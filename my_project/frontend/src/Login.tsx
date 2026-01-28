@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { loginUser } from './Api';
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { FaGoogle } from "react-icons/fa";
@@ -12,14 +12,14 @@ interface Logintest {
     gotwofa: () => void;
 }
 
-function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa}: Logintest) {
+function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: Logintest) {
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
 
     const handel_auth_goole = async () => {
         window.location.href = 'https://backend:3010/api/auth/google'
-        
+
     }
     const handel_auth_42 = async () => {
         window.location.href = ('https://localhost:3010/api/auth/42');
@@ -36,15 +36,28 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa}: L
             if (result.twofa_required) {
                 if (result.method === "authenticator" && result.twofa_enabled) {
                     gotwofa();
-                } 
+                }
                 // else if (result.method === "email") {
                 //     gotoemail();
                 // }
             }
             else if (result.success) {
                 alert("login sucess");
-                onloginsucces(result)
-                gotoDASHBOARD();
+                try {
+                    const res = await fetch('https://localhost:3010/api/profile', {
+                        method: 'GET',
+                        credentials: 'include',
+                    });
+                    if(res.ok)
+                    {
+                        const ress = await await res.json();
+                        onloginsucces(ress);
+                        gotoDASHBOARD();
+                    }
+                }
+                catch (err) {
+                    console.log("error api profile ")
+                }
             }
             else {
                 alert("❌ Invalid credentials");

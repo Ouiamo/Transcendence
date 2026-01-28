@@ -24,17 +24,13 @@ import Setting from './Setting.tsx';
 
 type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa'
 function App(){
-  // const [twoFactor, setTwoFactor] = useState(false)
  
   const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
     console.log("Current Page is:", currentPage);
-//  const set_is_enable = ()=>{
-//   setTwoFactor(twoFactor);
-//   console.log(" towafa is ^^^^^^^^^^ ", twoFactor)
-//  }
+
 const gotowfa =() =>{
     localStorage.setItem('page', 'twofa');
   setCurrentPage( 'twofa');
@@ -43,10 +39,7 @@ const gotoHome =() =>{
     localStorage.setItem('page', 'HOME');
   setCurrentPage( 'HOME');
 }
-// const gotoemail =() =>{
-//     localStorage.setItem('page', 'email');
-//   setCurrentPage( 'email');
-// }
+
   const gotogamelocal = ()=>{
     localStorage.setItem('page', 'GAME_L');
     setCurrentPage('GAME_L');
@@ -129,7 +122,6 @@ useEffect(() => {
   };
   checkSession();
 }, []);
-
 if(loading) return <div>Loading...</div>
   return (
     <div >

@@ -41,17 +41,17 @@ if (statsCount.count === 0) {
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         const userId = payload.id;
         const {winner, opponent_username} = request.body;
-        console.log("usrIDddddddddddddd ", userId, " ooooooooooooooo ", winner);
+        console.log("usrIDddddd ", userId, " ooooooo ", winner);
         const user = await dbGet('SELECT username FROM users WHERE id = ?', [userId]);
         if(winner === user.username){
             await dbRun(
-                'UPDATE stats SET wins = wins + 1, total_matches = total_matches + 1, opp_username = ? WHERE user_id = ?',
+                'UPDATE stats SET wins = wins + 1, total_matches = total_matches + 1, points = points + 30, opp_username = ? WHERE user_id = ?',
                 [opponent_username, userId]
             );
         }
         else{
             await dbRun(
-                'UPDATE stats SET loss = loss + 1, total_matches = total_matches + 1, opp_username = ? WHERE user_id = ?',
+                'UPDATE stats SET loss = loss + 1, total_matches = total_matches + 1, points = points - 30, opp_username = ? WHERE user_id = ?',
                 [opponent_username, userId]
             );
         }
@@ -96,4 +96,7 @@ if (statsCount.count === 0) {
         return reply.code(500).send({ error: 'Server error: ' + err.message });
     }
 });
+
+  
+
 };

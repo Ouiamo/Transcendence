@@ -103,7 +103,7 @@ export async function gameResults(data:{
   winner: string;
   opponent_username: string;
 }) {
-  const response = await fetch(`https://backend:3010/api/stats/game_results`, {
+  const response = await fetch(`https://localhost:3010/api/stats/game_results`, { // kant backend
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -120,8 +120,8 @@ export async function gamescore(data:{
   match_type: string;
 }) {
   console.log("game score g front:: ", data.opponent_username, data.user_score, data.opp_score, data.match_type);
-  const response = await fetch(`https://backend:3010/api/history/new_score`, {
-            method: 'POST',
+  const response = await fetch(`https://localhost:3010/api/history/new_score`, { // kant backend
+            method: 'POST', 
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)

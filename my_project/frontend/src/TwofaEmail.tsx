@@ -10,7 +10,7 @@ function TwofaEmail( { gotohome}:twoemailinter)  {
    const send_email = async()=>{
         try {
           console.log("dkahltttttttt");
-            const res = await fetch("https://backend:3010/api/2fa/email/send", {
+            const res = await fetch("https://localhost:3010/api/2fa/email/send", {// kant backend
                 method: "GET",
                 credentials: "include",
             });
@@ -32,7 +32,7 @@ function TwofaEmail( { gotohome}:twoemailinter)  {
       try {
         console.log(" code isssss ________________-+ ", code);
         const res = await fetch(
-          "https://backend:3010/api/2fa/email/verify",
+          "https://localhost:3010/api/2fa/email/verify",// kant backend
           {
             method: "POST",
             credentials: "include",

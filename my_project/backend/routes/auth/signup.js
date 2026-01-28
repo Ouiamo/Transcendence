@@ -26,6 +26,10 @@ fastify.post('/api/signup', async (request, reply) => {
         VALUES (?, ?, ?, ?, ?, ?)`,
         ['local', firstname, lastname, username, email, hashedPassword]
       );
+      await dbRun(`
+        INSERT INTO stats (user_id, opp_username, opp_id, wins, loss, total_matches, win_rate, points)
+        VALUES (?, "none", 0, 0, 0, 0, 0, 0)
+      `, [result.lastID]); // hadi zdtha bach new users ytzado 7ta f stats table (Asma)
       return reply.code(201).send({
         success: true,
         userId: result.lastID,

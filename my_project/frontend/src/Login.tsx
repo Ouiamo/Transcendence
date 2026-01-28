@@ -19,7 +19,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, go
     const [gmailogin, setgmailogin] = useState('');
 
     const handel_auth_goole = async () => {
-        window.location.href = 'https://localhost:3010/api/auth/google'
+        window.location.href = 'https://localhost:3010/api/auth/google' // kant backend
         
     }
     const handel_auth_42 = async () => {

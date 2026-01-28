@@ -16,7 +16,7 @@ export function Friendlist() {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await fetch('https://backend:3010/api/friends', {
+        const res = await fetch('https://localhost:3010/api/friends', { // kant backend
           method: 'GET',
           credentials: 'include',
         });
@@ -49,10 +49,10 @@ export function Friendlist() {
     // 
     socket?.emit("inviting", {idFriend, username});
 
-  //  socket?.on("invitation_received", (data) => {
-  //   console.log("Invitation received:", data);
-  //   alert(`Game invitation from ${data.fromUsername}`);
-  // });
+   socket?.on("invitation_received", (data) => {
+    console.log("Invitation received:", data);
+    alert(`Game invitation from ${data.fromUsername}`);
+  });
 
   }
 

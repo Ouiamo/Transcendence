@@ -1,4 +1,4 @@
-import { IoSearch, IoHomeOutline, IoSettingsOutline, IoNotificationsOutline, IoPersonCircleOutline, IoLogOutOutline } from "react-icons/io5";
+import { IoSearch, IoHomeOutline, IoSettingsOutline, IoNotificationsOutline, IoPersonCircleOutline, IoLogOutOutline, IoGameControllerOutline } from "react-icons/io5";
 import {FaUsers } from "react-icons/fa";
 
 interface sideb{
@@ -9,8 +9,9 @@ interface sideb{
     gotoprofil : ()=>void;
     gotofriends :()=> void;
     gotosetting : ()=> void;
+    gotoleaderboard : ()=> void;
 }
-export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends , gotosetting}:sideb){
+export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends , gotosetting, gotoleaderboard}:sideb){
     // console.log(user_);
        const logout = async () => {
         try {
@@ -45,14 +46,11 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                         {/* <IconContext.Provider value={{ color: "white", size: "1.5em", className: "global-class-name" }}></IconContext.Provider> */}
                         <li><IoSearch size={40} className="mr-[40px] !text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li>
                         <li><IoNotificationsOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
-                        {/* <li><IoGameControllerOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li> */}
+                        <li><IoGameControllerOutline size={40} onClick={gotoleaderboard} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoSettingsOutline size={40} onClick={gotosetting} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoHomeOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"onClick={gotodashbord} /></li>
                         <li><IoPersonCircleOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotoprofil} /></li>
                         <li><FaUsers size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotofriends} /></li>
-
-
-                        
                     </ul>
                 </nav>
             <button className=" w-[90px] h-[50px]   bg-[rgba(45,27,105,0.7)] flex items-center justify-center shadow-[0_0_10px_#ff44ff] border border-[#ff44ff]/30 cursor-pointer hover:scale-110 transition-all duration-200 rounded-full" onClick={logout} > 

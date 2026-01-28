@@ -18,7 +18,7 @@ input:-webkit-autofill:active{
 }
 
 .shrink-img {
-  width: 90px;
+  width: 20px;
   height: auto; /* Ensures the aspect ratio is preserved */
   /* Or use object-fit if you need specific container fitting */
   /* object-fit: cover; */ 

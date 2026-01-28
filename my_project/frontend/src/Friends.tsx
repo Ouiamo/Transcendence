@@ -12,7 +12,7 @@ function Friends() {
 
     const serch = async (searchfriend: any) => {
         try {
-            const ser = await fetch(`https://backend:3010/api/users/search/${searchfriend}`, {
+            const ser = await fetch(`https://localhost:3010/api/users/search/${searchfriend}`, { // kant backend
                 method: 'GET',
                 credentials: 'include',
             });
@@ -20,8 +20,8 @@ function Friends() {
                 const serc = await ser.json();
                 setdatafriend(serc.users);
                 if (serc.users && serc.users.length > 0) {
-                    const check = await fetch(`https://backend:3010/api/friends/check_friendship/${searchfriend}`, {
-                        method: 'GET',
+                    const check = await fetch(`https://localhost:3010/api/friends/check_friendship/${searchfriend}`, { //kant backend
+                        method: 'GET', 
                         credentials: 'include',
                     });
                     
@@ -51,7 +51,7 @@ function Friends() {
 
 
         try {
-            const response = await fetch('https://backend:3010/api/friends', {
+            const response = await fetch('https://localhost:3010/api/friends', { // kant backend
                 method: 'GET',
                 credentials: 'include',
             });
@@ -70,7 +70,7 @@ function Friends() {
     };
     const addnewfriend = async () => {
         try {
-            const response = await fetch('https://backend:3010/api/friends/add', {
+            const response = await fetch('https://localhost:3010/api/friends/add', { //kant backend
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendUsername: searchfriend }),
@@ -97,7 +97,7 @@ function Friends() {
     const handleRemoveFriend = async (id: number) => {
         try {
 
-            const del = await fetch('https://backend:3010/api/friends/remove', {
+            const del = await fetch('https://localhost:3010/api/friends/remove', { //kant backend
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendId: id }),

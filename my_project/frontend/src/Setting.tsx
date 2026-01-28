@@ -46,7 +46,7 @@ function TwoFASetting({ user }: intersetting) {
   return;
  }
     try {
-      const response = await fetch('https://backend:3010/api/profile', {
+      const response = await fetch('https://localhost:3010/api/profile', {// kant backend
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ function TwoFASetting({ user }: intersetting) {
   const enable2FA = async (mthd: "email" | "authenticator") => {
     try {
 
-      const res = await fetch("https://backend:3010/api/2fa/enable", {
+      const res = await fetch("https://localhost:3010/api/2fa/enable", {// kant backend
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -91,7 +91,7 @@ function TwoFASetting({ user }: intersetting) {
         else if(mthd === 'email')
         {
           // try {
-          //   const res = await fetch("https://backend:3010/api/2fa/email/send", {
+          //   const res = await fetch("https://localhost:3010/api/2fa/email/send", {
           //       method: "POST",
           //       credentials: "include",
           //       headers: { "Content-Type": "application/json" }

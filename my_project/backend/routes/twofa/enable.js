@@ -23,7 +23,7 @@ module.exports = async function (fastify) {
       );
 
       const qrCode = await QRCode.toDataURL(secret.otpauth_url, {color: {
-      dark: '#ff99ff', light: '#0f0f0f' }});
+      dark: '#ff99ff', light: '#32174D' }});
       return reply.send({ qrCode, secret: secret.base32,
         twofa_enabled: false,
       });

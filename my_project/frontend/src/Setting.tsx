@@ -1,4 +1,4 @@
-import  { useState } from "react"
+import { useState } from "react"
 import { useEffect } from "react";
 
 interface intersetting {
@@ -14,7 +14,7 @@ function TwoFASetting({ user }: intersetting) {
   const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
   const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '', '']);
   const [showVerification, setShowVerification] = useState<boolean>(false);
-  
+
   useEffect(() => {
     if (user?.twofa_enabled !== undefined) {
       setTwoFactor(user.twofa_enabled);
@@ -22,65 +22,58 @@ function TwoFASetting({ user }: intersetting) {
   }, [user]);
 
   const toggle2FA = async () => {
-  if (!twoFactor) 
-  {
-    await enable2FA("authenticator");
-  } 
-  else 
-  {
-        try {
-      const res = await fetch("https://localhost:3010/api/2fa/disable", {
-        method: "POST",
-        credentials: "include",
-      });
-      
-      if (res.ok) {
-        setTwoFactor(false);
-        setQrCode(null);
-        setShowVerification(false);
-        setVerificationCode(['', '', '', '', '', '']);
-        alert("2FA disabled");
-      }
-    } catch (err) {
-      console.error("Failed to disable 2FA", err);
+    if (!twoFactor) {
+      await enable2FA("authenticator");
     }
-  }
-};
+    else {
+      try {
+        const res = await fetch("https://localhost:3010/api/2fa/disable", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          setTwoFactor(false);
+          setQrCode(null);
+          setShowVerification(false);
+          setVerificationCode(['', '', '', '', '', '']);
+          alert("2FA disabled");
+        }
+      } catch (err) {
+        console.error("Failed to disable 2FA", err);
+      }
+    }
+  };
 
   const handelupdateprofile = async () => {
     // console.log(" jitttttttttt ");
-    let hasdata = false ;
- const datatosand: any = {};
+    let hasdata = false;
+    const datatosand: any = {};
     if (selectedFile) {
-      hasdata = true; 
-    // datatosand.append('avatar', selectedFile); 
-  }
-    
-    if (formData.firstname.trim() != "")
-    {
+      hasdata = true;
+      // datatosand.append('avatar', selectedFile); 
+    }
+
+    if (formData.firstname.trim() != "") {
       datatosand.firstname = formData.firstname;
-      hasdata = true; 
+      hasdata = true;
     }
-    if (formData.lastname.trim() != "")
-    {
+    if (formData.lastname.trim() != "") {
       datatosand.lastname = formData.lastname;
-      hasdata = true; 
+      hasdata = true;
     }
-    if (formData.username.trim() != "")
-    {
+    if (formData.username.trim() != "") {
       datatosand.username = formData.username;
-      hasdata = true; 
+      hasdata = true;
     }
-    if (formData.email.trim() != "")
-    {
+    if (formData.email.trim() != "") {
       datatosand.email = formData.email;
-      hasdata = true; 
+      hasdata = true;
     }
- if(!hasdata )
- {
-  alert("has no data ");
-  return;
- }
+    if (!hasdata) {
+      alert("has no data ");
+      return;
+    }
     try {
       const response = await fetch('https://localhost:3010/api/profile', {
         method: 'PATCH',
@@ -124,7 +117,7 @@ function TwoFASetting({ user }: intersetting) {
         }
       }
       else {
-         alert("❌ Failed to enable 2FA");
+        alert("❌ Failed to enable 2FA");
         console.log("erro akhotiii");
         return;
       }
@@ -138,11 +131,11 @@ function TwoFASetting({ user }: intersetting) {
   const handleCodeChange = (index: number, value: string) => {
     if (value.length > 1) return; // Only allow single digit
     if (!/^\d*$/.test(value)) return; // Only allow numbers
-    
+
     const newCode = [...verificationCode];
     newCode[index] = value;
     setVerificationCode(newCode);
-    
+
     // Auto-focus next input
     if (value && index < 5) {
       const nextInput = document.getElementById(`code-input-${index + 1}`);
@@ -173,7 +166,7 @@ function TwoFASetting({ user }: intersetting) {
       });
 
       const data = await res.json();
-      
+
       if (res.ok && data.success) {
         setTwoFactor(true);
         setShowVerification(false);
@@ -192,114 +185,115 @@ function TwoFASetting({ user }: intersetting) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] justify-center  items-center w-full h-full ">
-      <div className="flex flex-col w-[700px] h-fit border border-[#ff99ff] gap-[20px] ">
-        apdate profile
-        <div className="flex flex-col gap-[20px] ">
-          <div className="flex flex-col items-center gap-[6px]">
-            <div className=" relative  w-[50px] h-[50px]  ">
+    <div className="flex min-h-screen w-full bg-[#32174D]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] justify-center  items-center w-full h-full  bg-[#32174D]">
+        <div className="flex flex-col w-[700px] h-fit border border-[#ff99ff] gap-[20px] ">
+          apdate profile
+          <div className="flex flex-col gap-[20px] ">
+            <div className="flex flex-col items-center gap-[6px]">
+              <div className=" relative  w-[50px] h-[50px]  ">
 
-              <img
-                src={previewUrl || user?.avatarUrl || 'https://localhost:3010/api/avatar/file/default-avatar.png'}
-                className="w-full h-full rounded-full object-cover border-2 border-[#ff99ff]"
-                alt="Avatar Preview"
+                <img
+                  src={previewUrl || user?.avatarUrl || 'https://localhost:3010/api/avatar/file/default-avatar.png'}
+                  className="w-full h-full rounded-full object-cover border-2 border-[#ff99ff]"
+                  alt="Avatar Preview"
+                />
+              </div>
+              <label
+                htmlFor="avatar-upload"
+                className="cursor-pointer bg-[#ff99ff]  rounded-full text-black font-bold hover:bg-[#ff77ff] transition-all"
+              >
+                Change Photo
+              </label>
+
+
+              <input
+                id="avatar-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setSelectedFile(file);
+                    setPreviewUrl(URL.createObjectURL(file));
+                  }
+                }}
               />
             </div>
-            <label
-              htmlFor="avatar-upload"
-              className="cursor-pointer bg-[#ff99ff]  rounded-full text-black font-bold hover:bg-[#ff77ff] transition-all"
-            >
-              Change Photo
-            </label>
-
-
             <input
-              id="avatar-upload"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setSelectedFile(file);
-                  setPreviewUrl(URL.createObjectURL(file)); 
-                }
-              }}
+              type="text"
+              placeholder="First Name"
+              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
             />
-          </div>
-          <input
-            type="text"
-            placeholder="First Name"
-            className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
-            onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="lastname Name"
-            className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
-            onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="username Name"
-            className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
-            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="email Name"
-            className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          />
-          <div className="flex justify-center">
+            <input
+              type="text"
+              placeholder="lastname Name"
+              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="username Name"
+              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="email Name"
+              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+            <div className="flex justify-center">
 
-            <button className="  mt-[20px] w-[200px] h-[44px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold  uppercase ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]" onClick={handelupdateprofile}>save change </button>
+              <button className="  mt-[20px] w-[200px] h-[44px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold  uppercase ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]" onClick={handelupdateprofile}>save change </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex flex-col  ">
-        <div className="flex flex-col  border border-[#ff99ff] w-[700px] p-6">
-          <h3 className="text-xl font-bold mb-4">Two-Factor Authentication</h3>
-          <button 
-            onClick={() => {toggle2FA()}}
-            className="mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold hover:shadow-[0_0_25px_rgba(255,68,255,0.7)]"
-          > 
-            {twoFactor ? "Disable 2FA" : "Enable 2FA"}
-          </button>
-          <p className="mb-4">2FA is: <span className="font-bold">{twoFactor ? "ON" : "OFF"}</span></p>
+        <div className="flex flex-col  ">
+          <div className="flex flex-col  border border-[#ff99ff] w-[700px] p-6">
+            <h3 className="text-xl font-bold mb-4">Two-Factor Authentication</h3>
+            <button
+              onClick={() => { toggle2FA() }}
+              className="mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold hover:shadow-[0_0_25px_rgba(255,68,255,0.7)]"
+            >
+              {twoFactor ? "Disable 2FA" : "Enable 2FA"}
+            </button>
+            <p className="mb-4">2FA is: <span className="font-bold">{twoFactor ? "ON" : "OFF"}</span></p>
 
-          {showVerification && (
-            <div className="flex flex-col items-center gap-8">
-              {qrCode && (
-                <div className="flex flex-col items-center gap-2 mb-4">
-                  <p className="text-center">Scan this QR code with your Authenticator app:</p>
-                  <img src={qrCode} alt="Scan this QR code" className="border-2 border-[#ff99ff] rounded-lg p-2" />
-                </div>
-              )}
-              
-              <p className="text-center font-semibold">Enter the 6-digit code from your app:</p>
-              <div className="flex gap-2 justify-center">
-                {verificationCode.map((digit, index) => (
-                  <input
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      backgroundColor: 'black',
-                      color: 'white',
-                      textAlign: 'center',
-                      fontSize: '18px',
-                      border: '2px solid #ff99ff',
-                      boxShadow: '0 0 10px rgba(255,68,255,0.5)',
-                      borderRadius: '8px',
-                    }}
-                    key={index}
-                    id={`code-input-${index}`}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleCodeChange(index, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(index, e)}
+            {showVerification && (
+              <div className="flex flex-col items-center gap-8">
+                {qrCode && (
+                  <div className="flex flex-col items-center gap-2 mb-4">
+                    <p className="text-center">Scan this QR code with your Authenticator app:</p>
+                    <img src={qrCode} alt="Scan this QR code" className="border-2 border-[#ff99ff] rounded-lg p-2" />
+                  </div>
+                )}
+
+                <p className="text-center font-semibold">Enter the 6-digit code from your app:</p>
+                <div className="flex gap-2 justify-center">
+                  {verificationCode.map((digit, index) => (
+                    <input
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        backgroundColor: '#32174D',
+                        color: 'white',
+                        textAlign: 'center',
+                        fontSize: '18px',
+                        border: '2px solid #ff99ff',
+                        boxShadow: '0 0 10px rgba(255,68,255,0.5)',
+                        borderRadius: '8px',
+                      }}
+                      key={index}
+                      id={`code-input-${index}`}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleCodeChange(index, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(index, e)}
                     //  className="
                     //             w-9 h-9
                     //             text-center
@@ -314,18 +308,19 @@ function TwoFASetting({ user }: intersetting) {
                     //             focus:shadow-[0_0_10px_rgba(255,68,255,0.5)]
                     //             "
                     // autoFocus={index === 0}
-                  />
-                ))}
-              </div>
-              
-              <button 
-                onClick={verifyCode}
-                className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]">
+                    />
+                  ))}
+                </div>
 
-                Verify Code
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={verifyCode}
+                  className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]">
+
+                  Verify Code
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

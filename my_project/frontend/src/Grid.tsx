@@ -49,7 +49,7 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                     <div onClick={listfriends} className="w-[350px] h-[300px]  justify-center items-center bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-2xl  border-2 border-[#ff44ff] transition-all duration-300 hover:scale-105 hover:border-[#ff99ff] border-[1px] border-[#ff44ff]/70  rounded-[30px]   shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff] " >
 
                         <div className="flex justify-center items-center  w-[350px] h-[300px] flex-col">
-                            <FiGlobe className=" h-[50px] w-[30px]" />
+                            <FiGlobe className=" h-[55px] w-[60px]" />
                             <p className="text-[#ffff] font-['Courier_New',monospace] ">REMOTE GAME</p>
                             <p className="text-xs text-gray-400 font-['Courier_New',monospace] text-center  ">Play against players worldwide</p>
                             <div className="flex gap-[3px] mt-8 justify-center items-center">
@@ -64,7 +64,7 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                     </div>
                     <div onClick={goto} className=" w-[350px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-2xl p-8 border-2 border-[#ff44ff] transition-all duration-300 hover:scale-105 hover:border-[#ff99ff] border-[1px] border-[#ff44ff]/70  rounded-[30px] justify-content-center  shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
                         <div className="flex justify-center items-center  w-[350px] h-[300px] flex-col">
-                            <IoGameControllerOutline className=" h-[50px] w-[30px]" />
+                            <IoGameControllerOutline className=" h-[55px] w-[60px]" />
                             <p className="text-[#ffff] font-['Courier_New',monospace] "> LOCAL GAME </p>
                             <p className="text-xs text-gray-400 font-['Courier_New',monospace] text-center  t"> Play with a friend locally</p>
 
@@ -81,7 +81,7 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                     <div onClick={goto_ia} className=" w-[350px] bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)] backdrop-blur-md rounded-2xl p-8 border-2 border-[#ff44ff] transition-all duration-300 hover:scale-105 hover:border-[#ff99ff] border-[1px] border-[#ff44ff]/70  rounded-[30px] justify-content-center  shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
 
                         <div className="flex justify-center items-center  w-[350px] h-[300px] flex-col">
-                            <RiRobot2Line className=" h-[50px] w-[30px] " />
+                            <RiRobot2Line className=" h-[55px] w-[60px] " />
                             <p className="text-[#ffff] font-['Courier_New',monospace] "> IA TRAINING </p>
                             <p className="text-xs text-gray-400 font-['Courier_New',monospace] text-center  t"> Challenge the intelligence artificielle</p>
 

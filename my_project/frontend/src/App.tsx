@@ -86,7 +86,7 @@ const gotoHome =() =>{
 
 useEffect(() => {
   const twofa = localStorage.getItem('twofa');
-  console.log("items is ^^^^^^^^^^^^^ ", twofa);
+  // console.log("items is ^^^^^^^^^^^^^ ", twofa);
   const checkSession = async () => {
     try {
       const res = await fetch('https://localhost:3010/api/profile', {

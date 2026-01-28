@@ -1,4 +1,4 @@
-import  { useState } from "react"
+import { useState } from "react"
 import { useEffect } from "react";
 
 interface intersetting {
@@ -11,10 +11,10 @@ function TwoFASetting({ user }: intersetting) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
+  const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '', avatar_url: '' });
   const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '', '']);
   const [showVerification, setShowVerification] = useState<boolean>(false);
-  
+
   useEffect(() => {
     if (user?.twofa_enabled !== undefined) {
       setTwoFactor(user.twofa_enabled);
@@ -22,65 +22,68 @@ function TwoFASetting({ user }: intersetting) {
   }, [user]);
 
   const toggle2FA = async () => {
-  if (!twoFactor) 
-  {
-    await enable2FA("authenticator");
-  } 
-  else 
-  {
-        try {
-      const res = await fetch("https://localhost:3010/api/2fa/disable", {
-        method: "POST",
-        credentials: "include",
-      });
-      
-      if (res.ok) {
-        setTwoFactor(false);
-        setQrCode(null);
-        setShowVerification(false);
-        setVerificationCode(['', '', '', '', '', '']);
-        alert("2FA disabled");
-      }
-    } catch (err) {
-      console.error("Failed to disable 2FA", err);
+    if (!twoFactor) {
+      await enable2FA("authenticator");
     }
-  }
-};
+    else {
+      try {
+        const res = await fetch("https://localhost:3010/api/2fa/disable", {
+          method: "POST",
+          credentials: "include",
+        });
+
+        if (res.ok) {
+          setTwoFactor(false);
+          setQrCode(null);
+          setShowVerification(false);
+          setVerificationCode(['', '', '', '', '', '']);
+          alert("2FA disabled");
+        }
+      } catch (err) {
+        console.error("Failed to disable 2FA", err);
+      }
+    }
+  };
 
   const handelupdateprofile = async () => {
     // console.log(" jitttttttttt ");
-    let hasdata = false ;
- const datatosand: any = {};
+    let hasdata = false;
+    const datatosand: any = {};
+    const getBase64 = (file: File) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    };
     if (selectedFile) {
-      hasdata = true; 
-    // datatosand.append('avatar', selectedFile); 
-  }
-    
-    if (formData.firstname.trim() != "")
-    {
+      console.log(" file issssssss ",selectedFile);
+      hasdata = true;
+      // تحويل الصورة لنص (Base64)
+      datatosand.avatar_url = await getBase64(selectedFile);
+    }
+
+    if (formData.firstname.trim() != "") {
       datatosand.firstname = formData.firstname;
-      hasdata = true; 
+      hasdata = true;
     }
-    if (formData.lastname.trim() != "")
-    {
+    if (formData.lastname.trim() != "") {
       datatosand.lastname = formData.lastname;
-      hasdata = true; 
+      hasdata = true;
     }
-    if (formData.username.trim() != "")
-    {
+    if (formData.username.trim() != "") {
       datatosand.username = formData.username;
-      hasdata = true; 
+      hasdata = true;
     }
-    if (formData.email.trim() != "")
-    {
+    if (formData.email.trim() != "") {
       datatosand.email = formData.email;
-      hasdata = true; 
+      hasdata = true;
     }
- if(!hasdata )
- {
-  alert("has no data ");
-  return;
- }
+    if (!hasdata) {
+      alert("has no data ");
+      return;
+    }
     try {
       const response = await fetch('https://localhost:3010/api/profile', {
         method: 'PATCH',
@@ -124,7 +127,7 @@ function TwoFASetting({ user }: intersetting) {
         }
       }
       else {
-         alert("❌ Failed to enable 2FA");
+        alert("❌ Failed to enable 2FA");
         console.log("erro akhotiii");
         return;
       }
@@ -138,11 +141,11 @@ function TwoFASetting({ user }: intersetting) {
   const handleCodeChange = (index: number, value: string) => {
     if (value.length > 1) return; // Only allow single digit
     if (!/^\d*$/.test(value)) return; // Only allow numbers
-    
+
     const newCode = [...verificationCode];
     newCode[index] = value;
     setVerificationCode(newCode);
-    
+
     // Auto-focus next input
     if (value && index < 5) {
       const nextInput = document.getElementById(`code-input-${index + 1}`);
@@ -173,7 +176,7 @@ function TwoFASetting({ user }: intersetting) {
       });
 
       const data = await res.json();
-      
+
       if (res.ok && data.success) {
         setTwoFactor(true);
         setShowVerification(false);
@@ -222,7 +225,7 @@ function TwoFASetting({ user }: intersetting) {
                 const file = e.target.files?.[0];
                 if (file) {
                   setSelectedFile(file);
-                  setPreviewUrl(URL.createObjectURL(file)); 
+                  setPreviewUrl(URL.createObjectURL(file));
                 }
               }}
             />
@@ -260,10 +263,10 @@ function TwoFASetting({ user }: intersetting) {
       <div className="flex flex-col  ">
         <div className="flex flex-col  border border-[#ff99ff] w-[700px] p-6">
           <h3 className="text-xl font-bold mb-4">Two-Factor Authentication</h3>
-          <button 
-            onClick={() => {toggle2FA()}}
+          <button
+            onClick={() => { toggle2FA() }}
             className="mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold hover:shadow-[0_0_25px_rgba(255,68,255,0.7)]"
-          > 
+          >
             {twoFactor ? "Disable 2FA" : "Enable 2FA"}
           </button>
           <p className="mb-4">2FA is: <span className="font-bold">{twoFactor ? "ON" : "OFF"}</span></p>
@@ -276,7 +279,7 @@ function TwoFASetting({ user }: intersetting) {
                   <img src={qrCode} alt="Scan this QR code" className="border-2 border-[#ff99ff] rounded-lg p-2" />
                 </div>
               )}
-              
+
               <p className="text-center font-semibold">Enter the 6-digit code from your app:</p>
               <div className="flex gap-2 justify-center">
                 {verificationCode.map((digit, index) => (
@@ -300,25 +303,25 @@ function TwoFASetting({ user }: intersetting) {
                     value={digit}
                     onChange={(e) => handleCodeChange(index, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(index, e)}
-                    //  className="
-                    //             w-9 h-9
-                    //             text-center
-                    //             text-lg
-                    //             font-bold
-                    //             bg-black/40
-                    //             text-white
-                    //             border-2 border-[#ff99ff]
-                    //             rounded-md
-                    //             outline-none
-                    //             focus:border-[#ff44ff]
-                    //             focus:shadow-[0_0_10px_rgba(255,68,255,0.5)]
-                    //             "
-                    // autoFocus={index === 0}
+                  //  className="
+                  //             w-9 h-9
+                  //             text-center
+                  //             text-lg
+                  //             font-bold
+                  //             bg-black/40
+                  //             text-white
+                  //             border-2 border-[#ff99ff]
+                  //             rounded-md
+                  //             outline-none
+                  //             focus:border-[#ff44ff]
+                  //             focus:shadow-[0_0_10px_rgba(255,68,255,0.5)]
+                  //             "
+                  // autoFocus={index === 0}
                   />
                 ))}
               </div>
-              
-              <button 
+
+              <button
                 onClick={verifyCode}
                 className="mt-6 px-6 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]">
 

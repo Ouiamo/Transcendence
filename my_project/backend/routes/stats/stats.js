@@ -18,6 +18,20 @@ module.exports = async function(fastify, options) {
     console.error('Error creating stats table:', err);
   })
 
+  // Check if points column exists and add it if it doesn't
+  const tableInfo = await dbAll("PRAGMA table_info(stats)");
+  const hasPointsColumn = tableInfo.some(col => col.name === 'points');
+  
+  if (!hasPointsColumn) {
+    await dbRun(`ALTER TABLE stats ADD COLUMN points INTEGER NOT NULL DEFAULT 0`)
+      .then(() => {
+        console.log('Points column added to stats table');
+      })
+      .catch(err => {
+        console.error('Error adding points column:', err);
+      });
+  }
+
   const statsCount = await dbGet('SELECT COUNT(*) as count FROM stats');
 
 if (statsCount.count === 0) {

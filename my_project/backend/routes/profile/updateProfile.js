@@ -1,7 +1,25 @@
 
 const { dbGet, dbRun } = require('../../utils/dbHelpers');
 const jwt = require('jsonwebtoken');
+const path = require('path');
+const fs = require('fs');
+const console = require('console');
+
  module.exports = async function (fastify) {
+
+fastify.get('/api/avatar/file/:filename', async (request, reply) => {
+  const { filename } = request.params;
+
+  const filePath = path.join(__dirname, '../../avatar/file', filename);
+
+  if (!fs.existsSync(filePath)) {
+    return reply.code(404).send({ error: 'File not found' });
+  }
+
+  reply.type('image/png');
+  return reply.send(fs.createReadStream(filePath));
+});
+
 
  fastify.patch('/api/profile', async(request, reply) => {
    const token = request.cookies.access_token;
@@ -39,7 +57,7 @@ const jwt = require('jsonwebtoken');
     if (lastname) { fields.push('lastname = ?'); values.push(lastname); }
     if (username) { fields.push('username = ?'); values.push(username); }
     if (email) { fields.push('email = ?'); values.push(email); }
-        // 2. معالجة الصورة (Base64) وحفظها كملف
+    // 2. معالجة الصورة (Base64) وحفظها كملف
     if (avatar_url && avatar_url.startsWith('data:image')) {
       // تحويل الـ Base64 إلى Buffer
       const base64Data = avatar_url.replace(/^data:image\/\w+;base64,/, "");
@@ -47,14 +65,16 @@ const jwt = require('jsonwebtoken');
       // إنشاء اسم فريد للملف (بواسطة الـ ID والتوقيت لضمان عدم التكرار)
       const fileName = `avatar-${payload.id}-${Date.now()}.png`;
       const uploadPath = path.join(__dirname, '../../avatar/file', fileName);
-
+      
       // حفظ الملف في المجلد (Sync لتبسيط الكود، أو استخدمي Promises للأداء)
       fs.writeFileSync(uploadPath, buffer);
       // إضافة حقل الصورة للـ SQL Query
       fields.push('avatar_url = ?');
       values.push(fileName);
     }
-
+    
+    console.log("fields------>", firstname, lastname, username, email, avatar_url);
+    console.log("values------>", values);
     if (fields.length === 0) {
       return reply.code(400).send({ error: 'No fields to update' });
     }
@@ -74,7 +94,8 @@ const jwt = require('jsonwebtoken');
      if (updatedUser.avatar_url) {
       finalAvatarUrl = `https://localhost:3010/api/avatar/file/${updatedUser.avatar_url}`;
     }
-
+    console.log("updatedUser------>", updatedUser);
+    console.log("finalAvatarUrl------>", finalAvatarUrl);
     return reply.send({
       success: true,
       message: 'Profile updated successfully',

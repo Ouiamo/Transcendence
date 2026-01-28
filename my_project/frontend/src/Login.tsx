@@ -35,6 +35,21 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
             console.log("login resulttttttttttttaaaaaaaaa ", result);
             if (result.twofa_required) {
                 if (result.method === "authenticator" && result.twofa_enabled) {
+                     try {
+                    const res1 = await fetch('https://localhost:3010/api/profile', {
+                        method: 'GET',
+                        credentials: 'include',
+                    });
+                    if(res1.ok)
+                    {
+                        const ress1 = await await res1.json();
+                        onloginsucces(ress1);
+                        gotoDASHBOARD();
+                    }
+                }
+                catch (err) {
+                    console.log("error api profile ")
+                }
                     gotwofa();
                 }
                 // else if (result.method === "email") {

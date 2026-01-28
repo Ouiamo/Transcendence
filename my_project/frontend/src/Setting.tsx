@@ -11,7 +11,7 @@ function TwoFASetting({ user }: intersetting) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '' });
+  const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '', avatar_url: '' });
   const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '', '']);
   const [showVerification, setShowVerification] = useState<boolean>(false);
 
@@ -49,9 +49,19 @@ function TwoFASetting({ user }: intersetting) {
     // console.log(" jitttttttttt ");
     let hasdata = false;
     const datatosand: any = {};
+    const getBase64 = (file: File) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    };
     if (selectedFile) {
+      console.log(" file issssssss ",selectedFile);
       hasdata = true;
-      // datatosand.append('avatar', selectedFile); 
+      // تحويل الصورة لنص (Base64)
+      datatosand.avatar_url = await getBase64(selectedFile);
     }
 
     if (formData.firstname.trim() != "") {
@@ -222,10 +232,17 @@ function TwoFASetting({ user }: intersetting) {
               />
             </div>
             <input
-              type="text"
-              placeholder="First Name"
-              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
-              onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
+              id="avatar-upload"
+              type="file"
+              className="hidden"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setSelectedFile(file);
+                  setPreviewUrl(URL.createObjectURL(file));
+                }
+              }}
             />
             <input
               type="text"

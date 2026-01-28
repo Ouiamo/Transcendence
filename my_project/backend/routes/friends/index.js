@@ -358,20 +358,61 @@ module.exports = async function(fastify, options) {
       return reply.code(500).send({ error: 'Server error' });
     }
   });
-    fastify.get('/api/users/search/:query', async (request, reply) => {
-    try {
-      const { query } = request.params;
-      const users = await dbAll(`
-        SELECT id ,avatar_url, username FROM users 
-        WHERE username LIKE ? 
-        LIMIT 10
-      `, [`%${query}%`]);
-      return { success: true, users };
-    } catch (error) {
-      console.error('Search error:', error);
-      return reply.code(500).send({ error: 'Database error' });
+   fastify.get('/api/users/search/:query', async (request, reply) => {
+    const token = request.cookies.access_token;
+    let userId = null;
+
+    // محاولة جلب ID المستخدم الحالي إذا كان مسجلاً (بما أن الصداقة تتطلب login)
+    if (token) {
+        try {
+            const payload = jwt.verify(token, process.env.JWT_SECRET);
+            userId = payload.id;
+        } catch (err) { /* token invalid, proceed as guest */ }
     }
-  });
+
+    try {
+        const { query } = request.params;
+
+       
+        const users = await dbAll(`
+            SELECT 
+                u.id, 
+                u.avatar_url, 
+                u.username,
+                u.provider,
+                (SELECT status FROM friends 
+                 WHERE (user_id = ? AND friend_id = u.id) 
+                    OR (user_id = u.id AND friend_id = ?)
+                ) AS friendship_status
+            FROM users u
+            WHERE u.username LIKE ? AND u.id != ?
+            LIMIT 10
+        `, [userId, userId, `%${query}%`, userId]);
+
+        // تنظيف الداتا قبل الإرسال
+        const formattedUsers = users.map(user => {
+            let fullAvatarUrl = user.avatar_url;
+            if (user.avatar_url && user.provider === 'local') {
+                fullAvatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
+            }
+
+            return {
+                id: user.id,
+                username: user.username,
+                avatar_url: fullAvatarUrl,
+                // إذا كان الـ status هو 'accepted' يعني أصدقاء
+                is_friend: user.friendship_status === 'accepted',
+                // إذا كان 'pending' يعني الطلب كاين ولكن مزال ماتقبلش
+                is_pending: user.friendship_status === 'pending'
+            };
+        });
+
+        return { success: true, users: formattedUsers };
+    } catch (error) {
+        console.error('Search error:', error);
+        return reply.code(500).send({ error: 'Database error' });
+    }
+});
 };
 
 

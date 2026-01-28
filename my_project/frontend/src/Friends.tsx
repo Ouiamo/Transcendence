@@ -1,5 +1,4 @@
-// import React from "react";
-// 
+
 import { useEffect, useState } from 'react';
 
 function Friends() {
@@ -7,10 +6,32 @@ function Friends() {
     const [friends, setFriends] = useState<any[]>([]);
     const [newfriend, setnewFriends] = useState('');
     const [searchfriend, setsearchFriends] = useState('');
-    const [datafriend, setdatafriend] = useState<any[] | null>(null);
-    const [is_friend, setisfriend] = useState(false);
+    const [datafriend, setdatafriend] = useState<any[]>([]);
     const [is_append, setappendfriend] = useState<any[]>([]);
+    const accept_invitation = async (requestId: any) => {
 
+        try {
+            const accept = await fetch("https://localhost:3010/api/friends/accept", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ requestId: requestId }),
+                credentials: 'include'
+            })
+            if (accept.ok) {
+                const acc = await accept.json();
+                console.log(" append fe accept is result is  _____>>", acc);
+                setappendfriend((prev) => prev.filter((item) => item.request_id !== requestId));
+                alert("Friend accepted! 🎉");
+            }
+            else {
+                console.log("error a khoyii f accpt", accept);
+            }
+        }
+        catch (err) {
+            console.log("catsh erro in accepet ")
+        }
+        fetchFriends();
+    }
 
     const appending_f = async () => {
         try {
@@ -37,34 +58,18 @@ function Friends() {
                 method: 'GET',
                 credentials: 'include',
             });
-            console.log("ana likfiliyyyyyyyyyyyyy");
             if (ser.ok) {
                 const serc = await ser.json();
                 setdatafriend(serc.users);
-                console.log("resultaaa ::: >>>> ",)
-                if (serc.users && serc.users.length > 0) {
-                    const check = await fetch(`https://backend:3010/api/friends/check_friendship/${searchfriend}`, {
-                        method: 'GET',
-                        credentials: 'include',
-                    });
-
-                    if (check.ok) {
-                        const checkResult = await check.json();
-                        setisfriend(checkResult.areFriends);
-                        console.log("Status with this user********:", checkResult.areFriends);
-                    }
-                    const friendId = serc.users[0].id;
-                    console.log("The ID of the user is:", friendId);
-                }
-                else {
-                    console.log("error a khoyii ", ser);
-                }
+            }
+            else {
+                console.log("error a khoyii ", ser);
             }
         }
         catch (err) {
             console.log("catsh eroror ");
         }
-        console.log("data dyl frien issssssss ", datafriend);
+        console.log("data dyl friend issssssss ", datafriend);
         console.log("data dyl frien issssssss ", newfriend);
 
         // check_is_friend(searchfriend);
@@ -91,12 +96,12 @@ function Friends() {
             console.log("Network error (is the backend running?):", error);
         }
     };
-    const addnewfriend = async () => {
+    const addnewfriend = async (new_f : any) => {
         try {
             const response = await fetch('https://localhost:3010/api/friends/invitation', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ friendUsername: searchfriend }),
+                body: JSON.stringify({ friendUsername: new_f}),
                 credentials: 'include'
             });
 
@@ -124,7 +129,7 @@ function Friends() {
 
     const handleRemoveFriend = async (id: number) => {
         try {
-
+            console.log(" id liwsal is ", id);
             const del = await fetch('https://localhost:3010/api/friends/remove', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -132,9 +137,10 @@ function Friends() {
                 credentials: 'include'
             });
             if (del.ok) {
-                alert("sucess remodeddddddddd");
+                console.log("sucess remodeddddddddd");
+                appending_f();
+                fetchFriends();
             }
-            fetchFriends();
         }
         catch (err) {
             console.log("error removedddddddddddd");
@@ -204,50 +210,44 @@ function Friends() {
 
                         </div>
                         <div className="flex ">
-                            {
-                                datafriend && datafriend.length > 0 ?
-                                    (
+                            {datafriend && datafriend.length > 0 ? (
+                                
+                                <div className="flex flex-col gap-[4px] w-full ">
+                                    {datafriend.map((user) => (
+                                        <div key={user.id} className="flex flex-row justify-between items-center border border-[#ff99ff] p-[2px] rounded-lg bg-[#1a1a1a]">
 
-                                        <div className=" flex-1 flex flex-row  justify-between  border border-[#ff99ff]">
-                                            <div className="flex  gap-[10px]">
-                                                <img className="flex w-[50px] h-[50px] rounded-full " src={`${datafriend?.[0]?.avatar_url}`}></img>
-                                                <p className="flex text-[#ff99ff]">{datafriend?.[0]?.username}</p>
+                                           
+                                            <div className="flex items-center gap-[10px]">
+                                                <img
+                                                    className="w-[50px] h-[50px] rounded-full object-cover border border-[#ff99ff]"
+                                                    src={user.avatar_url || '/default-avatar.png'}
+                                                    alt={user.username}
+                                                />
+                                                <p className="text-[#ff99ff] font-medium">{user.username}</p>
                                             </div>
-                                            <div className=" flex ">
-                                                {!is_friend ? (
-
+                                            <div className="flex">
+                                                {!user.is_friend ? (
                                                     <button
-                                                        onClick={addnewfriend}
-                                                        className="flex w-[200px]   h-[40px] mt-[10px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white  uppercase  transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]
-        "
-                                                    >add</button>
+                                                        onClick={() => addnewfriend(user.username)}
+                                                        className="flex items-center justify-center w-[120px] h-[35px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase text-xs font-bold transition-all hover:scale-105"
+                                                    >
+                                                        Add
+                                                    </button>
                                                 ) : (
                                                     <button
-                                                        onClick={() => handleRemoveFriend(datafriend[0].id)}
-                                                        className="flex items-center justify-center w-[200px] h-[40px] mt-[10px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase transition-all duration-300 shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:scale-[1.02]"
+                                                        onClick={() => handleRemoveFriend(user.id)}
+                                                        className="flex items-center justify-center w-[120px] h-[35px] rounded-full border border-[#ff99ff] text-[#ff99ff] uppercase text-xs font-bold hover:bg-[#ff99ff] hover:text-black transition-all"
                                                     >
-                                                        remov
+                                                        Remove
                                                     </button>
                                                 )}
-
                                             </div>
-
                                         </div>
-                                    ) :
-                                    datafriend && datafriend.length === 0 ? (
-                                        <div className=" flex-1 flex  h-[50px] items-center">
-                                            <div className="flex ">
-
-                                                <span className="text-[#ff99ff] px-[20px]">user not found </span>
-                                            </div>
-
-                                        </div>
-
-                                    ) : (
-
-                                        null
-                                    )
-                            }
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-gray-500">No users found</div>
+                            )}
 
                         </div>
                     </div>
@@ -274,11 +274,11 @@ function Friends() {
                                     </div>
 
                                     <div className="flex gap-3">
-                                        <button className="bg-[#ff99ff] text-black px-4 py-1 rounded-md font-bold hover:bg-white transition-all">
+                                        <button onClick={() => accept_invitation(f.request_id)} className="bg-[#ff99ff] text-black px-[4px] py-[1px] rounded-md font-bold hover:bg-white transition-all">
                                             Accept
                                         </button>
-                                        <button className="border border-red-500 text-red-500 px-4 py-1 rounded-md hover:bg-red-500 hover:text-white transition-all">
-                                            Decline
+                                        <button onClick={() => handleRemoveFriend(f.user_id)} className="border border-red-500 text-red-500 px-[4px] py-[1px] rounded-md hover:bg-red-500 hover:text-white transition-all">
+                                            Delete
                                         </button>
                                     </div>
 
@@ -289,7 +289,7 @@ function Friends() {
                 </div>
             </div>
         </div>
-    
+
     )
 }
 

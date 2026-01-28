@@ -1,9 +1,9 @@
-const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
-const transporter = require('../../utils/mailer');
-const { dbRun, dbGet } = require('../../utils/dbHelpers');
+// const crypto = require('crypto');
+// const bcrypt = require('bcryptjs');
+// const transporter = require('../../utils/mailer');
+// const { dbRun, dbGet } = require('../../utils/dbHelpers');
 
-module.exports = async function (fastify) {
+// module.exports = async function (fastify) {
 
 //   // 📩 SEND EMAIL CODE
 //   fastify.get('/api/2fa/email/send',
@@ -139,95 +139,95 @@ module.exports = async function (fastify) {
 //       });
 //   });
 
-const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
-const transporter = require('../../utils/mailer');
-const { dbRun, dbGet } = require('../../utils/dbHelpers');
+// const crypto = require('crypto');
+// const bcrypt = require('bcryptjs');
+// const transporter = require('../../utils/mailer');
+// const { dbRun, dbGet } = require('../../utils/dbHelpers');
 
-module.exports = async function (fastify) {
+// module.exports = async function (fastify) {
 
-  // 📩 SEND EMAIL CODE
-  fastify.get('/api/2fa/email/send', async (request, reply) => {
-    try {
-      const decoded = await request.jwtVerify({ onlyCookie: true });
+//   // 📩 SEND EMAIL CODE
+//   fastify.get('/api/2fa/email/send', async (request, reply) => {
+//     try {
+//       const decoded = await request.jwtVerify({ onlyCookie: true });
 
-      const user = await dbGet(
-        'SELECT id, email FROM users WHERE id = ?',
-        [decoded.id]
-      );
+//       const user = await dbGet(
+//         'SELECT id, email FROM users WHERE id = ?',
+//         [decoded.id]
+//       );
 
-      if (!user) {
-        return reply.code(401).send({ error: 'User not found' });
-      }
+//       if (!user) {
+//         return reply.code(401).send({ error: 'User not found' });
+//       }
 
-      // generate 6-digit code
-      const code = crypto.randomInt(100000, 1000000).toString();
-      const hashedCode = await bcrypt.hash(code, 10);
-      const expires = Date.now() + 5 * 60 * 1000;
+//       // generate 6-digit code
+//       const code = crypto.randomInt(100000, 1000000).toString();
+//       const hashedCode = await bcrypt.hash(code, 10);
+//       const expires = Date.now() + 5 * 60 * 1000;
 
-      await dbRun(
-        `UPDATE users
-         SET twofa_email_code = ?, twofa_email_expires = ?
-         WHERE id = ?`,
-        [hashedCode, expires, user.id]
-      );
+//       await dbRun(
+//         `UPDATE users
+//          SET twofa_email_code = ?, twofa_email_expires = ?
+//          WHERE id = ?`,
+//         [hashedCode, expires, user.id]
+//       );
 
-      await transporter.sendMail({
-        from: `"Ping Pong 🏓" <${process.env.MAIL_USER}>`,
-        to: user.email,
-        subject: 'Your 2FA Code',
-        text: `Your verification code is: ${code}`
-      });
+//       await transporter.sendMail({
+//         from: `"Ping Pong 🏓" <${process.env.MAIL_USER}>`,
+//         to: user.email,
+//         subject: 'Your 2FA Code',
+//         text: `Your verification code is: ${code}`
+//       });
 
-      return reply.send({ sent: true });
-    } catch (err) {
-      console.error('2FA send Email Error:', err);
-      return reply.code(500).send({ error: err.message });
-    }
-  });
+//       return reply.send({ sent: true });
+//     } catch (err) {
+//       console.error('2FA send Email Error:', err);
+//       return reply.code(500).send({ error: err.message });
+//     }
+//   });
 
-  // ✅ VERIFY EMAIL CODE
-  fastify.post('/api/2fa/email/verify', async (request, reply) => {
-    try {
-      const decoded = await request.jwtVerify({ onlyCookie: true });
-      const { code } = request.body;
+//   // ✅ VERIFY EMAIL CODE
+//   fastify.post('/api/2fa/email/verify', async (request, reply) => {
+//     try {
+//       const decoded = await request.jwtVerify({ onlyCookie: true });
+//       const { code } = request.body;
 
-      if (!code) {
-        return reply.code(400).send({ error: 'Code required' });
-      }
+//       if (!code) {
+//         return reply.code(400).send({ error: 'Code required' });
+//       }
 
-      const row = await dbGet(
-        `SELECT twofa_email_code, twofa_email_expires
-         FROM users WHERE id = ?`,
-        [decoded.id]
-      );
+//       const row = await dbGet(
+//         `SELECT twofa_email_code, twofa_email_expires
+//          FROM users WHERE id = ?`,
+//         [decoded.id]
+//       );
 
-      if (!row || !row.twofa_email_code) {
-        return reply.code(400).send({ error: '2FA not requested' });
-      }
+//       if (!row || !row.twofa_email_code) {
+//         return reply.code(400).send({ error: '2FA not requested' });
+//       }
 
-      if (Date.now() > row.twofa_email_expires) {
-        return reply.code(401).send({ error: 'Code expired' });
-      }
+//       if (Date.now() > row.twofa_email_expires) {
+//         return reply.code(401).send({ error: 'Code expired' });
+//       }
 
-      const valid = await bcrypt.compare(code, row.twofa_email_code);
-      if (!valid) {
-        return reply.code(401).send({ error: 'Invalid code' });
-      }
+//       const valid = await bcrypt.compare(code, row.twofa_email_code);
+//       if (!valid) {
+//         return reply.code(401).send({ error: 'Invalid code' });
+//       }
 
-      await dbRun(
-        `UPDATE users
-         SET twofa_email_code = NULL,
-             twofa_email_expires = NULL
-         WHERE id = ?`,
-        [decoded.id]
-      );
+//       await dbRun(
+//         `UPDATE users
+//          SET twofa_email_code = NULL,
+//              twofa_email_expires = NULL
+//          WHERE id = ?`,
+//         [decoded.id]
+//       );
 
-      return reply.send({ success: true });
-    } catch (err) {
-      console.error('2FA Email verify Error:', err);
-      return reply.code(500).send({ error: err.message });
-    }
-  });
-};
- };
+//       return reply.send({ success: true });
+//     } catch (err) {
+//       console.error('2FA Email verify Error:', err);
+//       return reply.code(500).send({ error: err.message });
+//     }
+//   });
+// };
+//  };

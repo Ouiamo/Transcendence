@@ -26,7 +26,7 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj, listfriends, goto, 
 
     return (
         <div className=" flex h-screen w-full flex-row bg-[rgba(45,27,105,0.7)] ">
-            <div className="flex gap-[200px] w-full">
+            <div className="flex gap-[200px] w-full ">
                 <div>
 
                     <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotosetting} gotoleaderboard={gotoleaderboard}/>

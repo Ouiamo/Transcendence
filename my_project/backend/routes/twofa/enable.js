@@ -12,16 +12,9 @@ module.exports = async function (fastify) {
         return reply.code(401).send({ error: 'User not found' });
 
       const method = request.body.mthd;
-      if (!['email', 'authenticator'].includes(method))
+      console.log('Requested 2FA method:--------------->>>>>>', method);
+      if (!['authenticator'].includes(method))
         return reply.code(400).send({ error: 'Invalid 2FA method' });
-
-      if (method === 'email') {
-        await dbRun(
-          `UPDATE users SET twofa_enabled = 1, twofa_method = 'email' WHERE id = ?`,
-          [user.id]
-        );
-        return reply.send({ success: true });
-      }
 
       const secret = speakeasy.generateSecret({ length: 20 });
       await dbRun(
@@ -29,12 +22,35 @@ module.exports = async function (fastify) {
         [secret.base32, user.id]
       );
 
-      const qrCode = await QRCode.toDataURL(secret.otpauth_url);
-      return reply.send({ qrCode, secret: secret.base32 });
-    } catch (err) {
+      const qrCode = await QRCode.toDataURL(secret.otpauth_url, {color: {
+      dark: '#ff99ff', light: '#0f0f0f' }});
+      return reply.send({ qrCode, secret: secret.base32,
+        twofa_enabled: false,
+      });
+    } 
+    catch (err) 
+    {
       console.error('2FA Enable Error:', err);
       return reply.code(500).send({ error: 'Internal server error', detail: err.message });
     }
   });
-};
 
+
+  fastify.post('/api/2fa/disable', async (request, reply) => {
+    try {
+      const decoded = await request.jwtVerify({ onlyCookie: true });
+      
+      await dbRun(
+        `UPDATE users SET twofa_enabled = 0, twofa_method = NULL, twofa_secret = NULL WHERE id = ?`,
+        [decoded.id]
+      );
+
+      return reply.send({ success: true, message: '2FA disabled' });
+    } 
+    catch (err) 
+    {
+      console.error('2FA Disable Error:', err);
+      return reply.code(500).send({ error: err.message });
+    }
+  });
+};

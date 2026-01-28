@@ -13,12 +13,15 @@ module.exports = async function (fastify) {
       const { code } = request.body;
       if (!code) 
         return reply.code(400).send({ error: 'Code required' });
-      
+
+      if (!user.twofa_secret)
+        return reply.code(400).send({ error: '2FA not set up' });
+
       const verified = speakeasy.totp.verify({
         secret: user.twofa_secret,
         encoding: 'base32',
         token: code,
-        window: 1
+        window: 2
       });
 
     if (!verified) {
@@ -33,9 +36,9 @@ module.exports = async function (fastify) {
         );
       }
 
-      return reply.send({ success: true });
+      return reply.send({ success: true, message: '2FA enabled successfully'});
     } catch (err) {
-      console.error('2FA Verify Error:', err);
+      console.error('2FA Authenticator Verify Error:', err);
       return reply.code(500).send({ error: 'Internal server error', detail: err.message });
     }
   });

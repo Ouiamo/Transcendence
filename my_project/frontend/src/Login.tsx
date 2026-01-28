@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { loginUser } from './Api';
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { FaGoogle } from "react-icons/fa";
@@ -10,17 +10,16 @@ interface Logintest {
     onloginsucces: (data: any) => void;
     gotosingup: () => void;
     gotwofa: () => void;
-    gotoemail: () => void;
 }
 
-function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, gotoemail }: Logintest) {
+function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: Logintest) {
 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
 
     const handel_auth_goole = async () => {
-        window.location.href = 'https://localhost:3010/api/auth/google' // kant backend
-        
+        window.location.href = 'https://backend:3010/api/auth/google'
+
     }
     const handel_auth_42 = async () => {
         window.location.href = ('https://localhost:3010/api/auth/42');
@@ -33,18 +32,32 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa, go
         }
         try {
             const result = await loginUser(data_login);
+            console.log("login resulttttttttttttaaaaaaaaa ", result);
             if (result.twofa_required) {
-                if (result.method === "authenticator") {
+                if (result.method === "authenticator" && result.twofa_enabled) {
                     gotwofa();
-                } 
-                else if (result.method === "email") {
-                    gotoemail();
                 }
+                // else if (result.method === "email") {
+                //     gotoemail();
+                // }
             }
             else if (result.success) {
                 alert("login sucess");
-                onloginsucces(result)
-                gotoDASHBOARD();
+                try {
+                    const res = await fetch('https://localhost:3010/api/profile', {
+                        method: 'GET',
+                        credentials: 'include',
+                    });
+                    if(res.ok)
+                    {
+                        const ress = await await res.json();
+                        onloginsucces(ress);
+                        gotoDASHBOARD();
+                    }
+                }
+                catch (err) {
+                    console.log("error api profile ")
+                }
             }
             else {
                 alert("❌ Invalid credentials");

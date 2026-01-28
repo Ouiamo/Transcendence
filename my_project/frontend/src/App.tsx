@@ -14,7 +14,7 @@ import { Sidebar } from './Sidebar';
 // import {initGame} from "../../game/frontend/game.ts"
 import { GamePage, Gamepage_i} from "./G.tsx"
 // import { Gamepage_r } from './G.tsx';
-import TwofaEmail from './TwofaEmail.tsx';
+// import TwofaEmail from './TwofaEmail.tsx';
 import { Friendlist } from './Friendlist.tsx'
 import Friends from './Friends.tsx';
 import Setting from './Setting.tsx';
@@ -25,16 +25,13 @@ import Leaderboard from './leaderboard.tsx';
 
 type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD'
 function App(){
-  // const [twoFactor, setTwoFactor] = useState(false)
  
   const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
     console.log("Current Page is:", currentPage);
-//  const set_is_enable = ()=>{
-//   setTwoFactor(twoFactor);
-//   console.log(" towafa is ^^^^^^^^^^ ", twoFactor)
-//  }
+
 const gotowfa =() =>{
     localStorage.setItem('page', 'twofa');
   setCurrentPage( 'twofa');
@@ -43,10 +40,7 @@ const gotoHome =() =>{
     localStorage.setItem('page', 'HOME');
   setCurrentPage( 'HOME');
 }
-const gotoemail =() =>{
-    localStorage.setItem('page', 'email');
-  setCurrentPage( 'email');
-}
+
   const gotogamelocal = ()=>{
     localStorage.setItem('page', 'GAME_L');
     setCurrentPage('GAME_L');
@@ -90,7 +84,7 @@ const gotoemail =() =>{
 
 useEffect(() => {
   const twofa = localStorage.getItem('twofa');
-  console.log("items is ^^^^^^^^^^^^^ ", twofa);
+  // console.log("items is ^^^^^^^^^^^^^ ", twofa);
   const checkSession = async () => {
     try {
       const res = await fetch('https://localhost:3010/api/profile', {
@@ -101,15 +95,14 @@ useEffect(() => {
       if (res.ok) {
         const data = await res.json();
         setdatauser(data.user)
-        const save = localStorage.getItem('page');
+        
+        const save = localStorage.getItem('page'); 
         if(save === 'GAME_L')
           setCurrentPage('GAME_L');
         else if(save === 'GAME_R')
           setCurrentPage('GAME_R');
         else if(save === 'SETTING')
           setCurrentPage('SETTING');
-        else if(save === 'email')
-          setCurrentPage('email');
         else if(save == 'GAME_I')
           setCurrentPage('GAME_I');
         else if(save == 'PROFIL')
@@ -136,16 +129,14 @@ useEffect(() => {
   };
   checkSession();
 }, []);
-       const canvasRef = useRef<HTMLCanvasElement | null>(null);
- 
-if(loading) return <div>is loading</div>
+if(loading) return <div>Loading...</div>
   return (
     <div >
 
       {
         currentPage === 'twofa' &&(
         <div className="fex flex-col w-full h-full ">
-          <Twofa gotoDASHBOARD={gotodash}/>
+          <Twofa gotoDASHBOARD={gotodash} gotohome={gotoHome}/>
         </div>
       )}
       {currentPage === 'HOME' && (
@@ -159,7 +150,7 @@ if(loading) return <div>is loading</div>
         <div className="min-h-screen w-full flex items-center justify-center bg-[#0d0221] ">
     
       
-           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa} gotoemail={gotoemail}/>
+           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa}/>
        
         </div>
       )}
@@ -274,13 +265,13 @@ if(loading) return <div>is loading</div>
         </div> 
       </div>
     }
-    {
-      currentPage === 'email' &&(
-        <div className="fex flex-col w-full h-full ">
-          <TwofaEmail gotoemail={gotoemail} gotohome={gotoHome}/>
-        </div>
+    {/* {
+      // currentPage === 'email' &&(
+      //   <div className="fex flex-col w-full h-full ">
+      //     <TwofaEmail gotoemail={gotoemail} gotohome={gotoHome}/>
+      //   </div>
       )
-    }
+    } */}
     </div>
   );
 }
@@ -355,3 +346,151 @@ export default App;
 
 // }
 //export default  profilplayer ;
+
+// *********************************************** //mouna ht atchofi hadi khod mnha fikra kifach thali mouchkil dial refresh kola mra
+// import './style.css';
+// import { useEffect, useState, useRef } from 'react';
+// import Profil from './Profil';
+// import Dashboard from './Dashboard';
+// import Setting from './Setting';
+// import Twofa from './Twofa';
+// import { Sidebar } from './Sidebar';
+// import Home from './Home';
+// import Login from './Login';
+// import Signup from './Signup';
+// import { GamePage, Gamepage_i } from './G';
+// import Friends from './Friends';
+// import Friendlist from './Friendlist';
+
+// type Page =
+//   | 'HOME'
+//   | 'LOGIN'
+//   | 'SIGNUP'
+//   | 'DASHBOARD'
+//   | 'PROFIL'
+//   | 'GAME_L'
+//   | 'GAME_R'
+//   | 'GAME_I'
+//   | 'FRIENDS'
+//   | 'SETTING'
+//   | 'twofa';
+
+// function App() {
+//   const [currentPage, setCurrentPage] = useState<Page>('HOME');
+//   const [loading, setLoading] = useState(true);
+//   const [user_data, setUserData] = useState<any>(null);
+//   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+//   // Fetch user profile once on mount
+//   useEffect(() => {
+//     const checkSession = async () => {
+//       try {
+//         const res = await fetch('https://localhost:3010/api/profile', {
+//           method: 'GET',
+//           credentials: 'include',
+//         });
+
+//         if (res.ok) {
+//           const data = await res.json();
+//           setUserData(data.user);
+
+//           // Restore last page from localStorage
+//           const save = localStorage.getItem('page') as Page | null;
+//           if (save) setCurrentPage(save);
+//           else setCurrentPage('DASHBOARD');
+//         } else {
+//           setCurrentPage('HOME');
+//         }
+//       } catch (err) {
+//         setCurrentPage('HOME');
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     checkSession();
+//   }, []);
+
+//   // Save page to localStorage on change
+//   const changePage = (page: Page) => {
+//     localStorage.setItem('page', page);
+//     setCurrentPage(page);
+//   };
+
+//   if (loading) return <div>Loading...</div>;
+
+//   return (
+//     <div className="w-full h-full">
+//       {currentPage === 'HOME' && (
+//         <Home gotologin={() => changePage('LOGIN')} gotosignup={() => changePage('SIGNUP')} />
+//       )}
+
+//       {currentPage === 'LOGIN' && (
+//         <Login
+//           gotohome={() => changePage('HOME')}
+//           gotoDASHBOARD={() => changePage('DASHBOARD')}
+//           onloginsucces={(data: any) => setUserData(data.user)}
+//           gotosingup={() => changePage('SIGNUP')}
+//           gotwofa={() => changePage('twofa')}
+//         />
+//       )}
+
+//       {currentPage === 'SIGNUP' && (
+//         <Signup
+//           gotohome={() => changePage('HOME')}
+//           gotologin={() => changePage('LOGIN')}
+//           gotoDASHBOARD={() => changePage('DASHBOARD')}
+//         />
+//       )}
+
+//       {currentPage === 'DASHBOARD' && user_data && (
+//         <Dashboard
+//           user={user_data}
+//           gotoprofil={() => changePage('PROFIL')}
+//           gotofriends={() => changePage('FRIENDS')}
+//           gotosetting={() => changePage('SETTING')}
+//           goto={() => changePage('GAME_L')}
+//           gotoia={() => changePage('GAME_I')}
+//           listfriends={() => changePage('GAME_R')}
+//           gotodashbord={() => changePage('DASHBOARD')}
+//           delete_obj={() => setUserData(null)}
+//         />
+//       )}
+
+//       {currentPage === 'PROFIL' && user_data && (
+//         <div className="flex flex-row gap-[140px]">
+//           <Sidebar
+//             user_={user_data}
+//             gotohome={() => changePage('HOME')}
+//             delete_obj={() => setUserData(null)}
+//             gotodashbord={() => changePage('DASHBOARD')}
+//             gotoprofil={() => changePage('PROFIL')}
+//             gotofriends={() => changePage('FRIENDS')}
+//             gotosetting={() => changePage('SETTING')}
+//           />
+//           <Profil user={user_data} />
+//         </div>
+//       )}
+
+//       {currentPage === 'SETTING' && user_data && (
+//         <div className="flex flex-row gap-[150px]">
+//           <Sidebar
+//             user_={user_data}
+//             gotohome={() => changePage('HOME')}
+//             delete_obj={() => setUserData(null)}
+//             gotodashbord={() => changePage('DASHBOARD')}
+//             gotoprofil={() => changePage('PROFIL')}
+//             gotofriends={() => changePage('FRIENDS')}
+//             gotosetting={() => changePage('SETTING')}
+//           />
+//           <Setting user={user_data} />
+//         </div>
+//       )}
+
+//       {currentPage === 'twofa' && user_data && (
+//         <Twofa gotoDASHBOARD={() => changePage('DASHBOARD')} gotohome={() => changePage('HOME')} />
+//       )}
+//     </div>
+//   );
+// }
+
+// export default App;

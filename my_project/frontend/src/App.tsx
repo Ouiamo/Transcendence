@@ -219,17 +219,22 @@ if(loading) return <div>Loading...</div>
       </div>
 
     }
-    {
-        currentPage === 'PROFIL' &&
-      <div className="flex flex-row gap-[140px] ">
-        <div>
-           <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
-        </div>
-        <div className="flex w-full h-full">
+    
+    {currentPage === 'PROFIL' && (
+  <div className="flex flex-row min-h-screen w-full bg-[#0a0a0a]  gap-[60px] overflow-x-hidden">
+    {/* Sidebar: نعطيه عرضاً ثابتاً صغيراً أو نسبة مئوية */}
+    <div className="flex-none w-[60px] md:w-[250px] transition-all duration-300">
+               <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+    </div>
+
+    {/* Content: يأخذ المساحة المتبقية كاملة */}
+    <div className="flex-grow flex justify-center p-2 md:p-8">
+      <div className="w-full max-w-[1200px]">
         <Profil user={user_data}/>
-        </div>
       </div>
-    }
+    </div>
+  </div>
+)}
     {
       currentPage === 'LEADERBOARD' &&
       <div className="flex  flex-row gap-[140px] w-full h-full">

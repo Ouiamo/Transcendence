@@ -45,7 +45,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                 <nav className="flex-1 flex items-center justify-center">
                     <ul style={{ display: 'flex', flexDirection: 'column', gap: '50px' , color:'white !important'}} className="text-white text-2xl list-none">
                         {/* <IconContext.Provider value={{ color: "white", size: "1.5em", className: "global-class-name" }}></IconContext.Provider> */}
-                        <li><IoSearch size={40} className="mr-[40px] !text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li>
+                        {/* <li><IoSearch size={40} className="mr-[40px] !text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li> */}
                         <li><IoNotificationsOutline size={40} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><Trophy size={40} onClick={gotoleaderboard} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
                         <li><IoSettingsOutline size={40} onClick={gotosetting} className="!text-[#ff44ff] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
@@ -55,7 +55,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                     </ul>
                 </nav>
             <button className=" w-[90px] h-[50px]   bg-[#4B2A6F] flex items-center justify-center shadow-[0_0_10px_#ff44ff] border border-[#ff44ff]/30 cursor-pointer hover:scale-110 transition-all duration-200 rounded-full" onClick={logout} > 
-                <IoLogOutOutline size={35} className="!text-[#ff44ff] text-3xl " /></button>
+                <IoLogOutOutline size={35} className="!text-[#ff44ff] text-3xl " />hiiiiiiiii</button>
             </aside>
     );
 

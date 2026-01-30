@@ -1,6 +1,7 @@
-import { IoSearch, IoHomeOutline, IoSettingsOutline, IoNotificationsOutline, IoPersonCircleOutline, IoLogOutOutline, IoGameControllerOutline } from "react-icons/io5";
+import { IoSearch, IoHomeOutline, IoSettingsOutline, IoNotificationsOutline, IoPersonCircleOutline, IoLogOutOutline } from "react-icons/io5";
 import {FaUsers } from "react-icons/fa";
 import { Trophy } from 'lucide-react';
+import { logoutUser } from './socketService';
 
 interface sideb{
     user_ : any;
@@ -16,7 +17,11 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
     // console.log(user_);
        const logout = async () => {
         try {
-
+            // First disconnect the socket to immediately mark user offline
+            if (user_ && user_.id && user_.username) {
+                logoutUser(user_.id, user_.username);
+            }
+            
             const logo = await fetch('https://localhost:3010/api/logout', {
                 method: 'POST',
                 credentials: 'include',

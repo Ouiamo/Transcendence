@@ -3,11 +3,14 @@ const { Server: SocketIOServer } = require('socket.io');
 const waitingPlayers = [];
 const gameRooms = new Map();
 const gameStates = new Map();
+const onlineUsers = new Map(); // Map of userId -> socket.id
+const pendingOfflineUsers = new Map(); // Map of userId -> timeout for grace period
 
 const boardWidth = 900;
 const boardHeight = 450;
 const paddleHeight = 80;
 const ballRadius = 15;
+const OFFLINE_GRACE_PERIOD = 3000; // 3 seconds grace period
 
 module.exports = async function (fastify) {
   const gameSocket = new SocketIOServer(fastify.server, {
@@ -22,30 +25,96 @@ module.exports = async function (fastify) {
   }
 
   gameSocket.on("connection", (socket) => {
+    console.log("🎮 New client connected:", socket.id);
+
     socket.on("hello", (msg) => {
       console.log("!!!!!!!! Received from front:", msg);
     });
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-     socket.on("inviting", (data) => {
+
+    socket.on("user_connected", (data) => {
+      const { userId, username } = data;
+      socket.userId = userId;
+      socket.username = username;
+
+      // Cancel any pending offline timeout for this user
+      if (pendingOfflineUsers.has(userId)) {
+        console.log(`🔄 Cancelling offline timeout for ${username} (reconnection)`);
+        clearTimeout(pendingOfflineUsers.get(userId));
+        pendingOfflineUsers.delete(userId);
+      }
+
+      // Store in onlineUsers map
+      const wasOnline = onlineUsers.has(userId);
+      onlineUsers.set(userId, socket.id);
+      
+      if (wasOnline) {
+        console.log(`🔄 User ${username} (${userId}) RECONNECTED`);
+      } else {
+        console.log(`✅ User ${username} (${userId}) is now ONLINE`);
+      }
+      console.log(`📊 Total online users: ${onlineUsers.size}`);
+
+      // 1. Send list of ALL currently online users to the newly connected user
+      const onlineUsersList = Array.from(onlineUsers.entries()).map(([uid, sid]) => {
+        const userSocket = gameSocket.sockets.sockets.get(sid);
+        return {
+          userId: uid,
+          username: userSocket?.username || 'Unknown'
+        };
+      });
+      
+      console.log(`📋 Sending online users list to ${username}:`, onlineUsersList);
+      socket.emit("online_users", onlineUsersList);
+
+      // 2. Broadcast to ALL OTHER users that this user is now online (only if they weren't already online)
+      if (!wasOnline) {
+        console.log(`📢 Broadcasting ${username} is online to all other users`);
+        socket.broadcast.emit("user_status_update", {
+          userId,
+          username,
+          status: "Online",
+        });
+      }
+    });
+
+    socket.on("inviting", (data) => {
       console.log("+++++++ invite msg Received :", data.id, data.username);
       const { idFriend } = data;
 
-      // socket.id = data.idFriend;
+      console.log("📨 Invitation from", socket.username, "to friend :", data.username);
 
-    console.log("📨 Invitation from", socket.username, "to friend :", data.username);
-
-    gameSocket.to(data.idFriend).emit("invitation_received", {
-    fromId: socket.userId,
-    fromUsername: socket.username,
+      gameSocket.to(data.idFriend).emit("invitation_received", {
+        fromId: socket.userId,
+        fromUsername: socket.username,
+      });
+      console.log("✅ Invitation sent to socket:", data.idFriend);
     });
-    console.log("✅ Invitation sent to socket:", data.idFriend);
 
+    socket.on("user_logout", (data) => {
+      const { userId, username } = data;
       
+      console.log(`🚪 User ${username} (${userId}) explicitly logged out`);
+      
+      // Cancel any pending offline timeout
+      if (pendingOfflineUsers.has(userId)) {
+        clearTimeout(pendingOfflineUsers.get(userId));
+        pendingOfflineUsers.delete(userId);
+      }
+      
+      // Immediately remove from online users
+      onlineUsers.delete(userId);
+      
+      console.log(`❌ User ${username} (${userId}) is now OFFLINE (logout)`);
+      console.log(`📊 Total online users: ${onlineUsers.size}`);
+      
+      // Broadcast to ALL users that this user logged out
+      gameSocket.emit("user_status_update", {
+        userId,
+        username,
+        status: "Offline",
+      });
     });
-    ///////////////////////////////////////
-     
 
-    console.log("🎮 New game client:", socket.id);
     waitingPlayers.push(socket.id);
     
     socket.on("findGame", () => {
@@ -102,9 +171,40 @@ module.exports = async function (fastify) {
 
     socket.on("disconnect", () => {
       console.log("⚠️ Game client disconnected:", socket.id);
+      
+      // Remove from waiting players
       const index = waitingPlayers.indexOf(socket.id);
       if (index > -1) {
         waitingPlayers.splice(index, 1);
+      }
+      
+      // Handle user going offline with grace period
+      if (socket.userId) {
+        console.log(`⏳ User ${socket.username} (${socket.userId}) disconnected, starting grace period...`);
+        
+        // Set up grace period timeout
+        const offlineTimeout = setTimeout(() => {
+          // Only mark offline if user hasn't reconnected
+          if (onlineUsers.get(socket.userId) === socket.id) {
+            onlineUsers.delete(socket.userId);
+            console.log(`❌ User ${socket.username} (${socket.userId}) is now OFFLINE (grace period expired)`);
+            console.log(`📊 Total online users: ${onlineUsers.size}`);
+
+            // Broadcast to ALL users that this user went offline
+            console.log(`📢 Broadcasting ${socket.username} is offline to all users`);
+            gameSocket.emit("user_status_update", {
+              userId: socket.userId,
+              username: socket.username,
+              status: "Offline",
+            });
+          }
+          
+          // Clean up the pending timeout
+          pendingOfflineUsers.delete(socket.userId);
+        }, OFFLINE_GRACE_PERIOD);
+        
+        // Store the timeout so it can be cancelled if user reconnects
+        pendingOfflineUsers.set(socket.userId, offlineTimeout);
       }
     });
   });

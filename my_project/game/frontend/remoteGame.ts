@@ -105,6 +105,11 @@ function connectServer() {
     // if (contex) {
     //     drawWaitingForPlayer(contex, boardWidth, boardHeight);
     // }
+
+    //  socket.emit("user_connected", { 
+    //     userId: currentUser.id, 
+    //     username: currentUser.username 
+    // });
         
     socket?.emit("findGame");
     socket.on("gameStart", (data: { roomID: string, role: string }) => {        
@@ -124,6 +129,15 @@ function connectServer() {
         gameState.gameEnd = data.gameEnd;
         gameState.winner = data.winner;
     });
+
+    // socket.on("user_stats_update", (data) => {
+    //       console.log(`${data.username} is now ${data.status}`);
+    //     });
+
+   
+
+
+
     
 }
 export function getSocket() {

@@ -19,6 +19,7 @@ import { Friendlist } from './Friendlist.tsx'
 import Friends from './Friends.tsx';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
+import { connectSocket, disconnectSocket, clearUserDataFromStorage } from './socketService.tsx';
 // import {G} from "./G.tsx"
 
 
@@ -82,8 +83,26 @@ const gotoHome =() =>{
        setdatauser(null);
   }
 
+  useEffect(() => {
+    if(user_data)
+    {
+      console.log("MY INFOOOOO ",user_data); 
+      // Only connect socket for valid logged-in user
+      connectSocket(user_data.id, user_data.username);
+    } else {
+      // If no user data, ensure socket is disconnected
+      disconnectSocket();
+    }
+  }, [user_data]);
+
+  // New useEffect for early socket connection
+  useEffect(() => {
+    // Don't auto-connect socket from storage
+    // Only connect after validating session in checkSession
+    // connectSocketFromStorage(); // REMOVED - prevents users appearing online before login
+  }, []); // Run once on mount
+
 useEffect(() => {
-  const twofa = localStorage.getItem('twofa');
   // console.log("items is ^^^^^^^^^^^^^ ", twofa);
   const checkSession = async () => {
     try {
@@ -95,6 +114,8 @@ useEffect(() => {
       if (res.ok) {
         const data = await res.json();
         setdatauser(data.user)
+        
+        // Socket will be connected via the useEffect that watches user_data
         
         const save = localStorage.getItem('page'); 
         if(save === 'GAME_L')
@@ -117,9 +138,15 @@ useEffect(() => {
            setCurrentPage('DASHBOARD');
       } 
       else {
+        // Session is invalid, clear stored data and disconnect socket
+        clearUserDataFromStorage();
+        disconnectSocket();
         setCurrentPage('HOME');
       }
     } catch (err) {
+      // Error occurred, clear stored data and disconnect socket
+      clearUserDataFromStorage();
+      disconnectSocket();
       setCurrentPage('HOME');
     }
     finally
@@ -219,17 +246,22 @@ if(loading) return <div>Loading...</div>
       </div>
 
     }
-    {
-        currentPage === 'PROFIL' &&
-      <div className="flex flex-row gap-[140px] ">
-        <div>
-           <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
-        </div>
-        <div className="flex w-full h-full">
+    
+    {currentPage === 'PROFIL' && (
+  <div className="flex flex-row min-h-screen w-full bg-[#0a0a0a]  gap-[60px] overflow-x-hidden">
+    {/* Sidebar: نعطيه عرضاً ثابتاً صغيراً أو نسبة مئوية */}
+    <div className="flex-none w-[60px] md:w-[250px] transition-all duration-300">
+               <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+    </div>
+
+    {/* Content: يأخذ المساحة المتبقية كاملة */}
+    <div className="flex-grow flex justify-center p-2 md:p-8">
+      <div className="w-full max-w-[1200px]">
         <Profil user={user_data}/>
-        </div>
       </div>
-    }
+    </div>
+  </div>
+)}
     {
       currentPage === 'LEADERBOARD' &&
       <div className="flex  flex-row gap-[140px] w-full h-full">

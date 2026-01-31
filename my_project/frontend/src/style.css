@@ -1,4 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
 @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #0d0221; 
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #0d0221 inset !important; 
+  -webkit-text-fill-color: white !important; 
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.shrink-img {
+  width: 20px;
+  height: auto;
+}
+
+/* optional glow */
+.glow-text {
+  text-shadow:
+    0 0 10px #d86bff,
+    0 0 20px #d86bff,
+    0 0 40px #a855f7;
+}
+
+
+
+
+
+/* @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -22,4 +61,4 @@ input:-webkit-autofill:active{
   height: auto; /* Ensures the aspect ratio is preserved */
   /* Or use object-fit if you need specific container fitting */
   /* object-fit: cover; */ 
-}
+/* } */ 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {  Doughnut } from "react-chartjs-2";
+import { Line, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,8 +34,13 @@ interface Stats {
   points: number;
 }
 
+interface History {
+  isWin: Boolean;
+}
+
 function StatsCharts() {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [history, setHistory] = useState<History[] | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -49,6 +54,17 @@ function StatsCharts() {
         if (res.ok) {
           const data = await res.json();
           setStats(data);
+        }
+
+        const History_res = await fetch('https://localhost:3010/api/history/is_win', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        
+        if (History_res.ok) {
+          const data = await History_res.json();
+          console.log("history isssssss :: ", data);
+          setHistory(data);
         }
       } catch (err) {
         console.error('Failed to load stats', err);
@@ -124,11 +140,114 @@ function StatsCharts() {
     },
   };
 
+  const POINTS_PER_MATCH = 30;
+
+  function calculatePoints(history:any) {
+    let total = 0;
+    const points = [0]; // start at 0 (user creation)
+
+    history.forEach((result:any) => {
+      if (result === "W") total += POINTS_PER_MATCH;
+      if (result === "L") total -= POINTS_PER_MATCH;
+      points.push(total);
+    });
+
+    return points;
+  }
+  const pointsData = calculatePoints(history);
+
+  const labels = pointsData.map((_, index) => index); 
+
+  const lineData = {
+    labels,
+    datasets: [
+      {
+        label: "Points",
+        data: pointsData,
+        borderColor: "#4ade80",
+        backgroundColor: "rgba(74, 222, 128, 0.2)",
+        tension: 0.3,
+        fill: true,
+        pointRadius: 4,
+      },
+    ],
+  };
+
+  const lineOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Points Progression",
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Match Number",
+        },
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Points",
+        },
+        ticks: {
+          stepSize: 30,
+        },
+      },
+    },
+  };
+
+  //   const lineData = {
+  //   labels: ['points', 'total matches'],
+  //   datasets: [
+  //     {
+  //       data: [stats.points, stats.total_matches],
+  //       fill: false,
+  //       borderColor: 'rgb(202, 65, 184)',
+  //       tension: 0,
+  //     },
+  //   ],
+  // };
+
+  // const lineOptions: ChartOptions<'line'> = {
+  //   responsive: true,
+  //   // maintainAspectRatio: true,
+  //   // animation: false,
+  //   plugins: {
+  //     legend: {
+  //       display: false,
+  //       position: 'bottom',
+  //     },
+  //     title: {
+  //       display: true,
+  //       text: `player progress`,
+  //       color: '#fff',
+  //       font: {
+  //         size: 18,
+  //         weight: 'bold',
+  //       },
+  //     },
+    // },
+  // };
+
   return (
-    <div className="w-[350px] h-[300px] bg-[rgba(45,27,105,0.8)] backdrop-blur-md rounded-2xl p-6 border-2 border-[#ff44ff]">
-      <div className="flex items-center justify-center h-full">
-        <div className="w-48 h-48">
-          <Doughnut data={donutData} options={donutOptions} />
+     <div className="grid grid-cols-2 w-full  gap-[100px]  items-center justify-center h-[500px]  ">
+      <div className="w-[350px] h-[300px] bg-[rgba(45,27,105,0.8)] backdrop-blur-md rounded-2xl p-6 border-2 border-[#ff44ff]">
+        <div className="flex items-center justify-center h-full">
+          <div className="w-48 h-48">
+            <Doughnut data={donutData} options={donutOptions} />
+          </div>
+        </div>
+      </div>
+      <div className="w-[350px] h-[300px] bg-[rgba(45,27,105,0.8)] backdrop-blur-md rounded-2xl p-6 border-2 border-[#ff44ff]">
+        <div className="flex items-center justify-center h-full">
+          <div className="w-48 h-48">
+            <Line data={lineData} options={lineOptions} />
+          </div>
         </div>
       </div>
     </div>

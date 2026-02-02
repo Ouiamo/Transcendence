@@ -15,7 +15,7 @@ export function Leaderboard() {
     const [users, setRanking] = useState<User[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    console.log("users in leaderboard ------------", users);
     useEffect(() => {
         const fetchRanking = async () => {
             try {
@@ -64,6 +64,7 @@ export function Leaderboard() {
             <div className="text-[rgb(248,113,113)] text-xl">Error: {error}</div>
         </div>
     );
+    
 
     return (
         <div className="min-h-screen w-full bg-gradient-to-br from-[rgb(88,28,135)] via-black to-[rgb(88,28,135)] p-6">

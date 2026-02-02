@@ -60,7 +60,7 @@ export function Sidebar({user_, gotohome, delete_obj, gotodashbord, gotoprofil, 
                     </ul>
                 </nav>
             <button className=" w-[90px] h-[50px]   bg-[#4B2A6F] flex items-center justify-center shadow-[0_0_10px_#ff44ff] border border-[#ff44ff]/30 cursor-pointer hover:scale-110 transition-all duration-200 rounded-full" onClick={logout} > 
-                <IoLogOutOutline size={35} className="!text-[#ff44ff] text-3xl " />hiiiiiiiii</button>
+                <IoLogOutOutline size={35} className="!text-[#ff44ff] text-3xl " /></button>
             </aside>
     );
 

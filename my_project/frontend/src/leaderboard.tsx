@@ -15,7 +15,7 @@ export function Leaderboard() {
     const [users, setRanking] = useState<User[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    console.log("users in leaderboard ------------", users);
     useEffect(() => {
         const fetchRanking = async () => {
             try {
@@ -63,6 +63,7 @@ export function Leaderboard() {
             <div className="text-red-500 text-xl tracking-widest">ERROR: {error}</div>
         </div>
     );
+    
 
     return (
         <div className="h-screen w-full bg-[#06060d] text-white p-6 overflow-hidden">

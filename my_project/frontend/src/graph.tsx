@@ -131,7 +131,6 @@ function StatsCharts() {
           label: function(context) {
             const label = context.label || '';
             const value = context.parsed || 0;
-            // const total = stats.total_matches;
             const percentage = stats.win_rate;
             return `${label}: ${value} (${percentage}%)`;
           }
@@ -144,17 +143,20 @@ function StatsCharts() {
 
   function calculatePoints(history:any) {
     let total = 0;
-    const points = [0]; // start at 0 (user creation)
+    const points = [0];
 
     history.forEach((result:any) => {
-      if (result === "W") total += POINTS_PER_MATCH;
-      if (result === "L") total -= POINTS_PER_MATCH;
+      console.log("results hnaa is ", result);
+      if (result.isWin === 1) total += POINTS_PER_MATCH;
+      if (result.isWin === 0) total -= POINTS_PER_MATCH;
       points.push(total);
+      console.log("points hnaa is ", points);
     });
 
     return points;
   }
   const pointsData = calculatePoints(history);
+  console.log("points data is :::" ,pointsData);
 
   const labels = pointsData.map((_, index) => index); 
 
@@ -164,11 +166,11 @@ function StatsCharts() {
       {
         label: "Points",
         data: pointsData,
-        borderColor: "#4ade80",
+        borderColor: "#de4ac3",
         backgroundColor: "rgba(74, 222, 128, 0.2)",
-        tension: 0.3,
+        tension: 0,
         fill: true,
-        pointRadius: 4,
+        pointRadius: 3,
       },
     ],
   };
@@ -200,39 +202,6 @@ function StatsCharts() {
       },
     },
   };
-
-  //   const lineData = {
-  //   labels: ['points', 'total matches'],
-  //   datasets: [
-  //     {
-  //       data: [stats.points, stats.total_matches],
-  //       fill: false,
-  //       borderColor: 'rgb(202, 65, 184)',
-  //       tension: 0,
-  //     },
-  //   ],
-  // };
-
-  // const lineOptions: ChartOptions<'line'> = {
-  //   responsive: true,
-  //   // maintainAspectRatio: true,
-  //   // animation: false,
-  //   plugins: {
-  //     legend: {
-  //       display: false,
-  //       position: 'bottom',
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: `player progress`,
-  //       color: '#fff',
-  //       font: {
-  //         size: 18,
-  //         weight: 'bold',
-  //       },
-  //     },
-    // },
-  // };
 
   return (
      <div className="grid grid-cols-2 w-full  gap-[100px]  items-center justify-center h-[500px]  ">

@@ -113,4 +113,3 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
 
 export default Home
 
-

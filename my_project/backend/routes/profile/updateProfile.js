@@ -96,6 +96,10 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
     }
     console.log("updatedUser------>", updatedUser);
     console.log("finalAvatarUrl------>", finalAvatarUrl);
+     await dbRun(
+      `UPDATE users SET avatar_url = ? WHERE id = ?`,
+      [finalAvatarUrl, updatedUser.id]
+    );
     return reply.send({
       success: true,
       message: 'Profile updated successfully',

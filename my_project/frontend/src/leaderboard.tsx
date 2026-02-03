@@ -15,7 +15,7 @@ export function Leaderboard() {
     const [users, setRanking] = useState<User[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    console.log("users in leaderboard ------------", users);
     useEffect(() => {
         const fetchRanking = async () => {
             try {
@@ -39,92 +39,98 @@ export function Leaderboard() {
     }, []);
 
     const getRankStyle = (rank: number) => {
-        if (rank === 1) return "border-[rgb(234,179,8)] bg-[rgba(234,179,8,0.1)] text-[rgb(234,179,8)]";
-        if (rank === 2) return "border-[rgb(156,163,175)] bg-[rgba(156,163,175,0.1)] text-[rgb(156,163,175)]";
-        if (rank === 3) return "border-[rgb(249,115,22)] bg-[rgba(249,115,22,0.1)] text-[rgb(249,115,22)]";
-        return "border-[rgba(168,85,247,0.5)] bg-[rgba(168,85,247,0.1)] text-[rgb(192,132,252)]";
+        if (rank === 1) return "border-[#d86bff] bg-[#d86bff]/10 text-[#d86bff]";
+        if (rank === 2) return "border-[#c84cff]/70 bg-[#c84cff]/10 text-[#c84cff]";
+        if (rank === 3) return "border-[#d86bff]/50 bg-[#d86bff]/10 text-[#d86bff]/80";
+        return "border-[#d86bff]/30 bg-[#d86bff]/5 text-gray-400";
     };
 
     const getRankIcon = (rank: number) => {
-        if (rank === 1) return <Trophy className="w-6 h-6" style={{ color: 'rgb(234,179,8)' }} />;
-        if (rank === 2) return <Trophy className="w-5 h-5" style={{ color: 'rgb(156,163,175)' }} />;
-        if (rank === 3) return <Trophy className="w-5 h-5" style={{ color: 'rgb(249,115,22)' }} />;
+        if (rank === 1) return <Trophy className="w-6 h-6" style={{ color: '#d86bff' }} />;
+        if (rank === 2) return <Trophy className="w-5 h-5" style={{ color: '#c84cff' }} />;
+        if (rank === 3) return <Trophy className="w-5 h-5" style={{ color: '#d86bff' }} />;
         return null;
     };
 
-
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[rgb(88,28,135)] via-black to-[rgb(88,28,135)]">
-            <div className="text-[rgb(192,132,252)] text-xl">Loading leaderboard...</div>
+        <div className="min-h-screen w-full bg-[#06060d] flex items-center justify-center">
+            <div className="text-[#d86bff] text-xl tracking-widest">LOADING...</div>
         </div>
     );
 
     if (error) return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[rgb(88,28,135)] via-black to-[rgb(88,28,135)]">
-            <div className="text-[rgb(248,113,113)] text-xl">Error: {error}</div>
+        <div className="min-h-screen w-full bg-[#06060d] flex items-center justify-center">
+            <div className="text-red-500 text-xl tracking-widest">ERROR: {error}</div>
         </div>
     );
+    
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-[rgb(88,28,135)] via-black to-[rgb(88,28,135)] p-6">
-            <div className="max-w-6xl mx-auto space-y-6">
+        <div className="h-screen w-full bg-[#06060d] text-white p-6 overflow-hidden">
+            <div className="max-w-6xl mx-auto space-y-8">
+               
                 <div className="text-center">
-                    <h1 className="text-4xl font-bold text-white mb-2">Leaderboard</h1>
-                    <p className="text-[rgb(216,180,254)]">
-                        Top players ranked by points
+                    <h1 className="pong-title text-[60px] font-extrabold  leading-none">
+                        LEADERBOARD
+                    </h1>
+                    <p className="mt-4 text-sm tracking-widest uppercase text-gray-400">
+                        Top Players
                     </p>
                 </div>
-
                 {users && users.length > 0 && (
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="grid grid-cols-3 gap-[35px] mt-12">
                         {users.slice(0, 3).map((player, index) => {
                             const rank = index + 1;
-
                             return (
                                 <div
                                     key={player.user_id}
-                                    className={`${index === 0
-                                            ? "order-2 border-[rgba(234,179,8,0.5)] bg-[rgba(234,179,8,0.05)]"
+                                    className={`${
+                                        index === 0
+                                            ? "order-2 border-[#d86bff]"
                                             : index === 1
-                                                ? "order-1 border-[rgba(156,163,175,0.5)] bg-[rgba(156,163,175,0.05)]"
-                                                : "order-3 border-[rgba(249,115,22,0.5)] bg-[rgba(249,115,22,0.05)]"
-                                        } border-2 rounded-lg p-6 backdrop-blur-sm`}
+                                            ? "order-1 border-[#c84cff]/70"
+                                            : "order-3 border-[#d86bff]/50 "
+                                    } border rounded-xl p-6 bg-[#0a0a14]/80 backdrop-blur-sm hover:scale-105 transition-transform`}
                                 >
                                     <div className="text-center">
                                         <div className="flex justify-center mb-4">
                                             {getRankIcon(rank)}
                                         </div>
-                                        <div className=" w-[50px] h-[50px] rounded-full bg-[rgba(168,85,247,0.2)] flex items-center justify-center border-2 border-[rgb(192,132,252)] overflow-hidden">
+                                        <div className="w-20 h-20 mx-auto rounded-full border-2 border-[#d86bff] overflow-hidden ">
                                             {player.avatar_url ? (
                                                 <img
                                                     src={player.avatar_url}
                                                     alt={player.username}
-                                                    className="shrink-img"
+                                                    className="w-full h-full object-cover"
                                                 />
                                             ) : (
-                                                <span className="text-2xl font-bold text-[rgb(216,180,254)]">
-                                                    {player.username.slice(0, 2).toUpperCase()}
-                                                </span>
+                                                <div className="w-full h-full bg-[#d86bff]/20 flex items-center justify-center">
+                                                    <span className="text-2xl font-bold text-[#d86bff]">
+                                                        {player.username.slice(0, 2).toUpperCase()}
+                                                    </span>
+                                                </div>
                                             )}
                                         </div>
-                                        <h3 className="font-bold text-xl text-white mb-2">{player.username}</h3>
+                                        <h3 className="font-bold text-xl text-white mt-4 mb-2 tracking-wide">
+                                            {player.username}
+                                        </h3>
                                         <div className="flex items-center justify-center gap-2 mb-4">
-                                            <span className={`px-3 py-1 rounded-full text-sm font-bold ${getRankStyle(rank)}`}>
+                                            <span className={`px-4 py-1 rounded-full text-sm font-bold border ${getRankStyle(rank)}`}>
                                                 #{rank}
                                             </span>
                                         </div>
-                                        <div className="grid grid-cols-3 gap-4 text-sm">
+                                        <div className="grid grid-cols-3 gap-2 text-sm">
                                             <div>
-                                                <p className="text-2xl font-bold text-[rgb(192,132,252)]">{player.points}</p>
-                                                <p className="text-[rgba(216,180,254,0.7)]">Points</p>
+                                                <p className="text-2xl font-bold text-[#d86bff]">{player.points}</p>
+                                                <p className="text-gray-500 text-xs uppercase tracking-wider">Points</p>
                                             </div>
                                             <div>
-                                                <p className="text-2xl font-bold text-[rgb(74,222,128)]">{player.wins}</p>
-                                                <p className="text-[rgba(216,180,254,0.7)]">Wins</p>
+                                                <p className="text-2xl font-bold text-[#d86bff]">{player.wins}</p>
+                                                <p className="text-gray-500 text-xs uppercase tracking-wider">Wins</p>
                                             </div>
                                             <div>
-                                                <p className="text-2xl font-bold text-[rgb(192,132,252)]">{player.win_rate}</p>
-                                                <p className="text-[rgba(216,180,254,0.7)]">Win Rate</p>
+                                                <p className="text-2xl font-bold text-[#d86bff]">{player.win_rate}%</p>
+                                                <p className="text-gray-500 text-xs uppercase tracking-wider">Rate</p>
                                             </div>
                                         </div>
                                     </div>
@@ -134,28 +140,29 @@ export function Leaderboard() {
                     </div>
                 )}
 
-                {/* Full Leaderboard */}
-                <div className="bg-[rgba(0,0,0,0.4)] backdrop-blur-sm border border-[rgba(168,85,247,0.3)] rounded-lg">
-                    <div className="p-6 border-b border-[rgba(168,85,247,0.3)]">
-                        <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                            <Trophy className="w-6 h-6" style={{ color: 'rgb(192,132,252)' }} />
-                            Rankings
+                <div className="bg-[#0a0a14]/60 backdrop-blur-sm border border-[#d86bff]/30 rounded-xl mt-12">
+                    <div className="p-6 border-b border-[#d86bff]/20">
+                        <h2 className="text-2xl font-bold text-white flex items-center gap-3 tracking-wider">
+                            <Trophy className="w-6 h-6" style={{ color: '#d86bff' }} />
+                            FULL RANKINGS
                         </h2>
                     </div>
                     <div className="p-6">
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                             {users && users.map((player, index) => {
                                 const rank = index + 1;
                                 return (
                                     <div
                                         key={player.user_id}
-                                        className={`flex items-center gap-4 p-4 rounded-lg transition-all ${rank <= 3
-                                                ? "bg-[rgba(168,85,247,0.1)] border border-[rgba(168,85,247,0.3)] hover:bg-[rgba(168,85,247,0.2)]"
-                                                : "bg-[rgba(168,85,247,0.05)] hover:bg-[rgba(168,85,247,0.1)]"
-                                            }`}
+                                        className={`flex items-center gap-4 p-4 rounded-lg transition-all border ${
+                                            rank <= 3
+                                                ? "bg-[#d86bff]/5 border-[#d86bff]/20 hover:bg-[#d86bff]/10 hover:border-[#d86bff]/40"
+                                                : "bg-transparent border-transparent hover:bg-[#d86bff]/5 hover:border-[#d86bff]/10"
+                                        }`}
                                     >
                                         <div
-                                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold border-2 ${getRankStyle(rank)}`} >
+                                            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold border-2 ${getRankStyle(rank)}`}
+                                        >
                                             {rank}
                                         </div>
                                         <div className="w-[80px] h-[50px] rounded-full bg-[rgba(168,85,247,0.2)] flex items-center justify-center border-2 border-[rgb(192,132,252)] overflow-hidden">
@@ -173,25 +180,25 @@ export function Leaderboard() {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2">
-                                                <p className="font-medium text-white truncate">{player.username}</p>
+                                                <p className="font-medium text-white truncate tracking-wide">{player.username}</p>
                                                 {getRankIcon(rank)}
                                             </div>
-                                            <p className="text-sm text-[rgba(216,180,254,0.7)]">
-                                                {player.points.toLocaleString()} Points
+                                            <p className="text-sm text-gray-500 tracking-wider">
+                                                {player.points.toLocaleString()} POINTS
                                             </p>
                                         </div>
-                                        <div className="hidden sm:flex items-center gap-6 text-sm">
+                                        <div className="hidden sm:flex items-center gap-8 text-sm">
                                             <div className="text-center">
-                                                <p className="font-bold text-[rgb(74,222,128)]">{player.wins}</p>
-                                                <p className="text-xs text-[rgba(216,180,254,0.7)]">Wins</p>
+                                                <p className="font-bold text-[#d86bff]">{player.wins}</p>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wider">Wins</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="font-bold text-[rgb(248,113,113)]">{player.loss}</p>
-                                                <p className="text-xs text-[rgba(216,180,254,0.7)]">Losses</p>
+                                                <p className="font-bold text-gray-400">{player.loss}</p>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wider">Losses</p>
                                             </div>
                                             <div className="text-center">
-                                                <p className="font-bold text-[rgb(192,132,252)]">{player.win_rate}</p>
-                                                <p className="text-xs text-[rgba(216,180,254,0.7)]">Win Rate</p>
+                                                <p className="font-bold text-[#d86bff]">{player.win_rate}%</p>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wider">Rate</p>
                                             </div>
                                         </div>
                                     </div>

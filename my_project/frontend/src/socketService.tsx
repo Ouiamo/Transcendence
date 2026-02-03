@@ -1,6 +1,6 @@
 // socketService.tsx
 import { io } from "socket.io-client";
-import type { Socket } from "socket.io-client"; //Socket is a type, not runtime code
+import type { Socket } from "socket.io-client";
 
 let socket: Socket | null = null;
 export const OnlineUsers = new Map<number, string>();

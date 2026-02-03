@@ -25,7 +25,7 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj, listfriends, goto, 
 
 
     return (
-        <div className=" flex h-screen w-full flex-row bg-[#32174D] ">
+        <div className=" flex h-screen w-full flex-row bg-[#0b0618] ">
             <div className="flex gap-[200px] w-full ">
                 <div>
 

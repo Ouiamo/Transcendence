@@ -67,7 +67,7 @@ export function Leaderboard() {
     
 
     return (
-        <div className="min-h-screen w-full bg-gradient-to-br from-[rgb(88,28,135)] via-black to-[rgb(88,28,135)] p-6">
+        <div className="min-h-screen w-full bg-gradient-to-br bg-[#0b0618] p-6">
             <div className="max-w-6xl mx-auto space-y-6">
                 <div className="text-center">
                     <h1 className="text-4xl font-bold text-white mb-2">Leaderboard</h1>

@@ -262,18 +262,26 @@ if(loading) return <div>Loading...</div>
     </div>
   </div>
 )}
-    {
-      currentPage === 'LEADERBOARD' &&
-      <div className="flex  flex-row gap-[140px] w-full h-full">
-        <div className="flex">
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
-
-        </div>
-        <div className="flex ">
-        <Leaderboard />
-        </div>
-      </div>
-    }
+  {
+  currentPage === 'LEADERBOARD' &&
+  <div className="min-h-screen w-full bg-[#06060d]">
+    <Sidebar 
+      user_={user_data} 
+      gotohome={() => setCurrentPage('HOME')} 
+      delete_obj={obj_login} 
+      gotodashbord={gotodash} 
+      gotoprofil={gotoprofil} 
+      gotofriends={gotofriends} 
+      gotosetting={gotoseting} 
+      gotoleaderboard={gotoleaderboard}
+    />
+    
+ 
+    <div className="mr-[10px] ml-[120px] overflow-y-auto">
+      <Leaderboard />
+    </div>
+  </div>
+}
     {
       currentPage === 'FRIENDS' &&
       <div className="flex  flex-row gap-[140px] w-full h-full">

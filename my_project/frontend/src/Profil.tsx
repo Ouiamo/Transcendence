@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { FaTrophy, FaSkull, FaGamepad, FaPercentage } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { logoutUser } from './socketService';
-import { motion } from "framer-motion";
 
 function SmallStatCard({ icon, value, label }: any) {
   return (

@@ -25,13 +25,13 @@ input:-webkit-autofill:active {
   height: auto;
 }
 
-/* optional glow
+/* optional glow */
 .glow-text {
   text-shadow:
     0 0 10px #d86bff,
     0 0 20px #d86bff,
     0 0 40px #a855f7;
-} */
+}
 
 
 @keyframes profile-entry {

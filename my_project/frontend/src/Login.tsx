@@ -19,6 +19,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
 
     const handel_auth_goole = async () => {
         window.location.href = 'https://localhost:3010/api/auth/google'  //backend
+        // console.log("haniiiiiiiiiiiiiiiiiiiiiiii google");
 
     }
     const handel_auth_42 = async () => {

@@ -15,8 +15,9 @@ interface sideb {
     gotofriends: () => void;
     gotosetting: () => void;
     gotoleaderboard: () => void;
+    gotolocalgame : ()=> void;
 }
-export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard }: sideb) {
+export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard, gotolocalgame }: sideb) {
     const [active, setActive] = useState<"dashboard" | "game" | "leaderboard" | "settings" | "profile" | "friends">
         (() => (localStorage.getItem("sidebar-active") as any) || "dashboard");
 
@@ -42,6 +43,7 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
                 delete_obj(null);
                 gotohome();
                 localStorage.removeItem('page');
+                localStorage.removeItem('sidebar-active');
             }
         }
         catch (error) {
@@ -51,10 +53,10 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
     const iconBase =
         "w-12 h-12 flex items-center justify-center rounded-xl transition-all duration-200 cursor-pointer";
     const iconActive =
-        "bg-[#c44cff]/20 text-[#c44cff] shadow-[0_0_18px_#c44cff]";
+        "bg-[#c44cff]/20 text-[#c44cff] shadow-[0_0_18px_#c44cff] rounded-full";
     const iconInactive =
         "text-[#3b2a55] hover:text-[#c44cff] hover:bg-[#c44cff]/10";
-    const labelStyle = "absolute left-[72px] px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap " +
+    const labelStyle = "absolute left-[72px] px-3 py-1 rounded-full p-[10px] text-sm font-medium whitespace-nowrap" +
         "bg-[#c44cff]/15 text-[#c44cff] shadow-[0_0_12px_#c44cff] " + "opacity-0 -translate-x-2 pointer-events-none " +
         "transition-all duration-300 " + "group-hover:opacity-100 group-hover:translate-x-0";
 
@@ -72,7 +74,7 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
                         <span className={labelStyle}>
                             Dashboard
                         </span></li>
-                    <li onClick={() => { setActiveSafe("game"); }}
+                    <li onClick={() => { setActiveSafe("game"); gotolocalgame(); }}
                         className={`${iconBase} ${active === "game" ? iconActive : iconInactive} relative group`}><IoGameControllerOutline size={35} />
                         <span className={labelStyle}>
                             Game

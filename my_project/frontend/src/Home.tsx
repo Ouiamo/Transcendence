@@ -59,7 +59,7 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
         </div>
 
         <div className="flex flex-col items-center gap-3">
-          <h1 className="pong-title text-[75px] md:text-[70px] font-extrabold glow-text leading-none">
+          <h1 className="pong-title text-[75px] md:text-[70px] font-extrabold glow-text leading-none ">
             PONG
           </h1>
 

@@ -37,8 +37,27 @@ export function GamePage(userdata:any) {
   }, []);
 
   return (
-    <div>
+    <div className="flex justify-center items-center flex-col h-full  w-full gap-[20px] ">
+      {/* <div> */}
+    <div className=" flex flex-col  items-center ">
+      <h1> local game</h1>
+      <p>Play with a friend on the same device</p>
+      <div className="flex items-center gap-[12px] mb-[6px] space-x-[80px] ">
+        <div className="flex flex-col items-center gap-[10px] ">
+          <p className="text-[40px] text-gray-500 font-bold mb-[1px] ">Player 1</p>
+          <span className="text-[20px] font-black text-[#ff44ff] drop-shadow-[0_0_10px_#ff44ff]">0</span>
+        </div>
+        
+        <div className="text- font-light ">:</div>
+
+        <div className="flex flex-col items-center gap-[10px]">
+          <p className="text-[40px] text-gray-500 font-bold mb-[1px]">Player 2</p>
+          <span className="text-[20px] font-black text-[#ff44ff] drop-shadow-[0_0_10px_#ff44ff]">0</span>
+        </div>
+      </div>
+    </div>
       <canvas id="board" ref={canvasRef}></canvas>
+      {/* </div> */}
     </div>
   );
 }

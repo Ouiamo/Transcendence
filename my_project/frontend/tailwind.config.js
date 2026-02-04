@@ -10,6 +10,12 @@ export default {
       //   'primary-pink': '#ff44ff',
       //   'dark-bg': '#0f0f0f',
       // },
+        safelist: [
+    'animate__animated',
+    'animate__flip',
+    'animate__fadeIn',
+    'animate__bounce',
+  ],
     },
   },
   

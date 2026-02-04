@@ -193,7 +193,7 @@ if(loading) return <div>Loading...</div>
 
       currentPage === 'DASHBOARD'&&
       <div className="h-screen w-full flex-row ">
-        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login}  listfriends={listfriends}  goto={gotogamelocal} gotoia={gotogameia} gotodashbord={gotodash}  gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+        < Dashboard gotohome={()=>setCurrentPage('HOME')} gotoprofil={ ()=>setCurrentPage('PROFIL')} user={user_data} delete_obj={obj_login}  listfriends={listfriends}  goto={gotogamelocal} gotoia={gotogameia} gotodashbord={gotodash}  gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} />
       </div>
     
     }
@@ -202,21 +202,20 @@ if(loading) return <div>Loading...</div>
       currentPage ==='GAME_L' &&
       <div className=" flex    "> 
 
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
-          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
+          <div className="flex-1 flex   w-full items-center justify-center ">  
           < GamePage  username={user_data.username}/>
 
         <canvas ref={canvasRef} id="board" />
           </div>
-          
-        i m in game 
+         
       </div>
 
     }
     {
       currentPage === 'GAME_R'&& 
       <div>
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
         i m in remotttttttttttt 
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">
           < Friendlist />
@@ -235,7 +234,7 @@ if(loading) return <div>Loading...</div>
      {
       currentPage === 'GAME_I'&& 
       <div className="flex  ">
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
 
        
           <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
@@ -251,13 +250,13 @@ if(loading) return <div>Loading...</div>
   <div className="flex flex-row min-h-screen w-full bg-[#0a0a0a]  gap-[60px] overflow-x-hidden">
     {/* Sidebar: نعطيه عرضاً ثابتاً صغيراً أو نسبة مئوية */}
     <div className="flex-none w-[60px] md:w-[250px] transition-all duration-300">
-               <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+               <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
     </div>
 
     {/* Content: يأخذ المساحة المتبقية كاملة */}
     <div className="flex-grow flex justify-center p-2 md:p-8">
       <div className="w-full max-w-[1200px]">
-        <Profil user={user_data}/>
+        <Profil user={user_data  } delete_obj={obj_login} gotohome={gotoHome} gotosetting={gotoseting}/>
       </div>
     </div>
   </div>
@@ -266,7 +265,7 @@ if(loading) return <div>Loading...</div>
       currentPage === 'LEADERBOARD' &&
       <div className="flex  flex-row gap-[140px] w-full h-full">
         <div className="flex">
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
 
         </div>
         <div className="flex ">
@@ -278,7 +277,7 @@ if(loading) return <div>Loading...</div>
       currentPage === 'FRIENDS' &&
       <div className="flex  flex-row gap-[140px] w-full h-full">
         <div className="flex">
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
 
         </div>
         <div className="flex ">
@@ -290,7 +289,7 @@ if(loading) return <div>Loading...</div>
       currentPage === 'SETTING' &&
       <div className="flex flex-row  gap-[150px]" >
         <div className="flex  ">
-            <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
+            <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal}/>
         </div>
         <div className="flex w-full h-full ">
         <Setting user={user_data}/>

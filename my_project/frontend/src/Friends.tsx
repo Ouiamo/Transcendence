@@ -11,7 +11,8 @@ function Friends() {
 
     // Function to update online status
     const updateOnlineStatus = () => {
-        if (friends.length === 0) return;
+        if (friends.length === 0) 
+            return;
 
         const onlineStatus = new Map<number, string>();
 

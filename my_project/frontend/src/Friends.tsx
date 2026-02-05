@@ -11,7 +11,8 @@ function Friends() {
 
     // Function to update online status
     const updateOnlineStatus = () => {
-        if (friends.length === 0) return;
+        if (friends.length === 0) 
+            return;
 
         const onlineStatus = new Map<number, string>();
 
@@ -175,7 +176,7 @@ function Friends() {
     return (
         <div className="flex w-full h-full gap-[40px] mt-[80px]">
             <div>
-                <div className="flex flex-col w-[500px] h-fit bg-[#ffff]">
+                <div className="flex flex-col w-[500px] h-fit bg-[#ffffff]">
                     <h2 className="text-[#ff99ff] text-[19px]">My Friends ({friends.length})</h2>
                     {friends.length === 0 ? (
                         <div className="flex flex-col items-center justify-center opacity-30 mt-10">

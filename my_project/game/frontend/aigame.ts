@@ -277,8 +277,8 @@ function aidraw(player1:string) {
     aidrawRect(realplayer.x, realplayer.y, aipaddleWidth, aipaddleHeight, realplayer.color);
     aidrawNet();
     aidrawBall(aiball.x, aiball.y, aiball.radius, aiball.color);
-    aidrawScore(aiscore.x_l, aiscore.y, aiplayer.score, aiscore.color, "bot");
-    aidrawScore(aiscore.x_r, aiscore.y, realplayer.score, aiscore.color, player1);
+    // aidrawScore(aiscore.x_l, aiscore.y, aiplayer.score, aiscore.color, "bot");
+    // aidrawScore(aiscore.x_r, aiscore.y, realplayer.score, aiscore.color, player1);
     aidrawCountDown();
     // if(aiwinner !== null)
     //     aidrawWinner();

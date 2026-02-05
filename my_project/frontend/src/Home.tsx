@@ -48,8 +48,8 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
   return (
     <div className="min-h-screen w-full bg-[#06060d] flex flex-col items-center justify-center text-white relative overflow-hidden">
 
-      <div className="flex flex-col items-center gap-8 md:gap-10">
-        <div className="w-[180px] h-[120px] rounded-xl border border-[#c84cff]/40 
+      <div className="flex flex-col items-center gap-[16px] md:gap-10">
+        <div className="w-[180px] h-[120px] rounded-[16px] border border-[#c84cff]/40 
                         shadow-[0_0_40px_rgba(200,76,255,0.25)] 
                         flex items-center justify-center relative">
 
@@ -58,23 +58,23 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
           </div>
         </div>
 
-        <div className="flex flex-col items-center gap-3">
-          <h1 className="pong-title text-[75px] md:text-[70px] font-extrabold glow-text leading-none">
+        <div className="flex flex-col items-center gap-[16px]">
+          <h1 className="pong-title text-[75px] md:text-[70px] font-extrabold glow-text leading-none ">
             PONG
           </h1>
 
-          <p className="text-sm tracking-widest uppercase text-gray-400 ">
+          <p className="text-[16px] tracking-widest uppercase text-gray-400  ">
             Competitive Pong Experience
           </p>
 
 
         </div>
         <div className="w-[260px] h-[1px] bg-[#d86bff]/40 mt-10"></div>
-        <div className="flex gap-6 mt-10">
+        <div className="flex gap-[12px] mt-[10px]">
     
           <button
             onClick={gotologin}
-            className="w-[120px] h-[38px]
+            className="w-[120px] h-[38px] outline-none border-none
                rounded-full
                bg-[#d86bff]
                text-black text-xs font-bold tracking-widest
@@ -87,7 +87,7 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
 
           <button
             onClick={gotosignup}
-            className="w-[120px] h-[38px]
+            className="w-[120px] h-[38px] outline-none border-none
                rounded-full
                border border-[#d86bff]
                text-[#d86bff] text-xs font-bold tracking-widest
@@ -101,8 +101,8 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
 
 
       </div>
-      <div className="flex justify-center">
-        <p className="flex flex-col items-center gap-4 text-[14px] tracking-widest text-[#9201CB]/70">
+      <div className="flex justify-center mt-[20px]">
+        <p className="flex flex-col items-center gap-[4px] text-[14px] tracking-widest text-[#9201CB]/70">
           <span>Enter the arena. Challenge players worldwide.</span>
           <span>Become a legend.</span>
         </p>
@@ -112,5 +112,4 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
 }
 
 export default Home
-
 

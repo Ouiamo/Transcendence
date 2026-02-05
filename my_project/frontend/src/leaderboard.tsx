@@ -39,9 +39,9 @@ export function Leaderboard() {
     }, []);
 
     const getRankIcon = (rank: number) => {
-        if (rank === 1) return <Trophy className="w-5 h-5 text-yellow-500" />;
-        if (rank === 2) return <Award className="w-5 h-5 text-gray-400" />;
-        if (rank === 3) return <Medal className="w-5 h-5 text-orange-500" />;
+        if (rank === 1) return <Trophy className="w-[20px] h-[20px] rgb(234, 179, 8)" />;
+        if (rank === 2) return <Award className="w-[20px] h-[20px] text-gray-400" />;
+        if (rank === 3) return <Medal className="w-[20px] h-[20px] text-orange-500" />;
         return null;
     };
 
@@ -49,19 +49,19 @@ export function Leaderboard() {
         if (rank === 1) return { 
             background: 'linear-gradient(to top, rgba(113, 63, 18, 0.4), rgba(133, 77, 14, 0.2))', 
             borderColor: 'rgb(202, 138, 4)',
-            height: 'h-[180px]',
+            height: '150px',
             order: 'order-2'
         };
         if (rank === 2) return { 
             background: 'linear-gradient(to top, rgba(31, 41, 55, 0.4), rgba(55, 65, 81, 0.2))', 
             borderColor: 'rgb(75, 85, 99)',
-            height: 'h-[140px]',
+            height: '130px',
             order: 'order-1'
         };
         if (rank === 3) return { 
             background: 'linear-gradient(to top, rgba(124, 45, 18, 0.4), rgba(154, 52, 18, 0.2))', 
             borderColor: 'rgb(234, 88, 12)',
-            height: 'h-[120px]',
+            height: '100px',
             order: 'order-3'
         };
         return { background: '', borderColor: '', height: '', order: '' };
@@ -77,48 +77,51 @@ export function Leaderboard() {
 
     const getCircleStyle = (rank: number) => {
         if (rank === 1) return { 
-            background: 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(126, 34, 206))',
+            background: 'linear-gradient(to bottom right, rgb(219, 182, 61), rgb(153, 120, 15))',
             color: 'rgb(255, 255, 255)',
-            size: 'w-40 h-40 text-5xl',
+            size: '100px',
+            fontSize: '36px',
             shadow: '0 0 80px rgba(168, 85, 247, 0.8)'
         };
         if (rank === 2) return { 
             background: 'linear-gradient(to bottom right, rgb(156, 163, 175), rgb(75, 85, 99))',
             color: 'rgb(255, 255, 255)',
-            size: 'w-32 h-32 text-4xl',
+            size: '100px',
+            fontSize: '36px',
             shadow: '0 0 50px rgba(156, 163, 175, 0.5)'
         };
         if (rank === 3) return { 
             background: 'linear-gradient(to bottom right, rgb(249, 115, 22), rgb(194, 65, 12))',
             color: 'rgb(255, 255, 255)',
-            size: 'w-32 h-32 text-4xl',
+            size: '100px',
+            fontSize: '36px',
             shadow: '0 0 50px rgba(249, 115, 22, 0.5)'
         };
-        return { background: '', color: '', size: '', shadow: '' };
+        return { background: '', color: '', size: '', fontSize: '', shadow: '' };
     };
 
     if (loading) return (
         <div className="min-h-screen w-full bg-[#06060d] flex items-center justify-center">
-            <div className="text-white text-xl tracking-widest">LOADING...</div>
+            <div className="text-white text-[20px] tracking-widest">LOADING...</div>
         </div>
     );
 
     if (error) return (
         <div className="min-h-screen w-full bg-[#06060d] flex items-center justify-center">
-            <div className="text-red-500 text-xl tracking-widest">ERROR: {error}</div>
+            <div className="text-red-500 text-[20px] tracking-widest">ERROR: {error}</div>
         </div>
     );  
 
-    return (
-        <div className="min-h-screen w-full bg-[#06060d] text-white py-12 px-6">
-            <div className="max-w-6xl mx-auto space-y-12">
+     return (
+        <div className="min-h-screen w-full bg-[#06060d] text-white py-[48px] px-[24px]">
+            <div className="max-w-[1152px] mx-auto space-y-[48px]">
                 
-                <div className="text-center space-y-4">
-                    <h1 className="text-6xl md:text-7xl font-extrabold tracking-wider" style={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}>
+                <div className="text-center space-y-[16px]">
+                    <h1 className="text-[84px] font-extrabold tracking-wider" style={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}>
                         Leaderboard
                     </h1>
-                    <p className="text-base md:text-lg text-blue-300 tracking-widest uppercase">
-                        Top players ranked by total wins
+                    <p className="text-[18px] text-blue-300 tracking-widest uppercase">
+                        Top players ranked by total wi4
                     </p>
                 </div>
 
@@ -126,36 +129,40 @@ export function Leaderboard() {
                 {users && users.length >= 3 && (
                     <div className="relative">
                         
-                        <div className="flex items-end justify-center gap-16 mb-12">
+                        <div className="flex items-end justify-center gap-[100px] mb-[4px]">
+
                             {[1, 0, 2].map((index) => {
                                 const player = users[index];
                                 const rank = index + 1;
                                 const circleStyle = getCircleStyle(rank);
                                 
                                 return (
-                                    <div key={player.user_id} className={`flex flex-col items-center ${rank === 1 ? 'mb-12' : ''}`}>
+                                    <div key={player.user_id} className={`flex flex-col items-center ${rank === 1 ? 'mb-[10px]' : ''}`}>
                                         
                                         <div 
-                                            className={`${circleStyle.size} rounded-full flex items-center justify-center font-extrabold relative`}
+                                            className="rounded-full flex items-center justify-center font-extrabold relative"
                                             style={{ 
+                                                width: circleStyle.size,
+                                                height: circleStyle.size,
                                                 background: circleStyle.background,
                                                 color: circleStyle.color,
+                                                fontSize: circleStyle.fontSize,
                                                 boxShadow: circleStyle.shadow
                                             }}
                                         >
-                                            <span>{getInitials(player.username)}</span>
+                                            <span>{getInitials(player.username)} </span>
                                         </div>
                                         
                                         
-                                        <p className="mt-6 text-xl font-bold tracking-wide" style={{ color: 'rgb(255, 255, 255)' }}>{player.username}</p>
-                                        <p className="text-base mt-2" style={{ color: 'rgb(156, 163, 175)' }}>{player.wins} wins</p>
+                                        <p className="mt-[24px] text-[20px] font-bold tracking-wide" style={{ color: 'rgb(255, 255, 255)' }}>{player.username}</p>
+                                        <p className="text-[16px] mt-[8px]" style={{ color: 'rgb(156, 163, 175)' }}>{player.wins} wins</p>
                                     </div>
                                 );
                             })}
                         </div>
 
                        
-                        <div className="flex items-end justify-center gap-8">
+                        <div className="flex items-end justify-center gap-[10px]">
                             {[1, 0, 2].map((index) => {
                                 const rank = index + 1;
                                 const podiumStyle = getPodiumStyle(rank);
@@ -163,13 +170,14 @@ export function Leaderboard() {
                                 return (
                                     <div 
                                         key={`podium-${rank}`}
-                                        className={`${podiumStyle.order} w-[100px] ${podiumStyle.height} border-2 rounded-t-xl flex flex-col items-center justify-center`}
+                                        className={`${podiumStyle.order} w-[200px] border-2 rounded-t-xl flex flex-col items-center justify-center`}
                                         style={{
+                                            height: podiumStyle.height,
                                             background: podiumStyle.background,
                                             borderColor: podiumStyle.borderColor
                                         }}
                                     >
-                                        <span className="text-7xl font-extrabold" style={{ color: 'rgba(255, 255, 255, 0.2)' }}>{rank}</span>
+                                        <span className="text-[84px] font-extrabold" style={{ color: 'rgba(255, 255, 255, 0.2)' }}>{rank}</span>
                                     </div>
                                 );
                             })}
@@ -178,13 +186,13 @@ export function Leaderboard() {
                 )}
 
                 
-                <div className="bg-[#0a0a14] rounded-2xl border border-gray-700/50 overflow-hidden shadow-2xl">
+                <div className="mt-[50px] max-w-[800px] mx-auto bg-[#0a0a14] rounded-[16px] border border-gray-700/50 overflow-hidden shadow-2xl">
                     
-                    <div className="grid grid-cols-4 gap-6 px-12 py-6 border-b border-gray-700/50 bg-[#08080f]">
-                        <div className="text-sm font-bold text-gray-400 tracking-widest uppercase">RANK</div>
-                        <div className="text-sm font-bold text-gray-400 tracking-widest uppercase">PLAYER</div>
-                        <div className="text-sm font-bold text-gray-400 tracking-widest uppercase text-center">WINS</div>
-                        <div className="text-sm font-bold text-gray-400 tracking-widest uppercase text-center">WIN RATE</div>
+                    <div className="grid grid-cols-4 gap-[24px] px-[48px] py-[20px] border-b border-gray-700/50 bg-[#08080f]">
+                        <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase">RANK</div>
+                        <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase">PLAYER</div>
+                        <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase text-center">WINS</div>
+                        <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase text-center">WIN RATE</div>
                     </div>
                     
                    
@@ -194,20 +202,20 @@ export function Leaderboard() {
                             return (
                                 <div
                                     key={player.user_id}
-                                    className="grid grid-cols-4 gap-6 px-12 py-6 hover:bg-[#12121f] transition-colors"
+                                    className="grid grid-cols-4 gap-[24px] px-[48px] py-[20px] hover:bg-[#b572b1] transition-colors"
                                 >
                                     
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-[16px]">
                                         {getRankIcon(rank)}
-                                        <span className="text-lg font-semibold text-white">{rank}</span>
+                                        <span className="ml-[10px] text-[18px] font-semibold text-white">{rank}</span>
                                     </div>
                                     
                                     
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-[10px]">
                                         <div 
-                                            className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-base"
+                                            className="w-[48px] h-[30px] rounded-full flex items-center justify-center font-bold text-[16px]"
                                             style={{
-                                                background: rank === 1 ? 'linear-gradient(to bottom right, rgb(168, 85, 247), rgb(126, 34, 206))' :
+                                                background: rank === 1 ? ' rgb(168, 85, 247)' :
                                                            rank === 2 ? 'linear-gradient(to bottom right, rgb(236, 72, 153), rgb(190, 24, 93))' :
                                                            rank === 3 ? 'linear-gradient(to bottom right, rgb(244, 114, 182), rgb(219, 39, 119))' :
                                                            'rgb(55, 65, 81)',
@@ -216,17 +224,17 @@ export function Leaderboard() {
                                         >
                                             {getInitials(player.username)}
                                         </div>
-                                        <span className="text-lg font-semibold text-white">{player.username}</span>
+                                        <span className="text-[18px] font-semibold text-white">{player.username}</span>
                                     </div>
                                     
                                     
                                     <div className="flex items-center justify-center">
-                                        <span className="text-lg font-bold text-white">{player.wins}</span>
+                                        <span className="text-[18px] font-bold text-white">{player.wins}</span>
                                     </div>
                                     
                                     
                                     <div className="flex items-center justify-center">
-                                        <span className="text-lg font-bold text-white">{player.win_rate}%</span>
+                                        <span className="text-[18px] font-bold text-white">{player.win_rate}%</span>
                                     </div>
                                 </div>
                             );

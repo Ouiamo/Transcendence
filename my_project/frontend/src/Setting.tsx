@@ -195,8 +195,8 @@ function TwoFASetting({ user }: intersetting) {
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-[#32174D]">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] justify-center  items-center w-full h-full  bg-[#32174D]">
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] justify-center  items-center w-full h-full  bg-[#0b0618]">
         <div className="flex flex-col w-[700px] h-fit border border-[#ff99ff] gap-[20px] ">
           apdate profile
           <div className="flex flex-col gap-[20px] ">

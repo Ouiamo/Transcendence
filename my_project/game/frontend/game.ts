@@ -68,6 +68,7 @@ const keys: {[key:string] : boolean}={
     'ArrowDown' : false,
 };
 
+
 export function getLocalWinner() {
     const player1score = player1.score;
     const player2score = player2.score;
@@ -75,22 +76,27 @@ export function getLocalWinner() {
   return data;
 }
 
-export function initGame(canvas: HTMLCanvasElement, player:string) {
-    //board = document.getElementById("board") as HTMLCanvasElement;
-    // board.style.display = "block";
+export function initGame(canvas: HTMLCanvasElement, player: string) {
     board = canvas;
-
-  board.width = 900;
-  board.height = 450;
+    board.width = 900;
+    board.height = 450;
     contex = board.getContext("2d");
     
-    draw(player);
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("keyup", handleKeyUp);
-  console.log("winner is ", winner);
-  return winner;
-}
+    
+    draw(player); 
 
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    
+    return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("keyup", handleKeyUp);
+      
+        console.log("Game Listeners Cleaned Up");
+    };
+}
 
 //  ( function initGame() {
 //     board = document.getElementById("board") as HTMLCanvasElement;
@@ -289,8 +295,8 @@ function  resetBall()
     drawRect(player2.x, player2.y, paddleWidth, paddleHeight, player2.color);
     drawNet();
     drawBall(ball.x, ball.y, ball.radius, ball.color);
-    drawScore(score.x_l, score.y, player1.score, score.color, "GUEST");
-    drawScore(score.x_r, score.y, player2.score, score.color, player);
+    // drawScore(score.x_l, score.y, player1.score, score.color, "GUEST");
+    // drawScore(score.x_r, score.y, player2.score, score.color, player);
     drawCountDown();
     drawWinner();
     if(!gameStart && !gameCountDown && !winner)

@@ -120,7 +120,7 @@ console.log("avatr howa hada ", user.avatarUrl);
         {/* 1. Left: Opponent Info */}
         <div className="flex items-center p-[10px] gap-[10px] flex-1">
           <div className={`w-[50px] h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
-            <img src={match.opp_username === 'AI' ? `https://api.dicebear.com/7.x/bottts/svg?seed=2` : `https://api.dicebear.com/7.x/avataaars/svg?seed=3`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
+            <img src={match.opp_username === 'AI' ? `https://localhost:3010/api/avatar/file/ia.png` : `https://localhost:3010/api/avatar/file/guest.png`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
           </div>
           <div className="flex flex-col">
             <h4 className="text-white font-bold text-[14px] uppercase tracking-wide">{match.opp_username}</h4>

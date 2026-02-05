@@ -18,7 +18,10 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
     const [gmailogin, setgmailogin] = useState('');
 
     const handel_auth_goole = async () => {
-        window.location.href = 'https://localhost:3010/api/auth/google'
+// <<<<<<< HEAD
+//         window.location.href = 'https://localhost:3010/api/auth/google'
+// =======
+        window.location.href = 'https://localhost:3010/api/auth/google'  //backend
 
     }
     const handel_auth_42 = async () => {
@@ -30,7 +33,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
             email: cleangmail_login,
             password: passlogin,
         }
-        try {
+        try { 
             const result = await loginUser(data_login);
             console.log("login resulttttttttttttaaaaaaaaa ", result);
             if (result.twofa_required) {

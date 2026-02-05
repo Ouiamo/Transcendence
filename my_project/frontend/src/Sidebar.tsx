@@ -3,9 +3,6 @@ import { FaUsers } from "react-icons/fa";
 import { Trophy } from 'lucide-react';
 import { logoutUser } from './socketService';
 
-
-import { useState } from "react";
-
 interface sideb {
     user_: any;
     gotohome: () => void;
@@ -16,16 +13,11 @@ interface sideb {
     gotosetting: () => void;
     gotoleaderboard: () => void;
     gotolocalgame : ()=> void;
+    setActiveSafe : (s:any) => void;
 }
-export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard, gotolocalgame }: sideb) {
-    const [active, setActive] = useState<"dashboard" | "game" | "leaderboard" | "settings" | "profile" | "friends">
-        (() => (localStorage.getItem("sidebar-active") as any) || "dashboard");
-
-    const setActiveSafe = (key: typeof active) => {
-        setActive(key);
-        localStorage.setItem("sidebar-active", key);
-    };
-
+export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard, gotolocalgame , setActiveSafe}: sideb) {
+   
+const active = localStorage.getItem('sidebar-active');
     const logout = async () => {
         try {
             // First disconnect the socket to immediately mark user offline
@@ -63,7 +55,7 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
     return (
 
         <aside className="fixed top-0 left-0  w-[88px] h-screen bg-[#0b0618] border-r border-[#c44cff]/20 flex flex-col items-center justify-between h-full py-4">
-            <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center border border-[#c44cff]/60 text-[#c44cff] shadow-[0_0_16px_#c44cff] font-bold text-[30px]">
+            <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center border border-[#c44cff]/60 text-[#c44cff] shadow-[0_0_16px_#c44cff] mt-[10px] text-[30px]">
                 {user_?.username?.[0]?.toUpperCase()}
             </div>
 
@@ -117,25 +109,7 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
 export default Sidebar;
 
 
-// <aside className=" fixed top-0 left-0 w-[110px] h-full   bg-[#0d0218] flex flex-col items-center py-10 justify-between shrink-0 border-r-[1px] border-[#ff44ff]/30">
-//     <div className="mt-[20px] w-[100px] h-[40px] bg-gradient-to-br from-[#ff44ff] to-[#ff99ff] flex items-center justify-center shadow-[0_0_10px_#ff44ff]">
-//         <span className="text-white text-[10px] font-bold truncate px-1 items-center">{user_?.username}</span>
-//     </div>
-//     <nav className="flex-1 flex items-center justify-center">
-//         <ul style={{ display: 'flex', flexDirection: 'column', gap: '50px' , color:'white !important'}} className="text-white text-2xl list-none">
-//             {/* <IconContext.Provider value={{ color: "white", size: "1.5em", className: "global-class-name" }}></IconContext.Provider> */}
-//             {/* <li><IoSearch size={40} className="mr-[40px] !text-[#ff44ff] text-3xl cursor-pointer drop-shadow-[0_0_8px_#ff44ff] cursor-pointer hover:scale-125 transition-all duration-200" /></li> */}
-//             <li><IoHomeOutline size={40} className="!text-[#6B4C7A] hover:!text-[#E879F9] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"onClick={gotodashbord} /></li>
-//             <li><IoNotificationsOutline size={40} className="!text-[#6B4C7A] hover:!text-[#E879F9] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
-//             <li><Trophy size={40} onClick={gotoleaderboard} className="!text-[#6B4C7A] hover:!text-[#E879F9] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
-//             <li><IoSettingsOutline size={40} onClick={gotosetting} className="!text-[#6B4C7A] hover:!text-[#E879F9] text-3xl cursor-pointer hover:scale-125 transition-all duration-200"/></li>
-//             <li><IoPersonCircleOutline size={40} className="!text-[#6B4C7A] hover:!text-[#E879F9] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotoprofil} /></li>
-//             <li><FaUsers size={40} className="!text-[#6B4C7A] hover:!text-[#E879F9] text-3xl cursor-pointer hover:scale-125 transition-all duration-200" onClick={gotofriends} /></li>
-//         </ul>
-//     </nav>
-// <button className=" w-[90px] h-[50px]   bg-[#4B2A6F] flex items-center justify-center shadow-[0_0_10px_#ff44ff] border border-[#ff44ff]/30 cursor-pointer hover:scale-110 transition-all duration-200 rounded-full" onClick={logout} >
-//     <IoLogOutOutline size={35} className="!text-[#C77DFF] cursor-pointer drop-shadow-[0_0_8px_#C77DFF99] hover:scale-125 hover:text-[#E879F9] transition-all duration-200" /></button>
-// </aside>
+
 
 
 

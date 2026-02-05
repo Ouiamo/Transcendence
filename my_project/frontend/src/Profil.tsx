@@ -87,6 +87,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
         delete_obj(null);
         gotohome();
         localStorage.removeItem('page');
+       localStorage.removeItem('sidebar-active');
       }
     }
     catch (error) {

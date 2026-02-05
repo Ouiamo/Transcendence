@@ -75,22 +75,28 @@ export function getLocalWinner() {
   return data;
 }
 
-export function initGame(canvas: HTMLCanvasElement, player:string) {
-    //board = document.getElementById("board") as HTMLCanvasElement;
-    // board.style.display = "block";
+export function initGame(canvas: HTMLCanvasElement, player: string) {
     board = canvas;
-
-  board.width = 900;
-  board.height = 450;
+    board.width = 900;
+    board.height = 450;
     contex = board.getContext("2d");
     
-    draw(player);
-  document.addEventListener("keydown", handleKeyDown);
-  document.addEventListener("keyup", handleKeyUp);
-  console.log("winner is ", winner);
-  return winner;
-}
+    // بدء اللعبة
+    draw(player); 
 
+    // إضافة الـ Listeners
+    document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keyup", handleKeyUp);
+
+    // ✅ الحل: إرجاع دالة تنظيف (Cleanup Function)
+    return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+        document.removeEventListener("keyup", handleKeyUp);
+        // إذا كان هناك requestAnimationFrame، يجب إيقافه هنا أيضاً
+        // cancelAnimationFrame(animationId); 
+        console.log("Game Listeners Cleaned Up");
+    };
+}
 
 //  ( function initGame() {
 //     board = document.getElementById("board") as HTMLCanvasElement;

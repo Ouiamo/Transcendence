@@ -18,6 +18,8 @@ interface gridinter {
     listfriends: () => void;
     goto: () => void;
     goto_ia: () => void;
+    setActiveSafe : (s:any) => void;
+    // setSidebarActive: (key: "dashboard" | "game" | "leaderboard" | "settings" | "profile" | "friends") => void;
 
 }
 function StatBox({ icon, label, value }: { icon: JSX.Element, label: string, value: number | string }) {
@@ -34,29 +36,6 @@ function StatBox({ icon, label, value }: { icon: JSX.Element, label: string, val
     );
 }
 
-// function GameCard({ icon, title, description, onClick }: { icon: JSX.Element, title: string, description: string, onClick: () => void }) {
-//     return (
-//         <div onClick={onClick}
-//             className="flex flex-col items-center justify-center
-//             flex-1 min-w-[280px] max-w-[350px] h-[300px]
-//             bg-gradient-to-br from-[rgba(45,27,105,0.8)] to-[rgba(166,77,121,0.8)]
-//             backdrop-blur-md rounded-[30px]
-//             border border-[#ff44ff]/70
-//             shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]
-//             transition-all duration-300
-//             hover:scale-105 hover:border-[#ff99ff]
-//             cursor-pointer">
-//             <div className="text-[#ff99ff] mb-4">{icon}</div>
-//             <p className="text-white font-['Courier_New',monospace] text-lg">{title}</p>
-//             <p className="text-xs text-gray-400 text-center px-6 mt-1">{description}</p>
-//             <div className="flex gap-3 mt-4">
-//                 <span className="w-1 h-1 rounded-full bg-[#C77DFF] shadow-[0_0_10px_#C77DFF]" />
-//                 <span className="w-1 h-1 rounded-full bg-[#C77DFF] shadow-[0_0_10px_#C77DFF]" />
-//                 <span className="w-1 h-1 rounded-full bg-[#C77DFF] shadow-[0_0_15px_#C77DFF]" />
-//             </div>
-//         </div>
-//     );
-// }
 
 function GameCard({ icon, title, description, color, onClick }: { icon: JSX.Element, title: string, description: string, color: string, onClick: () => void }) {
     return (<div className="
@@ -91,7 +70,7 @@ function GameCard({ icon, title, description, color, onClick }: { icon: JSX.Elem
         </div>
     );
 }
-export function Grid({ listfriends, goto, goto_ia }: gridinter) {
+export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
       const [stats, setStats] = useState<Stats | null>(null);
 
      useEffect(() => {
@@ -130,19 +109,19 @@ export function Grid({ listfriends, goto, goto_ia }: gridinter) {
                                 title="Local Match"
                                 description="Play against a friend on the same device. Classic arcade style."
                                 color='bg-[#c44cff]'
-                                onClick={goto}  />
+                                onClick={()=>{setActiveSafe("game"); goto()} }  />
                             <GameCard
                                 icon={<FiWifi size={32}   className="text-[#ed93ea]" />}
                                 title="Online Match"
                                 description="Challenge players worldwide in real-time competitive matches."
                                 color='bg-[#ed93ea]'
-                                onClick={listfriends} />
+                                onClick={()=>{ setActiveSafe("game") ;listfriends()}} />
                             <GameCard
                                 icon={<RiRobot2Line size={32} className="text-[#9351C7]" />}
                                 title="IA TRAINING"
                                 description="Test your skills against our advanced AI opponent."
                                 color='bg-[#9351C7]'
-                                onClick={goto_ia} />
+                                onClick={()=>{setActiveSafe("game"); goto_ia()}} />
                         </div>
                     </section>
                     <section className="pt-8">

@@ -18,11 +18,17 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
     const [gmailogin, setgmailogin] = useState('');
 localStorage.setItem('page', 'LOGIN');
     const handel_auth_goole = async () => {
+// <<<<<<< HEAD
+//         window.location.href = 'https://localhost:3010/api/auth/google'
+// =======
         window.location.href = 'https://localhost:3010/api/auth/google'  //backend
+        console.log("haniiiiiiiiiiiiiiiiiiiiiiii google");
+        gotoDASHBOARD();
 
     }
     const handel_auth_42 = async () => {
         window.location.href = ('https://localhost:3010/api/auth/42');
+        gotoDASHBOARD();
     }
     const handelLogin = async () => {
         const cleangmail_login = gmailogin.trim();

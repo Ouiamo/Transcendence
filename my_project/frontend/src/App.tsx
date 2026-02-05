@@ -83,24 +83,24 @@ const gotoHome =() =>{
        setdatauser(null);
   }
 
-  useEffect(() => {
-    if(user_data)
-    {
-      console.log("MY INFOOOOO ",user_data); 
-      // Only connect socket for valid logged-in user
-      connectSocket(user_data.id, user_data.username);
-    } else {
-      // If no user data, ensure socket is disconnected
-      disconnectSocket();
-    }
-  }, [user_data]);
+  // useEffect(() => {
+  //   if(user_data)
+  //   {
+  //     console.log("MY INFOOOOO ",user_data); 
+  //     // Only connect socket for valid logged-in user
+  //     connectSocket(user_data.id, user_data.username);
+  //   } else {
+  //     // If no user data, ensure socket is disconnected
+  //     disconnectSocket();
+  //   }
+  // }, [user_data]);
 
   // New useEffect for early socket connection
-  useEffect(() => {
-    // Don't auto-connect socket from storage
-    // Only connect after validating session in checkSession
-    // connectSocketFromStorage(); // REMOVED - prevents users appearing online before login
-  }, []); // Run once on mount
+  // useEffect(() => {
+  //   // Don't auto-connect socket from storage
+  //   // Only connect after validating session in checkSession
+  //   // connectSocketFromStorage(); // REMOVED - prevents users appearing online before login
+  // }, []); // Run once on mount
 
 useEffect(() => {
   // console.log("items is ^^^^^^^^^^^^^ ", twofa);
@@ -179,7 +179,7 @@ if(loading) return <div>Loading...</div>
         <div className="min-h-screen w-full flex items-center justify-center bg-[#06060d]">
     
       
-           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa}/>
+           <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={gotodash} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa}/>
        
         </div>
       )}

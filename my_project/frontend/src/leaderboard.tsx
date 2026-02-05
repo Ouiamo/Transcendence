@@ -80,7 +80,7 @@ export function Leaderboard() {
             background: 'linear-gradient(to bottom right, rgb(219, 182, 61), rgb(153, 120, 15))',
             color: 'rgb(255, 255, 255)',
             size: '100px',
-            fontSize: '48px',
+            fontSize: '36px',
             shadow: '0 0 80px rgba(168, 85, 247, 0.8)'
         };
         if (rank === 2) return { 
@@ -150,7 +150,7 @@ export function Leaderboard() {
                                                 boxShadow: circleStyle.shadow
                                             }}
                                         >
-                                            <span>{getInitials(player.username)}</span>
+                                            <span>{getInitials(player.username)} </span>
                                         </div>
                                         
                                         

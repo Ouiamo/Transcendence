@@ -39,6 +39,7 @@ fastify.get('/api/profile', async (request, reply) => {
           avatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
         } 
         else {
+          console.log("Callback in profile =====================");
           avatarUrl = user.avatar_url; // google / 42
         }
       }

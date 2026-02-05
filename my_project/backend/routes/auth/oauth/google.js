@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { dbGet, dbRun } = require('../../../utils/dbHelpers');
+require('dotenv').config();
 
 module.exports = async function (fastify) {
   // 🔹 Step 1: Redirect to Google
@@ -87,6 +88,6 @@ module.exports = async function (fastify) {
         secure: true,
         path: '/'
       })
-      .redirect(process.env.FRONTEND_URL + '/Profil');
+      .redirect(process.env.FRONTEND_URL);
   });
 };

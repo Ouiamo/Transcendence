@@ -19,6 +19,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
 
     const handel_auth_goole = async () => {
         window.location.href = 'https://localhost:3010/api/auth/google'  //backend
+        // console.log("haniiiiiiiiiiiiiiiiiiiiiiii google");
 
     }
     const handel_auth_42 = async () => {
@@ -85,7 +86,7 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
 
     }
     return (
-        <div className=" flex  flex-col gap-y-10 items-center h-auto w-[400px] min-h-[500px]  shrink-0 border-[2px] border-[#ff44ff]/30 rounded-[50px] shadow-[0_0_20px_rgba(255,68,255,0.8)] pt-10 pb-10 px-8">
+        <div className=" flex  flex-col  items-center h-auto w-[400px] min-h-[500px]  shrink-0 border-[2px] border-[#ff44ff]/30 bg-[#06060d] shadow-[0_0_20px_rgba(255,68,255,0.8)] ">
             <header className="flex flex-col gap-y-5 items-center justify-center w-full mt-[30px] ">
                 <div className="py-3 flex w-[50px] h-[50px] bg-gradient-to-br from-[#ff44ff] to-[#ff99ff] items-center justify-center rounded-full shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
                     < IoPersonCircleOutline className=" text-white " />
@@ -98,19 +99,19 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
                     <p className="text-white text-[12px]">Email address</p>
                     <div className="relative flex items-center w-full">
 
-                        <IoPersonCircleOutline className="absolute left-3 text-[#ff44ff] text-xl pointer-events-none z-10" />
+                        <IoPersonCircleOutline className="absolute left-[3px] text-[#ff44ff] text-xl pointer-events-none z-10" />
 
                         <input
                             style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                            className=" caret-[#ff44ff] w-[250px] h-[33px] rounded-full   bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Entrer votre gmail" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
+                            className=" caret-[#ff44ff] w-[250px] h-[33px]  bg-[#0d0221]  text-white text-sm outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff]   transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Entrer votre gmail" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
                     </div>
                 </div>
                 <div className="flex flex-col  ">
                     <p className="text- text-[12px]">Enter your password</p>
                     <div className="relative flex items-center w-full  ">
-                        <RiLockPasswordLine className="absolute left-3 text-[#ff44ff] text-xl pointer-events-none z-10" />
+                        <RiLockPasswordLine className="absolute left-[3px] text-[#ff44ff] text-xl pointer-events-none z-10" />
                         <input
-                            style={{ paddingLeft: '20px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[33px] rounded-full  bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="password" placeholder="set password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
+                            style={{ paddingLeft: '25px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[33px] rounded-full  bg-[#0d0221] text-white outline-none border border-[#ff44ff]/70 placeholder:text-[#ff44ff]/40 focus:border-[#ff44ff] transition-all" type="password" placeholder="set password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
 
                     </div>
                 </div>

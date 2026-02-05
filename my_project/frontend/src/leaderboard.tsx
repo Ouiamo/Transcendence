@@ -49,7 +49,7 @@ export function Leaderboard() {
         if (rank === 1) return { 
             background: 'linear-gradient(to top, rgba(113, 63, 18, 0.4), rgba(133, 77, 14, 0.2))', 
             borderColor: 'rgb(202, 138, 4)',
-            height: '180px',
+            height: '150px',
             order: 'order-2'
         };
         if (rank === 2) return { 
@@ -79,21 +79,21 @@ export function Leaderboard() {
         if (rank === 1) return { 
             background: 'linear-gradient(to bottom right, rgb(219, 182, 61), rgb(153, 120, 15))',
             color: 'rgb(255, 255, 255)',
-            size: '50px',
+            size: '100px',
             fontSize: '48px',
             shadow: '0 0 80px rgba(168, 85, 247, 0.8)'
         };
         if (rank === 2) return { 
             background: 'linear-gradient(to bottom right, rgb(156, 163, 175), rgb(75, 85, 99))',
             color: 'rgb(255, 255, 255)',
-            size: '50px',
+            size: '100px',
             fontSize: '36px',
             shadow: '0 0 50px rgba(156, 163, 175, 0.5)'
         };
         if (rank === 3) return { 
             background: 'linear-gradient(to bottom right, rgb(249, 115, 22), rgb(194, 65, 12))',
             color: 'rgb(255, 255, 255)',
-            size: '50px',
+            size: '100px',
             fontSize: '36px',
             shadow: '0 0 50px rgba(249, 115, 22, 0.5)'
         };
@@ -121,7 +121,7 @@ export function Leaderboard() {
                         Leaderboard
                     </h1>
                     <p className="text-[18px] text-blue-300 tracking-widest uppercase">
-                        Top players ranked by total wins
+                        Top players ranked by total wi4
                     </p>
                 </div>
 
@@ -129,7 +129,7 @@ export function Leaderboard() {
                 {users && users.length >= 3 && (
                     <div className="relative">
                         
-                        <div className="flex items-end justify-center gap-[100px] mb-[40px]">
+                        <div className="flex items-end justify-center gap-[100px] mb-[4px]">
 
                             {[1, 0, 2].map((index) => {
                                 const player = users[index];
@@ -137,7 +137,7 @@ export function Leaderboard() {
                                 const circleStyle = getCircleStyle(rank);
                                 
                                 return (
-                                    <div key={player.user_id} className={`flex flex-col items-center ${rank === 1 ? 'mb-[48px]' : ''}`}>
+                                    <div key={player.user_id} className={`flex flex-col items-center ${rank === 1 ? 'mb-[10px]' : ''}`}>
                                         
                                         <div 
                                             className="rounded-full flex items-center justify-center font-extrabold relative"
@@ -170,7 +170,7 @@ export function Leaderboard() {
                                 return (
                                     <div 
                                         key={`podium-${rank}`}
-                                        className={`${podiumStyle.order} w-[130px] border-2 rounded-t-xl flex flex-col items-center justify-center`}
+                                        className={`${podiumStyle.order} w-[200px] border-2 rounded-t-xl flex flex-col items-center justify-center`}
                                         style={{
                                             height: podiumStyle.height,
                                             background: podiumStyle.background,

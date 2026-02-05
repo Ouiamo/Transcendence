@@ -87,7 +87,7 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
                     <div className="flex justify-center items-center gap-[30px]">
 
                         <header className="space-y-[2px] justify-center ">
-                            <h1 className="text-5xl font-bold tracking-tight mt-[20px]">
+                            <h1 className="text-5xl font-bold tracking-tight mt-[0px]">
                                 Welcome back, <span className="text-[#c44cff] ">Player</span>
                             </h1>
                             <p className="text-gray-400  mt-[20px]">Choose your game mode and start competing</p>
@@ -124,12 +124,12 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
                                 onClick={()=>{setActiveSafe("game"); goto_ia()}} />
                         </div>
                     </section>
-                    <section className="pt-8">
-                        <div className="flex justify-center">
+                    <section className="mt-[20px]">
+                        <div className="flex justify-center ">
 
-                            <h2 className="text-2xl font-bold mb-[6px]  tracking-tight">Gaming Stats & Skill Progress</h2>
+                            <h2 className="mt-[20px] ">Gaming Stats & Skill Progress</h2>
                         </div>
-                        <div className="bg-[#120d1d]/40 border border-white/5 rounded-3xl p-6">
+                        <div className="bg-[#120d1d]/40  flex  ">
                             <StatsCharts />
                         </div>
                     </section>

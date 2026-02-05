@@ -70,6 +70,7 @@ interface History {
   isWin: boolean;
 }
 function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
+   localStorage.setItem('page', 'PROFIL');
   const logout = async () => {
     try {
       // First disconnect the socket to immediately mark user offline

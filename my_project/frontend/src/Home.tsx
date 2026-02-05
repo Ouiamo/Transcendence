@@ -45,6 +45,7 @@ interface HomeInterface {
 }
 
 function Home({ gotologin, gotosignup }: HomeInterface) {
+  localStorage.setItem('page', 'HOME');
   return (
     <div className="min-h-screen w-full bg-[#06060d] flex flex-col items-center justify-center text-white relative overflow-hidden">
 

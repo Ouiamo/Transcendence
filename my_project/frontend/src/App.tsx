@@ -134,6 +134,8 @@ useEffect(() => {
             setCurrentPage('twofa');
         else if(save == 'LEADERBOARD')
             setCurrentPage('LEADERBOARD');
+        else if(save == 'LOGIN')
+            setCurrentPage('LOGIN');
         else
            setCurrentPage('DASHBOARD');
       } 
@@ -174,7 +176,7 @@ if(loading) return <div>Loading...</div>
 
 
       {currentPage === 'LOGIN' && ( 
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#06060d] ">
+        <div className="min-h-screen w-full flex items-center justify-center bg-[#06060d]">
     
       
            <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa}/>

@@ -108,7 +108,7 @@ localStorage.setItem('page', 'LOGIN');
 
                         <input
                             style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                            className=" caret-[#ff44ff] w-[250px] h-[45px]  bg-[#0d0221]  outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40    transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Entrer votre gmail" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
+                            className=" caret-[#ff44ff] w-[250px] h-[45px]  bg-[#0d0221]  outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40    transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Enter your email" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
                     </div>
                 </div>
                 <div className="flex flex-col  ">
@@ -116,7 +116,7 @@ localStorage.setItem('page', 'LOGIN');
                     <div className="relative flex items-center w-full  ">
                         <RiLockPasswordLine className="absolute left-[10px] text-[#c44cff] text-xl pointer-events-none z-10" />
                         <input
-                            style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[45px]   bg-[#0d0221] text-white outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40  transition-all" type="password" placeholder="set password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
+                            style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[45px]   bg-[#0d0221] text-white outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40  transition-all" type="password" placeholder="Enter your password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
 
                     </div>
                 </div>

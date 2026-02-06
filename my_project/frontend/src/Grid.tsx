@@ -30,7 +30,7 @@ function StatBox({ icon, label, value }: { icon: JSX.Element, label: string, val
             </div>
             <div >
                 <p className="text-2xl font-bold leading-none text-white">{value}</p>
-                <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">{label}</p>
+                <p className="text-[10px] text- uppercase tracking-widest mt-1">{label}</p>
             </div>
         </div>
     );
@@ -54,8 +54,8 @@ function GameCard({ icon, title, description, color, onClick }: { icon: JSX.Elem
                     {icon}
                 </div>
 
-                <h3 className="text-white text-xl font-bold mb-[2px] tracking-tight uppercase">{title}</h3>
-                <p className="text-gray-400 text-sm text-center px-[4px] leading-relaxed mb-[8px] h-[12px]">
+                <h3 className="text-white text-xl font-bold mb-[2px] tracking-tight uppercase glow-text">{title}</h3>
+                <p className="text-[#8F929E] text-sm text-center px-[4px] leading-relaxed mb-[8px] h-[12px]">
                     {description}
                 </p>
 
@@ -87,8 +87,8 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
                     <div className="flex justify-center items-center gap-[30px]">
 
                         <header className="space-y-[2px] justify-center ">
-                            <h1 className="text-5xl font-bold tracking-tight mt-[0px]">
-                                Welcome back, <span className="text-[#c44cff] ">Player</span>
+                            <h1 className="text-5xl font-bold tracking-tight  mt-[0px]">
+                               <span className="glow-text">Welcome back,</span><span className="text-[#c44cff] ">Player</span>
                             </h1>
                             <p className="text-gray-400  mt-[20px]">Choose your game mode and start competing</p>
                         </header>
@@ -111,16 +111,16 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
                                 color='bg-[#c44cff]'
                                 onClick={()=>{setActiveSafe("game"); goto()} }  />
                             <GameCard
-                                icon={<FiWifi size={32}   className="text-[#ed93ea]" />}
+                                icon={<FiWifi size={32}   className="text-[#d86bff]" />}
                                 title="Online Match"
                                 description="Challenge players worldwide in real-time competitive matches."
-                                color='bg-[#ed93ea]'
-                                onClick={()=>{ setActiveSafe("game") ;listfriends()}} />
+                                color='bg-[#d86bff]'
+                                onClick={()=>{setActiveSafe("game"); listfriends()}} />
                             <GameCard
-                                icon={<RiRobot2Line size={32} className="text-[#9351C7]" />}
+                                icon={<RiRobot2Line size={32} className="text-[#a855f7]" />}
                                 title="IA TRAINING"
                                 description="Test your skills against our advanced AI opponent."
-                                color='bg-[#9351C7]'
+                                color='bg-[#a855f7]'
                                 onClick={()=>{setActiveSafe("game"); goto_ia()}} />
                         </div>
                     </section>

@@ -9,12 +9,14 @@ module.exports = async function(fastify, options) {
       user_id INTEGER NOT NULL,
       friend_id INTEGER NOT NULL,
       status TEXT DEFAULT 'pending',
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, friend_id)
     )
   `).catch(err => {
     console.error('Error creating friends table:', err);
   });
-// hadi fetchi 3liah fax tabghit tsifti invitation
+
+  //invitation
   fastify.post('/api/friends/invitation', async (request, reply) => {
     const token = request.cookies.access_token;
     if (!token) {
@@ -56,7 +58,6 @@ module.exports = async function(fastify, options) {
         return reply.code(400).send({ error: 'Already friends or invitation pending' });
       }
 
-
       await dbRun(
         'INSERT INTO friends (user_id, friend_id, status) VALUES (?, ?, ?)',
         [userId, friendId, 'pending']
@@ -69,10 +70,11 @@ module.exports = async function(fastify, options) {
 
     } catch (err) {
       console.error('Send invitation error:', err);
-      return reply.code(500).send({ error: 'Server error: ' + err.message });
+      return reply.code(500).send({ error: 'Server error' });
     }
   });
-// hadi fetchi 3liha fax taccepti
+
+  // Accept
   fastify.post('/api/friends/accept', async (request, reply) => {
     const token = request.cookies.access_token;
     if (!token) {
@@ -98,7 +100,6 @@ module.exports = async function(fastify, options) {
         return reply.code(404).send({ error: 'Friend invitation not found' });
       }
 
-
       await dbRun(
         'UPDATE friends SET status = ? WHERE id = ?',
         ['accepted', requestId]
@@ -115,102 +116,58 @@ module.exports = async function(fastify, options) {
     }
   });
 
-// hadi fetchi 3liha bax tal3i lih notificxation bali flan sifat lih invitation
-  // fastify.get('/api/friends/requests', async (request, reply) => {
-  //   const token = request.cookies.access_token;
-  //   if (!token) {
-  //     return reply.code(401).send({ error: 'Please login first' });
-  //   }
-
-  //   try {
-  //     const payload = jwt.verify(token, process.env.JWT_SECRET);
-  //     const myId = payload.id;
-
-  //     const incoming = await dbAll(`
-  //       SELECT f.id as request_id, u.username, u.avatar_url, u.id as user_id
-  //       FROM friends f
-  //       JOIN users u ON u.id = f.user_id
-  //       WHERE f.friend_id = ? AND f.status = 'pending'
-  //     `, [myId]);
-  //     // const user = await dbGet(
-  //     //   'SELECT id FROM users WHERE id = ?',
-  //     //   []
-  //     // );
-      
-      
-
-  //     // const outgoing = await dbAll(`
-  //     //   SELECT f.id as request_id, u.username, u.id as user_id
-  //     //   FROM friends f
-  //     //   JOIN users u ON u.id = f.friend_id
-  //     //   WHERE f.user_id = ? AND f.status = 'pending'
-  //     // `, [myId]);
-
-  //     return reply.send({
-  //       success: true,
-  //       incoming: incoming,
-  //       // outgoing: outgoing
-  //     });
-
-  //   } catch (err) {
-  //     console.error('Get friend invitations error:', err);
-  //     return reply.code(500).send({ error: 'Server error' });
-  //   }
-  // });
+  //requests
   fastify.get('/api/friends/requests', async (request, reply) => {
     const token = request.cookies.access_token;
     if (!token) {
-        return reply.code(401).send({ error: 'Please login first' });
+      return reply.code(401).send({ error: 'Please login first' });
     }
 
     try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET);
-        const myId = payload.id;
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const myId = payload.id;
 
-        // 1. جلب البيانات مع avatar_url و provider
-        const incoming = await dbAll(`
-            SELECT 
-                f.id as request_id, 
-                u.username, 
-                u.avatar_url, 
-                u.provider,
-                u.id as user_id
-            FROM friends f
-            JOIN users u ON u.id = f.user_id
-            WHERE f.friend_id = ? AND f.status = 'pending'
-        `, [myId]);
+      const incoming = await dbAll(`
+          SELECT 
+              f.id as request_id, 
+              u.username, 
+              u.avatar_url, 
+              u.provider,
+              u.id as user_id
+          FROM friends f
+          JOIN users u ON u.id = f.user_id
+          WHERE f.friend_id = ? AND f.status = 'pending'
+      `, [myId]);
 
-        // 2. معالجة الـ Avatar URL لكل مستخدم (Mapping)
-        const formattedIncoming = incoming.map(user => {
-            let fullAvatarUrl = null;
-            if (user.avatar_url) {
-                // إذا كان المستخدم محلي (Local) كنزيدو المسار ديال السيرفر
-                if (user.provider === 'local') {
-                    fullAvatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
-                } else {
-                    // إذا كان Google/42 كيكون URL واجد
-                    fullAvatarUrl = user.avatar_url;
-                }
-            }
-            return {
-                request_id: user.request_id,
-                user_id: user.user_id,
-                username: user.username,
-                avatarUrl: fullAvatarUrl
-            };
-        });
+      const formattedIncoming = incoming.map(user => {
+        let fullAvatarUrl = null;
+        if (user.avatar_url) {
+          if (user.provider === 'local') {
+            fullAvatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
+          } else {
+            fullAvatarUrl = user.avatar_url;
+          }
+        }
+        return {
+          request_id: user.request_id,
+          user_id: user.user_id,
+          username: user.username,
+          avatarUrl: fullAvatarUrl || '/default-avatar.png'
+        };
+      });
 
-        return reply.send({
-            success: true,
-            incoming: formattedIncoming
-        });
+      return reply.send({
+        success: true,
+        incoming: formattedIncoming
+      });
 
     } catch (err) {
-        console.error('Get friend invitations error:', err);
-        return reply.code(500).send({ error: 'Server error' });
+      console.error('Get friend invitations error:', err);
+      return reply.code(500).send({ error: 'Server error' });
     }
-});
+  });
 
+  // Remove
   fastify.delete('/api/friends/remove', async (request, reply) => {
     const token = request.cookies.access_token;
     if (!token) {
@@ -244,6 +201,7 @@ module.exports = async function(fastify, options) {
     }
   });
 
+  //friends list
   fastify.get('/api/friends', async (request, reply) => {
     const token = request.cookies.access_token;
     if (!token) {
@@ -251,7 +209,7 @@ module.exports = async function(fastify, options) {
     }
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
       const myId = payload.id;
 
       const friendships1 = await dbAll(`
@@ -266,15 +224,12 @@ module.exports = async function(fastify, options) {
         WHERE friend_id = ? AND status = 'accepted'
       `, [myId]);
 
-      const allFriendIds = [];
-      for (const row of friendships1) {
-        allFriendIds.push(row.friend_id);
-      }
-      for (const row of friendships2) {
-        allFriendIds.push(row.user_id);
-      }
+      const allFriendIds = [
+        ...friendships1.map(row => row.friend_id),
+        ...friendships2.map(row => row.user_id)
+      ];
+
       const myFriends = [];
-      
       for (const friendId of allFriendIds) {
         const friend = await dbGet(`
           SELECT id, username, avatar_url, provider
@@ -283,13 +238,6 @@ module.exports = async function(fastify, options) {
         `, [friendId]);
         
         if (friend) {
-          let friendshipType = 'unknown';
-          const iAddedThem = friendships1.some(row => row.friend_id === friendId);
-          if (iAddedThem) {
-            friendshipType = 'You added them';
-          } else {
-            friendshipType = 'They added you';
-          }
           let avatarUrl = null;
           if (friend.avatar_url) {
             if (friend.provider === 'local') {
@@ -301,8 +249,7 @@ module.exports = async function(fastify, options) {
           myFriends.push({
             id: friend.id,
             username: friend.username,
-            avatarUrl: avatarUrl,
-            friendshipType: friendshipType
+            avatarUrl: avatarUrl || '/default-avatar.png'
           });
         }
       }
@@ -319,100 +266,74 @@ module.exports = async function(fastify, options) {
     }
   });
 
-  fastify.get('/api/friends/check_friendship/:username', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
-
-    try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
-      const friendUsername = request.params.username;
-
-      const friend = await dbGet(
-        'SELECT id FROM users WHERE username = ?',
-        [friendUsername]
-      );
-      
-      if (!friend) {
-        return reply.send({ areFriends: false, message: 'User not found' });
-      }
-
-      const friendId = friend.id;
-
-      const friendship = await dbGet(
-        `SELECT * FROM friends 
-         WHERE (user_id = ? AND friend_id = ?) 
-            OR (user_id = ? AND friend_id = ?)`,
-        [userId, friendId, friendId, userId]
-      );
-
-      return reply.send({
-        areFriends: !!friendship,
-        friendId: friendId
-      });
-
-    } catch (err) {
-      console.error('Check friends error:', err);
-      return reply.code(500).send({ error: 'Server error' });
-    }
-  });
-   fastify.get('/api/users/search/:query', async (request, reply) => {
+// Search
+  fastify.get('/api/users/search/:query', async (request, reply) => {
     const token = request.cookies.access_token;
     let userId = null;
 
-    // محاولة جلب ID المستخدم الحالي إذا كان مسجلاً (بما أن الصداقة تتطلب login)
     if (token) {
         try {
             const payload = jwt.verify(token, process.env.JWT_SECRET);
             userId = payload.id;
-        } catch (err) { /* token invalid, proceed as guest */ }
+        } catch (err) {
+            console.log('❌ Token verification failed:', err.message);
+        }
     }
 
     try {
         const { query } = request.params;
-
-       
-        const users = await dbAll(`
+        let sql = `
             SELECT 
                 u.id, 
                 u.avatar_url, 
                 u.username,
-                u.provider,
-                (SELECT status FROM friends 
-                 WHERE (user_id = ? AND friend_id = u.id) 
-                    OR (user_id = u.id AND friend_id = ?)
-                ) AS friendship_status
+                u.provider
             FROM users u
-            WHERE u.username LIKE ? AND u.id != ?
-            LIMIT 10
-        `, [userId, userId, `%${query}%`, userId]);
-
-        // تنظيف الداتا قبل الإرسال
-        const formattedUsers = users.map(user => {
+            WHERE u.username LIKE ?
+        `;
+        
+        const params = [`%${query}%`];
+        
+        if (userId) {
+            sql += ` AND u.id != ?`;
+            params.push(userId);
+        }
+        
+        sql += ` ORDER BY u.username LIMIT 10`;
+        
+        const users = await dbAll(sql, params);
+        const formattedUsers = [];
+        for (const user of users) {
+            let friendshipStatus = null;
+            
+            if (userId) {
+                const friendship = await dbGet(
+                    `SELECT status FROM friends 
+                     WHERE (user_id = ? AND friend_id = ?) 
+                        OR (user_id = ? AND friend_id = ?)`,
+                    [userId, user.id, user.id, userId]
+                );
+                friendshipStatus = friendship ? friendship.status : null;
+            }
+            
             let fullAvatarUrl = user.avatar_url;
             if (user.avatar_url && user.provider === 'local') {
                 fullAvatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
             }
-
-            return {
+            
+            formattedUsers.push({
                 id: user.id,
                 username: user.username,
-                avatar_url: fullAvatarUrl,
-                // إذا كان الـ status هو 'accepted' يعني أصدقاء
-                is_friend: user.friendship_status === 'accepted',
-                // إذا كان 'pending' يعني الطلب كاين ولكن مزال ماتقبلش
-                is_pending: user.friendship_status === 'pending'
-            };
-        });
-
+                avatar_url: fullAvatarUrl || '/default-avatar.png',
+                is_friend: friendshipStatus === 'accepted',
+                is_pending: friendshipStatus === 'pending'
+            });
+        }
         return { success: true, users: formattedUsers };
+        
     } catch (error) {
-        console.error('Search error:', error);
-        return reply.code(500).send({ error: 'Database error' });
+        console.error('❌ Search error:', error);
+        return reply.code(500).send({ error: 'Database error: ' + error.message });
     }
-});
+  });
 };
-
-

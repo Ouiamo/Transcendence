@@ -1,12 +1,17 @@
 import { useEffect, useState } from 'react';
 import { OnlineUsers, onOnlineUsersChange } from './socketService.tsx';
-// import { MessageSquare, Gamepad2 } from 'lucide-react';
 
 interface Friend {
   id: number;
   username: string;
   avatarUrl?: string;
   online?: boolean;
+}
+
+interface GameInvitation {
+  invitation_id: number;
+  sender_username: string;
+  avatarUrl?: string;
 }
 
 interface FriendlistProps {
@@ -18,7 +23,7 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [is_Online, setIsOnline] = useState<Map<number, string>>(new Map());
-  const [gameInvitations, setGameInvitations] = useState<any[]>([]);
+  const [gameInvitations, setGameInvitations] = useState<GameInvitation[]>([]);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -507,5 +512,3 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
     </div>
   );
 }
-
-export default Friendlist;

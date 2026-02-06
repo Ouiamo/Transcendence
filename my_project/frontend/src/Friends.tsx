@@ -8,39 +8,28 @@ function Friends() {
     const [datafriend, setdatafriend] = useState<any[]>([]);
     const [is_append, setappendfriend] = useState<any[]>([]);
     const [is_Online, setIsOnline] = useState<Map<number, string>>(new Map());
+    const [searchLoading, setSearchLoading] = useState(false);
 
-    // Function to update online status
     const updateOnlineStatus = () => {
         if (friends.length === 0) return;
 
         const onlineStatus = new Map<number, string>();
-
-        console.log("🔍 Checking online status for friends...");
-        console.log("📊 Current OnlineUsers map:", Array.from(OnlineUsers.entries()));
-
         friends.forEach(friend => {
             if (OnlineUsers.has(friend.id)) {
-                console.log(`✅ ${friend.username} (ID: ${friend.id}) is ONLINE`);
                 onlineStatus.set(friend.id, 'Online');
             } else {
-                console.log(`❌ ${friend.username} (ID: ${friend.id}) is OFFLINE`);
                 onlineStatus.set(friend.id, 'Offline');
             }
         });
-
         setIsOnline(onlineStatus);
     };
 
-    // Subscribe to online users changes
     useEffect(() => {
-        // Set up the callback
         onOnlineUsersChange(() => {
-            console.log("🔔 OnlineUsers changed! Updating UI...");
             updateOnlineStatus();
         });
-    }, [friends]); // Re-subscribe when friends change
+    }, [friends]);
 
-    // Update when friends list changes
     useEffect(() => {
         updateOnlineStatus();
     }, [friends]);
@@ -55,15 +44,14 @@ function Friends() {
             });
             if (accept.ok) {
                 const acc = await accept.json();
-                console.log("append fe accept is result is _____>>", acc);
                 setappendfriend((prev) => prev.filter((item) => item.request_id !== requestId));
                 alert("Friend accepted! 🎉");
                 fetchFriends();
             } else {
-                console.log("error a khoyii f accpt", accept);
+                console.error("Error accepting friend:", accept.status);
             }
         } catch (err) {
-            console.log("catch erro in accept");
+            console.error("Catch error in accept:", err);
         }
     };
 
@@ -76,29 +64,47 @@ function Friends() {
             if (app.ok) {
                 const append = await app.json();
                 setappendfriend(append.incoming);
-                console.log("append result is _____>>", append);
             } else {
-                console.log("error a khoyii ", app);
+                console.error("Error fetching friend requests:", app.status);
             }
         } catch (err) {
-            console.log("catch error in append");
+            console.error("Catch error in appending_f:", err);
         }
     };
 
-    const serch = async (searchfriend: any) => {
+    const serch = async (searchText: string) => {
+        if (!searchText.trim()) {
+            setdatafriend([]);
+            return;
+        }
+
+        setSearchLoading(true);
+        console.log("🔍 Starting search for:", searchText);
+        
         try {
-            const ser = await fetch(`https://localhost:3010/api/users/search/${searchfriend}`, {
+            const response = await fetch(`https://localhost:3010/api/users/search/${encodeURIComponent(searchText)}`, {
                 method: 'GET',
                 credentials: 'include',
             });
-            if (ser.ok) {
-                const serc = await ser.json();
-                setdatafriend(serc.users);
+            
+            console.log("📡 Search response status:", response.status);
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log("✅ Search results:", result);
+                setdatafriend(result.users || []);
             } else {
-                console.log("error a khoyii ", ser);
+                const errorText = await response.text();
+                console.error("❌ Search error:", errorText);
+                setdatafriend([]);
+                alert("Search failed. Please check console.");
             }
         } catch (err) {
-            console.log("catch error");
+            console.error("❌ Network error in search:", err);
+            setdatafriend([]);
+            alert("Network error. Is the backend running?");
+        } finally {
+            setSearchLoading(false);
         }
     };
 
@@ -111,17 +117,21 @@ function Friends() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("Success! Friends data:", data);
-                setFriends(data.friends);
+                setFriends(data.friends || []);
             } else {
-                console.log("Server error:", response.status);
+                console.error("Error fetching friends:", response.status);
             }
         } catch (error) {
-            console.log("Network error (is the backend running?):", error);
+            console.error("Network error fetching friends:", error);
         }
     };
 
     const addnewfriend = async (new_f: any) => {
+        if (!new_f.trim()) {
+            alert("Please enter a username");
+            return;
+        }
+
         try {
             const response = await fetch('https://localhost:3010/api/friends/invitation', {
                 method: 'POST',
@@ -132,16 +142,17 @@ function Friends() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("add Success! Friends data:", data);
                 setsearchFriends("");
+                setdatafriend([]);
                 fetchFriends();
+                alert(data.message || "Friend invitation sent!");
             } else {
                 const data = await response.json();
-                console.log("failed to add", data, searchfriend);
-                alert("failed to add");
+                alert(data.error || "Failed to add friend");
             }
         } catch (error) {
-            console.log("Network error (is the backend running?):", error);
+            console.error("Network error adding friend:", error);
+            alert("Network error. Is the backend running?");
         }
     };
 
@@ -151,8 +162,9 @@ function Friends() {
     }, []);
 
     const handleRemoveFriend = async (id: number) => {
+        if (!confirm("Are you sure you want to remove this friend?")) return;
+        
         try {
-            console.log("id liwsal is ", id);
             const del = await fetch('https://localhost:3010/api/friends/remove', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
@@ -160,168 +172,240 @@ function Friends() {
                 credentials: 'include'
             });
             if (del.ok) {
-                console.log("success removed");
+                console.log("Friend removed successfully");
                 appending_f();
                 fetchFriends();
+            } else {
+                console.error("Error removing friend:", del.status);
             }
         } catch (err) {
-            console.log("error removed");
+            console.error("Error in handleRemoveFriend:", err);
         }
     };
 
-    console.log("friend is here", datafriend);
-    console.log("incoming is", is_append);
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            serch(searchfriend);
+        }
+    };
 
-    return (
-        <div className="flex w-full h-full gap-[40px] mt-[80px]">
-            <div>
-                <div className="flex flex-col w-[500px] h-fit bg-[#ffff]">
-                    <h2 className="text-[#ff99ff] text-[19px]">My Friends ({friends.length})</h2>
-                    {friends.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center opacity-30 mt-10">
-                            <p className="text-[#ff99ff]">No friends yet. Start adding some!</p>
-                            <p className="w-[20px] h-[20px]">🎮</p>
-                        </div>
-                    ) : (
-                        friends.map((f) => (
-                            <div key={f.id} className="flex gap-[40px]">
-                                <div className="flex w-full flex-row items-center justify-between gap-[40px] mt-[10px]">
-                                    <div className="flex flex-row gap-[20px]">
-                                        <img
-                                            src={`${f.avatarUrl}`}
-                                            alt="avatar"
-                                            className="w-[60px] h-[60px] rounded-full"
-                                        />
-                                        <div className="flex flex-col w-[100px] h-[50px] mt-[20px]">
-                                            <p
-                                                className="flex text-[#ff99ff] font-extrabold text-[16px] font-bold m-[0px] p-[0px]"
-                                                style={{ fontWeight: 900 }}
-                                            >
-                                                {f.username}
-                                            </p>
-                                            <p className="flex text-[#ff99ff] text-[16px] font-medium italic m-[0px] p-[0px] leading-none">
-                                                {is_Online.get(f.id) === 'Online' ? (
-                                                    <span className="text-green-500">● Online</span>
-                                                ) : (
-                                                    <span className="text-gray-400">● Offline</span>
-                                                )}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <button
-                                        className="items-center justify-center flex h-[30px] w-[80px]"
-                                        onClick={() => handleRemoveFriend(f.id)}
-                                    >
-                                        remove
-                                    </button>
-                                </div>
-                            </div>
-                        ))
-                    )}
+        return (
+        <div className=" bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] p-[100px] overflow-auto">
+            {/* Main Header */}
+            <div className="flex items-center justify-between w-full mb-[40px]">
+                <div className="flex flex-col">
+                    <h1 className="text-[40px] font-[900] bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] bg-clip-text text-transparent">
+                        Friends Hub
+                    </h1>
+                    <p className="text-[#ff99ff]/80 text-[14px]">Connect, play, and manage your gaming companions</p>
                 </div>
+                {/* <div className="flex items-center gap-[10px] bg-[#0d0221]/70 border border-[#ff44ff]/30 rounded-full px-[20px] py-[10px]">
+                    <div className="w-[10px] h-[10px] rounded-full bg-green-500 animate-pulse"></div>
+                    <span className="text-white text-[12px]">Live Status</span>
+                </div> */}
             </div>
-            <div className="w-[700px] h-fit gap-[20px] grid dgrid-cols-2 gap-[80px]">
-                <div className="flex flex-col w-[700px] h-fit bg-[#ffffff]">
-                    <div className="flex justify-center">
-                        <h2 className="text-[#ff99ff] mb-[50px]">Add Friend</h2>
-                    </div>
 
-                    <div className="flex flex-col gap-[10px] w-[600px] h-fit border border-[#ff99ff]">
-                        <div className="flex flex-row gap-[10px]">
-                            <input
-                                type="text"
-                                placeholder="Enter friend ..."
-                                value={searchfriend}
-                                onChange={(e) => setsearchFriends(e.target.value)}
-                                className="w-[300px] h-[40px] bg-black/20 border border-white/10 rounded-full text-white outline-none focus:border-[#ff99ff] transition-all"
-                            />
+                <div className="lg:w-3/5 flex flex-col gap-[30px]">
+                    {/* Search Section */}
+                    <div className="flex flex-col w-full h-fit bg-[#0d0221]/80 border-[2px] border-[#ff44ff]/30 rounded-[30px] p-[25px] shadow-[0_0_30px_rgba(255,68,255,0.3)]">
+                        <div className="flex items-center justify-between mb-[25px]">
+                            <h2 className="text-[24px] font-[900] text-white">Add New Friend</h2>
+                        </div>
+                        <div className="flex  md:flex-row gap-[111px] mb-[25px]">
+                            <div className="relative flex-1">
+                                <input
+                                    type="text"
+                                    placeholder="Enter username to search..."
+                                    value={searchfriend}
+                                    onChange={(e) => setsearchFriends(e.target.value)}
+                                    className="w-full h-[45px] bg-[#1a043a]/70 border-[2px] border-[#ff44ff]/40 rounded-full text-white px-[20px] pl-[45px] outline-none focus:border-[#ff44ff] focus:shadow-[0_0_15px_rgba(255,68,255,0.5)] transition-all duration-300 placeholder-[#ff99ff]/40"
+                                />
+                                <div className="absolute left-[15px] top-1/2 transform -translate-y-1/2 text-[#ff44ff] text-[18px]">🔍</div>
+                            </div>
                             <button
                                 onClick={() => serch(searchfriend)}
-                                className="flex w-fit items-center h-[40px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+                                className="h-[45px] px-[30px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold text-[14px] uppercase transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
                             >
-                                search Friend
+                                Search
                             </button>
                         </div>
-                        <div className="flex">
+
+                        {/* Search Results */}
+                        <div className="space-y-[10px] max-h-[300px] pr-[10px] custom-scrollbar">
                             {datafriend && datafriend.length > 0 ? (
-                                <div className="flex flex-col gap-[4px] w-full">
-                                    {datafriend.map((user) => (
-                                        <div
-                                            key={user.id}
-                                            className="flex flex-row justify-between items-center border border-[#ff99ff] p-[2px] rounded-lg bg-[#1a1a1a]"
-                                        >
-                                            <div className="flex items-center gap-[10px]">
-                                                <img
-                                                    className="w-[50px] h-[50px] rounded-full object-cover border border-[#ff99ff]"
-                                                    src={user.avatar_url || '/default-avatar.png'}
-                                                    alt={user.username}
-                                                />
-                                                <p className="text-[#ff99ff] font-medium">{user.username}</p>
-                                            </div>
-                                            <div className="flex">
-                                                {!user.is_friend ? (
-                                                    <button
-                                                        onClick={() => addnewfriend(user.username)}
-                                                        className="flex items-center justify-center w-[120px] h-[35px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white uppercase text-xs font-bold transition-all hover:scale-105"
-                                                    >
-                                                        Add
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        onClick={() => handleRemoveFriend(user.id)}
-                                                        className="flex items-center justify-center w-[120px] h-[35px] rounded-full border border-[#ff99ff] text-[#ff99ff] uppercase text-xs font-bold hover:bg-[#ff99ff] hover:text-black transition-all"
-                                                    >
-                                                        Remove
-                                                    </button>
-                                                )}
+                                datafriend.map((user) => (
+                                    <div
+                                        key={user.id}
+                                        className="flex items-center justify-between w-full p-[10px] rounded-[15px] bg-gradient-to-r from-[#1a043a]/60 to-[#0d0221]/60 border border-[#ff44ff]/30 hover:border-[#ff44ff]/60 transition-all duration-300 shadow-[0_0_30px_rgba(255,68,255,0.3)]" /*added the shadow*/>
+                                        <div className="flex items-center gap-[15px]">
+                                            <img
+                                                className="w-[45px] h-[45px] rounded-full object-cover border-[2px] border-[#ff44ff]"
+                                                src={user.avatar_url || '/default-avatar.png'}
+                                                alt={user.username}
+                                            />
+                                            <div>
+                                                <p className="font-bold text-white">{user.username}</p>
+                                                <p className="text-[12px] text-[#ff99ff]/80">
+                                                    {user.is_friend ? 'Already Friends' : 'Not Connected'}
+                                                </p>
                                             </div>
                                         </div>
-                                    ))}
+                                        <div className="flex gap-[10px]">
+                                            {!user.is_friend ? (
+                                                <button
+                                                    onClick={() => addnewfriend(user.username)}
+                                                    className="w-[110px] h-[40px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#098000] font-bold text-[17px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] hover:scale-[1.05] active:scale-[0.95]"
+                                                >
+                                                    Add
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleRemoveFriend(user.id)}
+                                                    className="w-[100px] h-[35px] rounded-full bg-gradient-to-r from-[#ff0000]/80 to-[#ff4444]/80 text-white font-bold text-[12px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.5)] hover:scale-[1.05] active:scale-[0.95]"
+                                                >
+                                                    Remove
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (searchfriend && (searchLoading || datafriend.length > 0)) ? (
+                                <div className="flex flex-col items-center justify-center py-[30px]">
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-r from-[#1a043a] to-[#0d0221] flex items-center justify-center mb-[15px]">
+                                        <span className="text-[30px]">😕</span>
+                                    </div>
+                                    <p className="text-[#ff99ff]/70">No users found</p>
+                                    <p className="text-[12px] text-[#ff99ff]/40 mt-[5px]">Try a different username</p>
                                 </div>
                             ) : (
-                                <div className="text-gray-500">No users found</div>
+                                <div className="flex items-center justify-center py-[30px] text-[#ff99ff]/50">
+                                    <p>Search for players to add as friends</p>
+                                </div>
                             )}
                         </div>
                     </div>
-                </div>
-                <div className="w-[700px] h-fit border-[2px] border-[#ff99ff] text-[#ff99ff] p-4">
-                    <h2 className="mb-[4px] text-xl">Friend Requests</h2>
 
-                    <div className="flex flex-col gap-[20px]">
-                        {is_append.length === 0 ? (
-                            <div className="text-gray-400 text-center">No pending invitations</div>
-                        ) : (
-                            is_append.map((f) => (
-                                <div
-                                    key={f.request_id}
-                                    className="mt-[20px] flex w-full flex-row items-center justify-between gap-[40px] bg-[#2a2a2a] rounded-full"
-                                >
-                                    <div className="flex items-center gap-[4px]">
-                                        <img
-                                            src={f.avatarUrl || '/default-avatar.png'}
-                                            alt="avatar"
-                                            className="w-[50px] h-[50px] rounded-full object-cover border border-[#ff99ff]"
-                                        />
-                                        <span className="text-white font-semibold">{f.username}</span>
-                                    </div>
+            <div className="flex flex-col lg:flex-row w-full gap-[30px]">
+                {/*My Friends List */}
+                <div className="lg:w-2/5">
+                    <div className="flex flex-col w-full h-fit bg-[#0d0221]/80 border-[2px] border-[#ff44ff]/30 rounded-[30px] p-[25px] shadow-[0_0_30px_rgba(255,68,255,0.3)]">
+                        <div className="flex items-center justify-between mb-[25px]">
+                            <h2 className="text-[24px] font-[900] text-white">My Friends</h2>
+                            <div className="flex items-center justify-center w-[25px] h-[25px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]">
+                                <span className="text-white font-bold">{friends.length}</span>
+                            </div>
+                        </div>
 
-                                    <div className="flex gap-3">
-                                        <button
-                                            onClick={() => accept_invitation(f.request_id)}
-                                            className="bg-[#ff99ff] text-black px-[4px] py-[1px] rounded-md font-bold hover:bg-white transition-all"
-                                        >
-                                            Accept
-                                        </button>
-                                        <button
-                                            onClick={() => handleRemoveFriend(f.user_id)}
-                                            className="border border-red-500 text-red-500 px-[4px] py-[1px] rounded-md hover:bg-red-500 hover:text-white transition-all"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
+                        {friends.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center py-[50px] opacity-70">
+                                <div className="w-[80px] h-[80px] rounded-full bg-gradient-to-r from-[#ff44ff]/20 to-[#ff99ff]/20 flex items-center justify-center mb-[20px]">
+                                    <span className="text-[40px]">👤</span>
                                 </div>
-                            ))
+                                <p className="text-[#ff99ff] text-center">No friends yet</p>
+                                <p className="text-[12px] text-[#ff99ff]/60 mt-[5px]">Search for players to add as friends</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-[15px] max-h-[500px] pr-[20px] custom-scrollbar"/**here the side */>
+                                {friends.map((f) => (
+                                    <div 
+                                        key={f.id}
+                                        className="flex items-center justify-between w-full p-[10px] rounded-[20px] bg-gradient-to-r from-[#1a043a]/50 to-[#0d0221]/50 border border-[#ff44ff]/20 hover:border-[#ff44ff]/50 transition-all duration-300 shadow-[0_0_30px_rgba(255,68,255,0.3)]"
+                                    >
+                                        <div className="flex items-center gap-[15px]">
+                                            <div className="relative">
+                                                <div className={`absolute bottom-0 right-0 w-[12px] h-[12px] rounded-full border-[2px] border-[#ffffff] ${is_Online.get(f.id) === 'Online' ? 'bg-[#00ff00]' : 'bg-[#505050]'}`} />
+                                                <img
+                                                    src={`${f.avatarUrl}`}
+                                                    alt="avatar"
+                                                    className="w-[55px] h-[55px] rounded-full border-[2px] border-[#ff44ff] object-cover"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <p className="text-white font-bold text-[16px]">{f.username}</p>
+                                                <p className="text-[12px] flex items-center gap-[5px]">
+                                                    {is_Online.get(f.id) === 'Online' ? (
+                                                        <>
+                                                            <span className="w-[8px] h-[8px] rounded-full bg-green-500 animate-pulse"></span>
+                                                            <span className="text-green-400">Online</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <span className="w-[8px] h-[8px] rounded-full bg-gray-500"></span>
+                                                            <span className="text-[#fffff]">Offline</span>
+                                                        </>
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => handleRemoveFriend(f.id)}
+                                            className="w-[80px] h-[35px] rounded-full bg-gradient-to-r from-[#da043a]/60 to-[#da043a]/60 text-[#ac0000] font-bold text-[12px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.5)] hover:scale-[1.05] active:scale-[0.95]"
+                                        >
+                                            Remove
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         )}
+                    </div>
+                </div>
+
+                    {/* Friend Requests Section */}
+                    <div className="flex flex-col w-full h-fit bg-[#0d0221]/80 border-[2px] border-[#ff44ff]/30 rounded-[30px] p-[25px] shadow-[0_0_30px_rgba(255,68,255,0.3)]">
+                        <div className="flex items-center justify-between mb-[25px]">
+                            <h2 className="text-[24px] font-[900] text-white">Friend Requests</h2>
+                            <div className="relative">
+                                {is_append.length > 0 && (
+                                    <div className="flex items-center justify-center w-[25px] h-[25px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]">
+                                        {is_append.length}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-[15px] max-h-[500px] pr-[20px] custom-scrollbar">
+                            {is_append.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-[40px]">
+                                    <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-r from-[#1a043a] to-[#0d0221] flex items-center justify-center mb-[15px] ">
+                                        <span className="text-[30px]">📬</span>
+                                    </div>
+                                    <p className="text-[#ff99ff]/70">No pending invitations</p>
+                                </div>
+                            ) : (
+                                is_append.map((f) => (
+                                    <div
+                                        key={f.request_id}
+                                        className="flex items-center justify-between w-full p-[10px] rounded-[20px] bg-gradient-to-r from-[#1a043a]/50 to-[#0d0221]/50 border border-[#ff44ff]/20 hover:border-[#ff44ff]/50 transition-all duration-300 shadow-[0_0_30px_rgba(255,68,255,0.3)]">
+                                        <div className="flex items-center gap-[15px] mb-[15px] md:mb-0">
+                                            <img
+                                                src={f.avatarUrl || '/default-avatar.png'}
+                                                alt="avatar"
+                                                className="w-[50px] h-[50px] rounded-full object-cover border-[2px] border-[#ff44ff]"
+                                            />
+                                            <div>
+                                                <p className="font-bold text-white">{f.username}</p>
+                                                <p className="text-[12px] text-[#ff99ff]/80">Wants to be your friend!</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex gap-[10px]">
+                                            <button
+                                                onClick={() => accept_invitation(f.request_id)}
+                                                className="w-[80px] h-[35px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#098000] font-bold text-[13px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] hover:scale-[1.05] active:scale-[0.95]"
+                                            >
+                                                Accept
+                                            </button>
+                                            <button
+                                                onClick={() => handleRemoveFriend(f.user_id)}
+                                                className="w-[80px] h-[35px] rounded-full border-[2px] bg-gradient-to-r from-[#da043a]/60 to-[#da043a]/60 text-[#ac0000] uppercase transition-all duration-300 hover:bg-[#ff4444] hover:text-white hover:shadow-[0_0_15px_rgba(255,68,68,0.5)] hover:scale-[1.05] active:scale-[0.95]"
+                                            >
+                                                Decline
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

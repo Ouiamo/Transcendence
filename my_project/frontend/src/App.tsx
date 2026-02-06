@@ -10,7 +10,6 @@ import Dashboard from './Dashboard';
 import Profil from './Profil';
 import { Sidebar } from './Sidebar';
 import { GamePage, Gamepage_i} from "./G.tsx"
-import { Friendlist } from './Friendlist.tsx'
 import Friends from './Friends.tsx';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
@@ -82,18 +81,18 @@ const gotoHome =() =>{
    else
        setdatauser(null);
   }
-
-  // useEffect(() => {
-  //   if(user_data)
-  //   {
-  //     console.log("MY INFOOOOO ",user_data); 
-  //     // Only connect socket for valid logged-in user
-  //     connectSocket(user_data.id, user_data.username);
-  //   } else {
-  //     // If no user data, ensure socket is disconnected
-  //     disconnectSocket();
-  //   }
-  // }, [user_data]);
+//rja3t had luseEffect bash  yb9a yban lia fal friend front bali online or offline 📢📢📢📢
+ useEffect(() => {
+    if(user_data)
+    {
+      console.log("MY INFOOOOO ",user_data); 
+      // Only connect socket for valid logged-in user
+      connectSocket(user_data.id, user_data.username);
+    } else {
+      // If no user data, ensure socket is disconnected
+      disconnectSocket();
+    }
+  }, [user_data]);
 
   // New useEffect for early socket connection
   // useEffect(() => {
@@ -280,15 +279,15 @@ if(loading) return <div>Loading...</div>
 
     {
       currentPage === 'FRIENDS' &&
-      <div className="flex  flex-row gap-[140px] w-full h-full">
+      <div className="flex  flex-row gap-[90px] ">
         <div className="flex">
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
-
+          <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
         </div>
-        <div className="flex ">
-        <Friends />
+        <div className="flex-1 overflow-auto">
+          <Friends />
         </div>
       </div>
+
     }
     {
       currentPage === 'SETTING' &&

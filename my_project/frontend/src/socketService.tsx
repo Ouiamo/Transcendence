@@ -109,6 +109,38 @@ export const connectSocket = (userId: number, username: string) => {
     socket?.emit("user_connected", { userId, username });
   });
 
+  // Listen for private game invitations
+  socket.on("private_game_start", (data: { roomId: string; player1: any; player2: any }) => {
+    console.log("🎮 Private game invitation received:", data);
+    
+    // Check if current user is one of the players
+    if (data.player1.id === userId || data.player2.id === userId) {
+      console.log("🎮 You are invited to a private game!");
+      
+      // Store game info in localStorage for the game component to use
+      localStorage.setItem('private_game_room', data.roomId);
+      localStorage.setItem('private_game_data', JSON.stringify(data));
+      
+      console.log("🎮 Stored game data:", {
+        roomId: data.roomId,
+        gameData: data
+      });
+      
+      // Join the private game room
+      socket?.emit("join_private_game", {
+        roomId: data.roomId,
+        playerId: userId,
+        playerUsername: username
+      });
+      
+      console.log("🎮 Emitted join_private_game event");
+      
+      // Force navigation to game page
+      console.log("🎮 Triggering navigation...");
+      window.dispatchEvent(new Event('private_game_start'));
+    }
+  });
+
   return socket;
 };
 

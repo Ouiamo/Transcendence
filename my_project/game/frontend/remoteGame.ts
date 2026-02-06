@@ -5,8 +5,8 @@ let socket: Socket | null = null;
 
 let board: HTMLCanvasElement;
 
-const boardWidth: number = 900;
-const boardHeight: number = 450;
+const boardWidth: number = 1200; // Increased from 900
+const boardHeight: number = 600; // Increased from 450
 let contex : CanvasRenderingContext2D | null = null;
 
 // let gameMode: '1v1' | 'vAI' | 'local' | null = null;
@@ -33,9 +33,9 @@ const  playerColor: string ="#829cbdff";
 let gameEnd: boolean = false;
 
 const score={
-    x_l : boardWidth/4,
-    x_r : 3 * boardWidth/4,
-    y : boardHeight/5,
+    x_l : boardWidth/4,          // Left score position
+    x_r : 3 * boardWidth/4,      // Right score position  
+    y : boardHeight/6,           // Adjusted for larger board
     color: "white",
 }
 
@@ -51,21 +51,21 @@ const gameState={
     roomID : "",
     role : "",
     inGame : false,
-
     
     ballX : boardWidth/2,
     ballY : boardHeight/2,
     
-
-    
     player1_Y :  boardHeight / 2 - paddleHeight / 2,
     player2_Y :  boardHeight / 2 - paddleHeight / 2,
-
     
     score1 : 0,
     score2 : 0,
     gameEnd: false,
     winner: 0,
+    
+    // Add player usernames
+    player1Username: "Player 1",
+    player2Username: "Player 2",
 }
 
 
@@ -144,29 +144,122 @@ export function getSocket() {
   return socket;
 }
 
-export function initGame_remot(  canvas: HTMLCanvasElement) {
-   // board = document.getElementById("board") as HTMLCanvasElement;
-   // board.style.display = "block";
-     board = canvas;
-console.log("haniiiiii####");
-  board.width = 900;
-  board.height = 450;
-    contex = board.getContext("2d");
+export function cleanupGame() {
+    console.log("🧹 Cleaning up remote game...");
+    
+    // Reset game state
+    gameState.inGame = false;
+    gameState.gameEnd = false;
+    gameState.winner = 0;
+    gameState.score1 = 0;
+    gameState.score2 = 0;
+    gameState.roomID = "";
+    gameState.role = "";
+    gameState.player1Username = "Player 1";
+    gameState.player2Username = "Player 2";
+    
+    // Remove event listeners
+    document.removeEventListener("keydown", handleKeyDown);
+    document.removeEventListener("keyup", handleKeyUp);
+    
+    // Clear canvas if it exists
+    if (contex) {
+        contex.clearRect(0, 0, boardWidth, boardHeight);
+    }
+}
 
-    document.addEventListener("keydown", handleKeyDown);
-    document.addEventListener("keyup", handleKeyUp);
-    // const btn1v1 = document.getElementById("btn-1v1");
-    // const btnlocal = document.getElementById("btn-local");
-    // const btnvAI = document.getElementById("btn-vAI");
-    // const menu = document.getElementById("game-menu");
-    // const statusText = document.getElementById("status-text");
-    connectServer();
-    // btn1v1?.addEventListener("click", () => {
-    //     gameMode = '1v1';
-    //     // if (statusText) statusText.textContent = "Connecting to 1v1 match...";
-    //     menu?.classList.add("hidden");
-    //     if (board) board.style.display = "block";
-    // });
+function setupPrivateGame(gameData: any) {
+    console.log("🎮 Setting up private game with data:", gameData);
+    
+    // Extract usernames from game data
+    if (gameData.player1 && gameData.player2) {
+        gameState.player1Username = gameData.player1.username || "Player 1";
+        gameState.player2Username = gameData.player2.username || "Player 2";
+        console.log(`🎮 Players: ${gameState.player1Username} vs ${gameState.player2Username}`);
+    }
+    
+    // The socket is already connected from socketService
+    // We just need to listen for game events
+    
+    socket?.on("gameStart", (data: { roomID: string, role: string }) => {        
+        console.log("🎮 Private game starting:", data);
+        gameState.roomID = data.roomID;
+        gameState.role = data.role;
+        gameState.inGame = true; 
+        startGameLoop();
+    });
+
+    socket?.on("gameUpdate", (data: any) => {
+        gameState.ballX = data.ballX;
+        gameState.ballY = data.ballY;
+        gameState.player1_Y = data.player1_Y;
+        gameState.player2_Y = data.player2_Y;
+        gameState.score1 = data.score1;
+        gameState.score2 = data.score2;
+        gameState.gameEnd = data.gameEnd;
+        gameState.winner = data.winner;
+        
+        // If game ended, automatically clean up after showing winner for 3 seconds
+        if (data.gameEnd && data.winner) {
+            console.log(`🏆 Game ended! Winner: Player ${data.winner}`);
+            setTimeout(() => {
+                console.log("🧹 Auto-cleaning up finished game...");
+                localStorage.removeItem('private_game_room');
+                localStorage.removeItem('private_game_data');
+                // Trigger a page refresh to go back to friends list
+                window.location.reload();
+            }, 3000);
+        }
+    });
+    
+    // Join the private game room
+    const roomId = localStorage.getItem('private_game_room');
+    if (roomId && socket) {
+        console.log("🎮 Joining private game room:", roomId);
+        // The join_private_game was already sent by socketService
+        // Just wait for gameStart event
+    }
+}
+
+export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socket, roomData?: any) {
+   board = canvas;
+   console.log("🎮 Initializing remote game...");
+   console.log("🎮 Room data:", roomData);
+   
+   // Reset game state
+   gameState.inGame = false;
+   gameState.gameEnd = false;
+   gameState.winner = 0;
+   gameState.score1 = 0;
+   gameState.score2 = 0;
+   gameState.roomID = "";
+   gameState.role = "";
+   gameState.player1Username = "Player 1";
+   gameState.player2Username = "Player 2";
+   
+   board.width = 1200;
+   board.height = 600;
+   contex = board.getContext("2d");
+
+   
+   document.removeEventListener("keydown", handleKeyDown);
+   document.removeEventListener("keyup", handleKeyUp);
+   document.addEventListener("keydown", handleKeyDown);
+   document.addEventListener("keyup", handleKeyUp);
+
+  
+   const privateRoom = localStorage.getItem('private_game_room');
+   const privateGameData = localStorage.getItem('private_game_data');
+   
+   if (privateRoom && privateGameData && existingSocket) {
+       console.log("🎮 Setting up private game with existing socket");
+       socket = existingSocket;
+       const gameData = JSON.parse(privateGameData);
+       setupPrivateGame(gameData);
+   } else {
+       console.log("🎮 Setting up regular matchmaking");
+       connectServer();
+   }
 };
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -227,29 +320,31 @@ function startGameLoop()
 function drawWinner()
 {
     if (!contex || gameEnd === false) return;
-    let t: string = 'PLAYER ' + winner + ' WINS!';
+    
+    // Get winner username instead of player number
+    let winnerName: string;
+    if (winner === 1) {
+        winnerName = gameState.player1Username + ' WINS!';
+    } else if (winner === 2) {
+        winnerName = gameState.player2Username + ' WINS!';
+    } else {
+        winnerName = 'GAME OVER!';
+    }
+    
     contex.fillStyle = "rgba(0, 0, 0, 0.85)";
     contex.fillRect(0, 0, boardWidth, boardHeight);
 
-    // contex.shadowBlur = 20;
-    // contex.shadowColor = "#0244bdff";
+    // Main winner text
     contex.fillStyle = "white";
-    contex.font = "bold 70px Arial";
+    contex.font = "bold 60px Arial"; // Slightly smaller to fit longer usernames
     contex.textAlign = "center"; 
     contex.textBaseline = "middle";
-    contex.fillText(t, boardWidth/2, boardHeight/2 - 50);
-        
-    // contex.shadowBlur = 15;
-    // contex.fillStyle = "white";
-    // contex.font = "40px Arial";
-    // contex.fillText(gameState.score1 , gameState.score1, boardWidth / 2, boardHeight / 2 + 30);
-
-    // contex.shadowBlur = 10;
-    // contex.fillStyle = "white";
-    // contex.font = "25px Arial";
-    // contex.fillText("Press SPACE to play again", boardWidth / 2, boardHeight / 2 + 100);
+    contex.fillText(winnerName, boardWidth/2, boardHeight/2 - 50);
     
-    // contex.shadowBlur = 0;
+    // Show final score
+    contex.fillStyle = "white";
+    contex.font = "40px Arial";
+    contex.fillText(`${gameState.score1} - ${gameState.score2}`, boardWidth / 2, boardHeight / 2 + 30);
 }
 
 function draw() {
@@ -265,6 +360,7 @@ function draw() {
     drawBall(gameState.ballX, gameState.ballY, ballRadius, ballColor);
     drawScore(score.x_l, score.y, gameState.score1, score.color);
     drawScore(score.x_r, score.y, gameState.score2, score.color);
+    drawUsernames(); // Add username labels
     movePlayer();
     drawWinner();
     if (gameEnd === false)
@@ -319,6 +415,20 @@ function drawScore(x: number, y:number, score: number, color: string)
     contex.font = "48px Arial";
     contex.textAlign = "center"; 
     contex.fillText(score.toString(), x, y);
+}
+
+function drawUsernames()
+{
+    if (!contex) return;
+    contex.fillStyle = "white";
+    contex.font = "20px Arial";
+    contex.textAlign = "center";
+    
+    // Draw player 1 username (left side)
+    contex.fillText(gameState.player1Username, score.x_l, score.y - 60);
+    
+    // Draw player 2 username (right side)
+    contex.fillText(gameState.player2Username, score.x_r, score.y - 60);
 }
 
 // function drawCountDown()

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { initGame, getLocalWinner } from "../../game/frontend/game";
 import { initGame_remot } from "../../game/frontend/remoteGame";
-import {   aiinitGame, getaiWinner } from "../../game/frontend/aigame";
+import { aiinitGame, getaiWinner } from "../../game/frontend/aigame";
+import { getSocket } from "./socketService";
 
 
 export function GamePage(userdata:any) {
@@ -48,7 +49,17 @@ export function Gamepage_r() {
 
   useEffect(() => {
     if (canvasRef.current) {
-      initGame_remot (canvasRef.current);
+      const existingSocket = getSocket();
+      const roomData = localStorage.getItem('private_game_data');
+      
+      console.log("🎮 Gamepage_r initializing with socket:", !!existingSocket);
+      console.log("🎮 Room data available:", !!roomData);
+      
+      initGame_remot(
+        canvasRef.current, 
+        existingSocket || undefined, 
+        roomData ? JSON.parse(roomData) : undefined
+      );
     }
   }, []);
 

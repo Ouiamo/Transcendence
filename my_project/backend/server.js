@@ -53,6 +53,8 @@ fastify.register(require('./routes/profile/avatar'));
 
 fastify.register(require('./routes/friends/index')); 
 
+fastify.register(require('./routes/game/gameInvite'));
+
 fastify.register(require('./routes/twofa/enable'));
 // fastify.register(require('./routes/twofa/email'));
 fastify.register(require('./routes/twofa/authenticator'));

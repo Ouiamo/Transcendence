@@ -12,7 +12,7 @@ import Profil from './Profil';
 // import { loginUser } from './Api';
 import { Sidebar } from './Sidebar';
 // import {initGame} from "../../game/frontend/game.ts"
-import { GamePage, Gamepage_i} from "./G.tsx"
+import { GamePage, Gamepage_i, Gamepage_r} from "./G.tsx"
 // import { Gamepage_r } from './G.tsx';
 // import TwofaEmail from './TwofaEmail.tsx';
 import { Friendlist } from './Friendlist.tsx'
@@ -30,6 +30,7 @@ function App(){
   const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
+  const [privateGameActive, setPrivateGameActive] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
     console.log("Current Page is:", currentPage);
 
@@ -101,6 +102,31 @@ const gotoHome =() =>{
     // Only connect after validating session in checkSession
     // connectSocketFromStorage(); // REMOVED - prevents users appearing online before login
   }, []); // Run once on mount
+
+  // Listen for private game events
+  useEffect(() => {
+    const handlePrivateGameStart = () => {
+      console.log("🎮 Private game event received, forcing re-render");
+      setPrivateGameActive(true);
+      setCurrentPage('GAME_R');
+    };
+
+    window.addEventListener('private_game_start', handlePrivateGameStart);
+    
+    // Also check localStorage on mount
+    const checkPrivateGame = () => {
+      const privateRoom = localStorage.getItem('private_game_room');
+      if (privateRoom) {
+        console.log("🎮 Found existing private game on mount:", privateRoom);
+        setPrivateGameActive(true);
+      }
+    };
+    checkPrivateGame();
+    
+    return () => {
+      window.removeEventListener('private_game_start', handlePrivateGameStart);
+    };
+  }, []);
 
 useEffect(() => {
   // console.log("items is ^^^^^^^^^^^^^ ", twofa);
@@ -217,18 +243,25 @@ if(loading) return <div>Loading...</div>
       currentPage === 'GAME_R'&& 
       <div>
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard}/>
-        i m in remotttttttttttt 
-          <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">
-          < Friendlist />
-          {/* < Gamepage_r  />
-          <canvas ref={canvasRef} id="board" />    */}
-          </div>
-       
-          {/* <div className="flex-1 ml-[200px] mt-[30px]  w-full items-center justify-center">  
-          < Gamepage_r  />
-          <canvas ref={canvasRef} id="board" />  
-     
-      </div> */}
+        
+        <div className="flex-1 ml-[200px] mt-[30px] w-full h-full flex items-center justify-center">
+          {/* Check if there's a private game in progress */}
+          {privateGameActive && localStorage.getItem('private_game_room') ? (
+            <div className="flex flex-col items-center justify-center">
+              <h2 className="text-white text-center mb-4 text-2xl">🎮 Private Game</h2>
+              {/* <p className="text-white text-center mb-4 text-sm opacity-75">Room: {localStorage.getItem('private_game_room')}</p> */}
+              <div className="border-2 border-purple-500 rounded-lg p-4 bg-black/50">
+                <Gamepage_r />
+              </div>
+            </div>
+          ) : (
+            <Friendlist onGameStart={() => {
+              console.log("🎮 Game start callback triggered");
+              setPrivateGameActive(true);
+              setCurrentPage('GAME_R');
+            }} />
+          )}
+        </div>
       </div>
 
     }

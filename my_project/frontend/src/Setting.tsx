@@ -1,9 +1,37 @@
 import { useState } from "react"
 import { useEffect } from "react";
+import { FiEdit2, FiUser  , FiShield } from "react-icons/fi";
 
 interface intersetting {
   user: any;
 }
+
+function Box({ icon, label, value, }: { icon: JSX.Element; label: string; value: string; }) {
+  return (
+    <div
+      className="min-w-[300px] max-w-[300px] bg-[#120d1d]/40 flex flex-row items-center gap-[20px] ml-[20px]"
+    >
+      <div
+        className="w-[11px] h-[11px] flex items-center justify-center text-[#ff77ff] shadow-[0_0_20px_rgba(196,76,255,0.45)]"
+      >
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center bg-[#c44cff]/20"
+        >
+          {icon}
+        </div>
+      </div>
+      <div>
+        <p className="text-lg font-semibold leading-none text-white">
+          {value}
+        </p>
+        <p className="text-[10px] text-[#8F929E] mt-[1px]">
+          {label}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 
 function TwoFASetting({ user }: intersetting) {
   console.log("user f setting tsx hiiiiiiiiiiiiiiiii ", user);
@@ -11,7 +39,7 @@ function TwoFASetting({ user }: intersetting) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '', avatar_url: '' });
+  const [formData, setFormData] = useState({ firstname: '', lastname: '', username: '', email: '', avatar_url: '' , currentPassword: '', newPassword: '', confirmPassword: '' });
   const [verificationCode, setVerificationCode] = useState<string[]>(['', '', '', '', '', '']);
   const [showVerification, setShowVerification] = useState<boolean>(false);
 
@@ -58,9 +86,8 @@ function TwoFASetting({ user }: intersetting) {
       });
     };
     if (selectedFile) {
-      console.log(" file issssssss ",selectedFile);
+      console.log(" file issssssss ", selectedFile);
       hasdata = true;
-      // تحويل الصورة لنص (Base64)
       datatosand.avatar_url = await getBase64(selectedFile);
     }
 
@@ -196,13 +223,13 @@ function TwoFASetting({ user }: intersetting) {
 
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] justify-center  items-center w-full h-full  bg-[#0b0618]">
-        <div className="flex flex-col w-[700px] h-fit border border-[#ff99ff] gap-[20px] ">
-          apdate profile
-          <div className="flex flex-col gap-[20px] ">
-            <div className="flex flex-col items-center gap-[6px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[4px]">
+        {/* Avatar */}
+        <div className="flex flex-col w-[750px] h-fit border border-[#c44cff]/20 gap-[15px] ">
+          <Box icon={<FiUser size={24} />} value="Profile" label="Update your profile information" />
+          <div className="flex flex-col gap-[15px] ">
+            {/* <div className="flex flex-col items-center gap-[6px]">
               <div className=" relative  w-[50px] h-[50px]  ">
-
                 <img
                   src={previewUrl || user?.avatarUrl || 'https://localhost:3010/api/avatar/file/default-avatar.png'}
                   className="w-full h-full rounded-full object-cover border-2 border-[#ff99ff]"
@@ -214,69 +241,117 @@ function TwoFASetting({ user }: intersetting) {
                 className="cursor-pointer bg-[#ff99ff]  rounded-full text-black font-bold hover:bg-[#ff77ff] transition-all"
               >
                 Change Photo
-              </label>
-
-
-              <input
-                id="avatar-upload"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    setSelectedFile(file);
-                    setPreviewUrl(URL.createObjectURL(file));
-                  }
-                }}
-              />
+              </label> */}
+            <div className="flex flex-col ml-[60px] ">
+              <div className="relative w-[50px] h-[50px]">
+                <div className="w-full h-full rounded-full overflow-hidden bg-[#c44cff]/20 border border-[#c44cff]/40 shadow-[0_0_45px_rgba(196,76,255,0.6)] transition hover:shadow-[0_0_60px_rgba(196,76,255,0.85)]">
+                  <img
+                    src={previewUrl || user?.avatarUrl || "https://localhost:3010/api/avatar/file/default-avatar.png"}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <label
+                  htmlFor="avatar-upload"
+                  className=" absolute bottom-1 right-1 w-[10px] h-[10px]  border border-transparent rounded-full
+                  flex items-center justify-center text-[#ff77ff] cursor-pointer shadow-[0_0_18px_rgba(196,76,255,0.6)] hover:bg-[#c44cff]/20 transition">
+                  <FiEdit2 size={16} />
+                </label>
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setSelectedFile(file);
+                      setPreviewUrl(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+              </div>
+              <p className="text-[14px] text-[#ff77ff]">change avatar</p>
             </div>
+          </div>
+          {/* Name fields */}
+          <div className="flex gap-[30px] justify-center px-[40px] ml-[10px]">
             <input
-              id="avatar-upload"
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setSelectedFile(file);
-                  setPreviewUrl(URL.createObjectURL(file));
-                }
-              }}
+              type="text"
+              placeholder="Firstname"
+              className="flex-1 bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white outline-none px-[4px] focus:border-[#c44cff]"
+              onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
             />
             <input
               type="text"
-              placeholder="lastname Name"
-              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              placeholder="Lastname"
+              className="flex-1 bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white outline-none px-[4px] focus:border-[#c44cff]"
               onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
             />
+          </div>
+          <div className="flex gap-[30px] justify-center px-[40px] ml-[10px]">
             <input
               type="text"
-              placeholder="username Name"
-              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              placeholder="Username"
+              className="flex-1 bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white outline-none px-[4px] focus:border-[#c44cff]"
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
             />
             <input
-              type="text"
-              placeholder="email Name"
-              className="bg-black/20 border border-white/10 h-[30px]  rounded-full text-white outline-none focus:border-[#ff99ff]"
+              type="email"
+              placeholder="Email"
+              className="flex-1 bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white outline-none px-[4px] focus:border-[#c44cff]"
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
-            <div className="flex justify-center">
-
-              <button className="  mt-[20px] w-[200px] h-[44px]  rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]   text-white font-bold  uppercase ttransition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]" onClick={handelupdateprofile}>save change </button>
+          </div>
+          {/* Password fields */}
+          <div className="flex flex-col gap-[15px] justify-center ml-[10px] px-[40px]">
+            <input
+              type="password"
+              placeholder="Current Password"
+              className="bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white  outline-none px-[4px] focus:border-[#c44cff]"
+              onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+            />
+            <div className="flex gap-[30px] ">
+              <input
+                type="password"
+                placeholder="New Password"
+                className="flex-1 bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white outline-none px-[4px] focus:border-[#c44cff]"
+                onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+              />
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="flex-1 bg-[#0b0618] border border-[#c44cff]/40 h-[30px] rounded-full text-white outline-none px-[4px] focus:border-[#c44cff]"
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              />
             </div>
           </div>
-        </div>
-        <div className="flex flex-col  ">
-          <div className="flex flex-col  border border-[#ff99ff] w-[700px] p-6">
-            <h3 className="text-xl font-bold mb-4">Two-Factor Authentication</h3>
+
+          {/* Save Button */}
+          <div className="flex justify-center mt-4">
             <button
-              onClick={() => { toggle2FA() }}
-              className="mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold hover:shadow-[0_0_25px_rgba(255,68,255,0.7)]"
+              className="w-[150px] h-[30px] rounded-full bg-[#d86bff]
+                 text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+              onClick={handelupdateprofile}
             >
-              {twoFactor ? "Disable 2FA" : "Enable 2FA"}
+              Save Changes
             </button>
+          </div>
+        </div>
+        {/* security */}
+        <div className="flex flex-col w-[750px] h-fit border border-[#c44cff]/20 gap-[2px]">
+            <Box icon={<FiShield size={24} />} value="Security" label="Protect your account" />
+            <h4 className="text-white font-medium mb-[1px] ml-[10px]">Two-Factor Authentication</h4>
+            <p className="text-xs text-[#8F929E] mt-[1px] ml-[10px]">Add an extra layer of security</p>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => { toggle2FA() }}
+                className="mb-[4px] w-[150px] h-[30px]  flex justify-center items-center rounded-full bg-[#d86bff]
+                   text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {twoFactor ? "Disable 2FA" : "Enable 2FA"}
+              </button>
+            </div>
             <p className="mb-4">2FA is: <span className="font-bold">{twoFactor ? "ON" : "OFF"}</span></p>
 
             {showVerification && (
@@ -337,7 +412,6 @@ function TwoFASetting({ user }: intersetting) {
                 </button>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>
@@ -346,11 +420,16 @@ function TwoFASetting({ user }: intersetting) {
 
 export default function Setting({ user }: intersetting) {
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full">
-      <h1 className="flex ">Settings</h1>
-      <div className="flex ">
+    <div className="min-h-screen w-full bg-[#0b0618] text-white flex justify-center py-[20px]">
+      <div className="w-full max-w-6xl space-y-[10px]">
+        <div>
+          <h1 className="flex glow-text">Settings</h1>
+          <p className="text-[#8F929E] mt-[1px]">Manage your account</p>
+        </div>
+        <div className="flex flex-col gap-[20px]">
 
-        <  TwoFASetting user={user} />
+          <TwoFASetting user={user} />
+        </div>
       </div>
     </div>
   )

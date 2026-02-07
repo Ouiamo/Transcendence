@@ -91,7 +91,7 @@ function StatsCharts() {
         label: 'Win Rate',
         data: [stats.wins, stats.loss],
         backgroundColor: [
-          'rgba(158, 154, 175, 1)',
+          'rgba(158, 154, 175, 1)',  // rgb(255, 119, 255)
           'rgba(180, 84, 224, 0.84)',
         ],
         borderColor: [

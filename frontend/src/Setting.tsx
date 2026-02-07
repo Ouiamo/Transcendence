@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useEffect } from "react";
-import { FiEdit2, FiUser } from "react-icons/fi";
+import { FiEdit2, FiUser  , FiShield } from "react-icons/fi";
 
 interface intersetting {
   user: any;
@@ -330,24 +330,28 @@ function TwoFASetting({ user }: intersetting) {
           {/* Save Button */}
           <div className="flex justify-center mt-4">
             <button
-              className="w-[200px] h-[30px] rounded- bg-gradient-to-r from-[#ff44ff] to-[#ff99ff]
-                 text-white font-bold uppercase shadow-[0_0_15px_rgba(255,68,255,0.4)]
-                 hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+              className="w-[150px] h-[30px] rounded-full bg-[#d86bff]
+                 text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
               onClick={handelupdateprofile}
             >
               Save Changes
             </button>
           </div>
         </div>
-        <div className="flex flex-col  ">
-          <div className="flex flex-col  border border-[#ff99ff] w-[700px] p-6">
-            <h3 className="text-xl font-bold mb-4">Two-Factor Authentication</h3>
-            <button
-              onClick={() => { toggle2FA() }}
-              className="mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold hover:shadow-[0_0_25px_rgba(255,68,255,0.7)]"
-            >
-              {twoFactor ? "Disable 2FA" : "Enable 2FA"}
-            </button>
+        {/* security */}
+        <div className="flex flex-col w-[750px] h-fit border border-[#c44cff]/20 gap-[2px]">
+            <Box icon={<FiShield size={24} />} value="Security" label="Protect your account" />
+            <h4 className="text-white font-medium mb-[1px] ml-[10px]">Two-Factor Authentication</h4>
+            <p className="text-xs text-[#8F929E] mt-[1px] ml-[10px]">Add an extra layer of security</p>
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={() => { toggle2FA() }}
+                className="mb-[4px] w-[150px] h-[30px]  flex justify-center items-center rounded-full bg-[#d86bff]
+                   text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {twoFactor ? "Disable 2FA" : "Enable 2FA"}
+              </button>
+            </div>
             <p className="mb-4">2FA is: <span className="font-bold">{twoFactor ? "ON" : "OFF"}</span></p>
 
             {showVerification && (
@@ -408,7 +412,6 @@ function TwoFASetting({ user }: intersetting) {
                 </button>
               </div>
             )}
-          </div>
         </div>
       </div>
     </div>
@@ -421,7 +424,7 @@ export default function Setting({ user }: intersetting) {
       <div className="w-full max-w-6xl space-y-[10px]">
         <div>
           <h1 className="flex glow-text">Settings</h1>
-          <p className="text-[#8F929E] mt-[1px]">Manage your account and preferences</p>
+          <p className="text-[#8F929E] mt-[1px]">Manage your account</p>
         </div>
         <div className="flex flex-col gap-[20px]">
 

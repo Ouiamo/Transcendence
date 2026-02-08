@@ -31,7 +31,7 @@ function App(){
   const[user_data, setdatauser] = useState<any>(null);
   const [privateGameActive, setPrivateGameActive] = useState(false);
   // const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    console.log("Current Page is:", currentPage);
+    // console.log("Current Page is:", currentPage);
 
 const gotowfa =() =>{
     localStorage.setItem('page', 'twofa');
@@ -135,6 +135,7 @@ useEffect(() => {
         // Socket will be connected via the useEffect that watches user_data
         
         const save = localStorage.getItem('page'); 
+        console.log("  save page isssssssssss ", save);
         if(save === 'GAME_L')
           setCurrentPage('GAME_L');
         else if(save === 'GAME_R')
@@ -158,9 +159,15 @@ useEffect(() => {
       } 
       else {
         // Session is invalid, clear stored data and disconnect socket
-        clearUserDataFromStorage();
-        disconnectSocket();
+        const save = localStorage.getItem('page') ;
+    if (save === 'LOGIN' || save === 'SIGNUP') {
+        setCurrentPage(save);
+    } else {
         setCurrentPage('HOME');
+    }
+        // clearUserDataFromStorage();
+        disconnectSocket();
+        // setCurrentPage('HOME');
       }
     } catch (err) {
       // Error occurred, clear stored data and disconnect socket
@@ -175,7 +182,7 @@ useEffect(() => {
   };
   checkSession();
 }, []);
-
+console.log("currente page isssssssssssssss :::: ", currentPage)
 if(loading) return <div>Loading...</div>
   return (
     <div >
@@ -307,7 +314,7 @@ if(loading) return <div>Loading...</div>
             <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
         </div>
         <div className="flex w-full h-full ">
-        <Setting user={user_data}/>
+        <Setting user={user_data} delete_obj={obj_login} gotohome={gotoHome}/>
         </div> 
       </div>
     }

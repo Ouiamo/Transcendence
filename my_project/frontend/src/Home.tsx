@@ -76,7 +76,7 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
     
           <button
             onClick={gotologin}
-      className="w-[120px] h-[38px] rounded-[10px]
+      className="w-[120px] h-[38px] rounded-[10px] border-none outline-none
              bg-gradient-to-r from-[#a25cff] via-[#c84cff] to-[#d86bff]
              text-white text-xs font-extrabold tracking-widest
              shadow-[0_0_20px_rgba(216,107,255,0.8)]
@@ -88,7 +88,7 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
 
           <button
             onClick={gotosignup}
-            className="w-[120px] h-[38px] rounded-[10px]
+            className="w-[120px] h-[38px] rounded-[10px] 
              border border-[#d86bff] text-[#d86bff] text-xs font-extrabold tracking-widest
              hover:bg-[#d86bff]/10
              hover:shadow-[0_0_30px_rgba(216,107,255,0.6)]

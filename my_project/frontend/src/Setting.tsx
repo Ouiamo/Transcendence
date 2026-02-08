@@ -2,10 +2,12 @@ import { useState } from "react"
 import { useEffect } from "react";
 import { FiEdit2, FiUser, FiShield } from "react-icons/fi";
 import { IoLogOutOutline } from "react-icons/io5";
-
+import { logoutUser } from './socketService';
 
 interface intersetting {
   user: any;
+   delete_obj: (data: any) => void;
+    gotohome: () => void;
 }
 
 const handleLogout = async () => {
@@ -23,7 +25,31 @@ const handleLogout = async () => {
 };
 
 
-function TwoFASetting({ user }: intersetting) {
+function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
+   const logout = async () => {
+          try {
+              // First disconnect the socket to immediately mark user offline
+              if (user && user.id && user.username) {
+                  logoutUser(user.id, user.username);
+              }
+  
+              const logo = await fetch('https://localhost:3010/api/logout', {
+                  method: 'POST',
+                  credentials: 'include',
+              })
+              if (logo.ok) {
+                  alert("logout succes");
+                  console.log("logout sucess");
+                  delete_obj(null);
+                  gotohome();
+                  localStorage.removeItem('page');
+                  localStorage.removeItem('sidebar-active');
+              }
+          }
+          catch (error) {
+              alert("error in lougout");
+          }
+      }
   console.log("user f setting tsx hiiiiiiiiiiiiiiiii ", user);
   const [twoFactor, setTwoFactor] = useState<boolean>(user?.twofa_enabled ?? false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -470,7 +496,7 @@ function TwoFASetting({ user }: intersetting) {
         </div>
       </div>
       <button
-        onClick={handleLogout}
+        onClick={logout}
         className="mt-[20px] flex items-center gap-[8px] bg-transparent 
           rounded-[10px] border border-[#f87171]/40
           px-[12px] py-[6px] text-[#f87171] text-xs
@@ -485,7 +511,7 @@ function TwoFASetting({ user }: intersetting) {
   )
 }
 
-export default function Setting({ user }: intersetting) {
+export default function Setting({ user, delete_obj, gotohome}: intersetting) {
   return (
     <div className="min-h-screen w-full bg-text-white flex justify-center py-[20px]">
       <div className="flex justify-center">
@@ -496,7 +522,7 @@ export default function Setting({ user }: intersetting) {
           </div>
           <div className="flex flex-col gap-[20px]">
 
-            <TwoFASetting user={user} />
+            <TwoFASetting user={user} delete_obj={delete_obj} gotohome={gotohome} />
           </div>
         </div>
       </div>

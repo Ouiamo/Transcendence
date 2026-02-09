@@ -67,13 +67,13 @@ export function Leaderboard() {
         return { background: '', borderColor: '', height: '', order: '' };
     };
 
-    const getInitials = (username: string) => {
-        const words = username.trim().split(/\s+/);
-        if (words.length >= 2) {
-            return (words[0][0] + words[1][0]).toUpperCase();
-        }
-        return username.slice(0, 2).toUpperCase();
-    };
+    // const getInitials = (username: string) => {
+    //     const words = username.trim().split(/\s+/);
+    //     if (words.length >= 2) {
+    //         return (words[0][0] + words[1][0]).toUpperCase();
+    //     }
+    //     return username.slice(0, 2).toUpperCase();
+    // };
 
     const getCircleStyle = (rank: number) => {
         if (rank === 1) return { 
@@ -150,7 +150,13 @@ export function Leaderboard() {
                                 
                                             }}
                                         >
-                                            <span>{getInitials(player.username)} </span>
+                                            <div>
+                                                <img
+                                                    src={player.avatar_url}
+                                                    alt="you"
+                                                    className="w-full h-full rounded-full object-cover bg-[#1a1033]"
+                                                />
+                                            </div>
                                         </div>
                                         
                                         
@@ -222,7 +228,14 @@ export function Leaderboard() {
                                                 color: rank <= 3 ? 'rgb(255, 255, 255)' : 'rgb(209, 213, 219)'
                                             }}
                                         >
-                                            {getInitials(player.username)}
+                                            {/* {getInitials(player.username)} */}
+                                            <div className="mr-[10px]">
+                                                <img
+                                                    src={player.avatar_url}
+                                                    alt="you"
+                                                    className="w-full h-full rounded-full object-cover bg-[#1a1033]"
+                                                />
+                                            </div>
                                         </div>
                                         <span className="text-[18px] font-semibold text-white">{player.username}</span>
                                     </div>

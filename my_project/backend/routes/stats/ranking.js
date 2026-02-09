@@ -10,14 +10,18 @@ fastify.get('/api/ranking', async (request, reply) => {
     }
 
     try {
-        // const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
+        const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
         const stats = await dbAll(`
-            SELECT s.user_id, u.username, u.avatar_url, s.points, s.wins, s.loss, s.win_rate
+            SELECT s.user_id, u.username, u.avatar_url, u.provider, s.points, s.wins, s.loss, s.win_rate
             FROM stats s
             JOIN users u ON s.user_id = u.id
             ORDER BY s.points DESC
         `);
-
+        stats.forEach((element) => {
+            if (element.provider === "local")
+                element.avatar_url = "https://localhost:3010/api/avatar/file/" + element.avatar_url;
+        });
+        console.log("haaaa elements ",stats);
     return reply.send(stats);
     }
     catch(err){

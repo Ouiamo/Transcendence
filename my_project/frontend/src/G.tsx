@@ -58,14 +58,14 @@ export function GamePage(userdata: any) {
       <div className="flex items-center gap-[60px] mb-[40px]">
         <div className="flex flex-col items-center">
           <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>GUEST</p>
-          <span className="text-[40px] text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player1Score}</span>
+          <span className="text-[40px] text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player2Score}</span>
         </div>
 
         <div className="text-3xl font-light text-gray-700 self-end pb-[2px]">:</div>
 
         <div className="flex flex-col items-center">
           <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>{userdata.username}</p>
-          <span className="text-[40px] font-black text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player2Score}</span>
+          <span className="text-[40px] font-black text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player1Score}</span>
         </div>
       </div>
 

@@ -15,7 +15,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import TermsOfService from './TermsOfService';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
-import { connectSocket, disconnectSocket, clearUserDataFromStorage } from './socketService.tsx';
+import { connectSocket, disconnectSocket, clearUserDataFromStorage, getSocket } from './socketService.tsx';
 
 
 type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
@@ -104,7 +104,16 @@ const gotoHome =() =>{
       setCurrentPage('GAME_R');
     };
 
+    const handleGameEnded = () => {
+      console.log("🏆 Game ended, returning to friends page");
+      setPrivateGameActive(false);
+      localStorage.removeItem('private_game_room');
+      localStorage.removeItem('private_game_data');
+      setCurrentPage('GAME_R'); // This will show Friendlist since privateGameActive is now false
+    };
+
     window.addEventListener('private_game_start', handlePrivateGameStart);
+    window.addEventListener('game_ended', handleGameEnded);
     
     // Also check localStorage on mount
     const checkPrivateGame = () => {
@@ -118,8 +127,28 @@ const gotoHome =() =>{
     
     return () => {
       window.removeEventListener('private_game_start', handlePrivateGameStart);
+      window.removeEventListener('game_ended', handleGameEnded);
     };
   }, []);
+
+  // Handle navigation away from game
+  useEffect(() => {
+    const handlePageChange = () => {
+      const privateRoom = localStorage.getItem('private_game_room');
+      if (privateRoom && currentPage !== 'GAME_R') {
+        console.log("⚠️ User navigating away from game, notifying server...");
+        const socket = getSocket();
+        if (socket) {
+          socket.emit("player_leaving_game", { roomID: privateRoom });
+        }
+        localStorage.removeItem('private_game_room');
+        localStorage.removeItem('private_game_data');
+        setPrivateGameActive(false);
+      }
+    };
+    
+    handlePageChange();
+  }, [currentPage]);
 
 useEffect(() => {
   // console.log("items is ^^^^^^^^^^^^^ ", twofa);
@@ -240,7 +269,7 @@ if(loading) return <div>Loading...</div>
     />
   </div>
 
-  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">  
+  <div className="flex-1 flex flex-col pl-[88px] items-center justify-center p-4 min-w-0 overflow-auto  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">  
     <div className="w-full h-full max-w-[1200px] flex flex-col items-center justify-center ">
       <GamePage username={user_data.username}/>
     </div>
@@ -261,7 +290,7 @@ if(loading) return <div>Loading...</div>
     />
   </div>
 
-  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto">
+  <div className="flex-1 flex flex-col items-center justify-center pl-[88px]  min-w-0 overflow-auto">
     {privateGameActive && localStorage.getItem('private_game_room') ? (
       <Gamepage_r/>
       ) : (
@@ -280,19 +309,19 @@ if(loading) return <div>Loading...</div>
         <div  className="flex-none z-50">
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
         </div>
-          <div className="flex-1 flex flex-col items-center justify-center  min-w-0 overflow-auto bg-[#ffff]">  
+          <div className="flex-1 flex flex-col items-center justify-center pl-[88px]  min-w-0 overflow-auto bg-[#ffff]">  
           < Gamepage_i  username={user_data.username}/>
       </div>
       </div>
     }
     
     {currentPage === 'PROFIL' && (
-  <div className="flex flex-row min-h-screen w-full bg-[#0d0221] gap-[60px] overflow-x-hidden">
+  <div className="flex flex-row min-h-screen w-full bg-[#0d0221]  overflow-x-hidden">
     <div className="flex-none w-[60px] md:w-[250px] transition-all duration-300">
       <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
     </div>
-    <div className="flex-grow flex justify-center p-2 md:p-8 " >
-      <div className="w-full max-w-[1200px]">
+    <div className="flex-grow flex justify-center p-[2px] md:p-8 bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]" >
+      <div className="w-full max-w-[1200px]   pr-[88px]">
         <Profil user={user_data  } delete_obj={obj_login} gotohome={gotoHome} gotosetting={gotoseting}/>
       </div>
     </div>
@@ -322,11 +351,11 @@ if(loading) return <div>Loading...</div>
     }
     {
       currentPage === 'SETTING' &&
-      <div className="flex flex-row  gap-[150px]" >
+      <div className="flex flex-row  gap-[px]" >
         <div className="flex  ">
             <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
         </div>
-        <div className="flex w-full h-full ">
+        <div className="flex w-full h-full pl-[88px] ">
         <Setting user={user_data} delete_obj={obj_login} gotohome={gotoHome}/>
         </div> 
       </div>

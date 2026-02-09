@@ -156,11 +156,14 @@ useEffect(() => {
             setCurrentPage('LEADERBOARD');
         else if(save == 'LOGIN')
             setCurrentPage('LOGIN');
+        else if(save == 'SIGNUP')
+            setCurrentPage('SIGNUP');
         else
            setCurrentPage('DASHBOARD');
       } 
       else {
         // Session is invalid, clear stored data and disconnect socket
+        console.log(" yes im not nnnnnn ");
         const save = localStorage.getItem('page') ;
     if (save === 'LOGIN' || save === 'SIGNUP') {
         setCurrentPage(save);
@@ -206,7 +209,7 @@ if(loading) return <div>Loading...</div>
       )}
 
       {currentPage === 'LOGIN' && ( 
-        <div className="min-h-screen w-full flex items-center justify-center bg-[#06060d]">
+        <div className="min-h-screen w-full flex items-center justify-center  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">
            <Login gotohome={()=> setCurrentPage('HOME')} gotoDASHBOARD={gotodash} onloginsucces={obj_login} gotosingup={()=>setCurrentPage('SIGNUP')} gotwofa={gotowfa}/>
         </div>
       )}
@@ -214,7 +217,7 @@ if(loading) return <div>Loading...</div>
     {
       currentPage === 'SIGNUP' &&
       <div className="min-h-screen w-full h-full flex items-center justify-center bg-[#0d0221] ">
-      <Signup gotohome={()=>setCurrentPage('HOME') } gotologin={()=>setCurrentPage('LOGIN')}  gotoDASHBOARD={()=>setCurrentPage('DASHBOARD')}/>
+      <Signup gotohome={()=>setCurrentPage('HOME') } gotologin={()=>setCurrentPage('LOGIN')}  gotoDASHBOARD={gotodash}/>
       </div>
     }
     {
@@ -237,8 +240,8 @@ if(loading) return <div>Loading...</div>
     />
   </div>
 
-  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto">  
-    <div className="w-full h-full max-w-[1200px] flex flex-col items-center justify-center">
+  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">  
+    <div className="w-full h-full max-w-[1200px] flex flex-col items-center justify-center ">
       <GamePage username={user_data.username}/>
     </div>
   </div> 
@@ -277,7 +280,7 @@ if(loading) return <div>Loading...</div>
         <div  className="flex-none z-50">
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
         </div>
-          <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto">  
+          <div className="flex-1 flex flex-col items-center justify-center  min-w-0 overflow-auto bg-[#ffff]">  
           < Gamepage_i  username={user_data.username}/>
       </div>
       </div>

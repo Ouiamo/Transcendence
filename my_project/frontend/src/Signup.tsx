@@ -152,12 +152,20 @@ interface Sinuptest {
 }
 
 function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
+    localStorage.setItem('page', 'SIGNUP');
     const [username, setusername] = useState('');
     const [lastname, setlastname] = useState('');
     const [firstname, setfirstname] = useState('');
     const [gmail, setgamil] = useState('');
     const [motdepass, setmotdepass] = useState('');
-
+    const handel_auth_goole = async () => {
+        window.location.href = 'https://localhost:3010/api/auth/google';
+        gotoDASHBOARD();
+    }
+    const handel_auth_42 = async () => {
+        window.open('https://localhost:3010/api/auth/42');
+        gotoDASHBOARD();
+    }
     const handleSignup = async () => {
         if (!username || !gmail || !lastname || !motdepass) {
             alert("Please fill in all fields");
@@ -188,7 +196,7 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
     };
 
     return (
-        <div className="relative min-h-screen w-full bg-[#0d0221] flex flex-row md:flex-row items-center justify-center p-[4px] gap-[20px]">
+        <div className="relative min-h-screen w-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] flex flex-row md:flex-row items-center justify-center p-[4px] gap-[20px]">
 
             <div className=" md:flex flex-1 max-w-[500px] justify-center items-center">
                 <div className="w-full max-w-[300px] md:max-w-[400px] lg:max-w-[500px] aspect-square flex items-center justify-center">
@@ -201,34 +209,34 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
             </div>
 
             {/* Form Section - Fully Responsive */}
-            <div className="flex flex-col items-center w-full max-w-[600px] min-h-[650px] bg-[#0d0221] border-2 border-[#ff44ff]/30 rounded-[30px] shadow-[0_0_30px_rgba(255,68,255,0.2)] py-8 px-6 sm:px-10">
+            <div className="flex flex-col items-center w-full max-w-[600px] min-h-[650px] bg-[#0d0221] border-2 border-[#c44cff] rounded-[30px] shadow-[0_0_30px_rgba(255,68,255,0.2)] py-[8px] px-[16px] sm:px-10">
                 <header className="flex flex-col items-center mb-8">
                     <h1 className="glow-text">Sign Up</h1>
-                    <p className="text-[#ff44ff]/70 mt-[2px]  font-['Orbitron']">Create your account to start</p>
+                    <p className="text-[#c44cff] mt-[2px]  font-['Orbitron']">Create your account to start</p>
                 </header>
 
                 <section className="flex flex-col items-center gap-y-[16px] w-full">
                     {/* Row 1: First Name & Last Name */}
                     <div className="flex flex-row w-full gap-[10px] px-[2px] mb-[4px] ">
                         <div className="flex-1 flex flex-col items-start p-[10px]">
-                            <p className="text-[#ff44ff]/80 text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">First Name</p>
-                           <input
-            style={{ WebkitTextFillColor: 'white' }}
-            className="caret-[#ff44ff] h-[46px] w-full rounded-full bg-[#0d0221]/50 text-white 
-                       px-6  /* ✅ سيبعد الـ Placeholder والمؤشر بـ 24px */
-                       outline-none border border-[#ff44ff]/40 focus:border-[#ff44ff] 
+                            <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">First Name</p>
+                            <input spellCheck="false"
+                                style={{ WebkitTextFillColor: 'white' }}
+                                className="caret-[#ff44ff] h-[46px] w-full rounded-[12px] bg-[#0d0221]/50 text-white 
+                       
+                       outline-none border border-[#c44cff] glow-input
                        placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all text-sm"
-            type="text" 
-            placeholder="First Name" 
-            value={firstname} 
-            onChange={(e) => setfirstname(e.target.value)}
-        />
+                                type="text"
+                                placeholder="First Name"
+                                value={firstname}
+                                onChange={(e) => setfirstname(e.target.value)}
+                            />
                         </div>
                         <div className="flex-1 flex flex-col items-start p-[10px]">
-                            <p className="text-[#ff44ff]/80 text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Last Name</p>
-                            <input
-                                style={{ WebkitTextFillColor: 'white' }}
-                                className="caret-[#ff44ff] h-[46px] w-full rounded-full bg-[#0d0221]/50 text-white  outline-none border border-[#ff44ff]/40 focus:border-[#ff44ff] placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all"
+                            <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Last Name</p>
+                            <input spellCheck="false"
+                                style={{ WebkitTextFillColor: 'white' } }
+                                className="caret-[#ff44ff] h-[46px] w-full rounded-[12px] bg-[#0d0221]/50 text-white  outline-none border border-[#c44cff] glow-input placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all"
                                 type="text" placeholder="Last Name" value={lastname} onChange={(e) => setlastname(e.target.value)}
                             />
                         </div>
@@ -237,58 +245,77 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
                     {/* Row 2: Username & Email Address */}
                     <div className="flex flex-row w-full gap-[15px] px-[2px] mb-[4px]">
                         <div className="flex-1 flex flex-col items-start p-[10px]">
-                            <p className="text-[#ff44ff]/80 text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Username</p>
+                            <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Username</p>
                             <input
                                 style={{ WebkitTextFillColor: 'white' }}
-                                className="caret-[#ff44ff] h-[46px] w-full rounded-full bg-[#0d0221]/50 text-white  outline-none border border-[#ff44ff]/40 focus:border-[#ff44ff] placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all"
+                                className="caret-[#ff44ff] h-[46px] w-full rounded-[12px] bg-[#0d0221]/50 text-white  outline-none border border-[#c44cff] glow-input  placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all"
                                 type="text" placeholder="Username" value={username} onChange={(e) => setusername(e.target.value)}
                             />
                         </div>
                         <div className="flex-1 flex flex-col items-start p-[10px]">
-                            <p className="text-[#ff44ff]/80 text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Email Address</p>
+                            <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Email Address</p>
                             <input
                                 style={{ WebkitTextFillColor: 'white' }}
-                                className="caret-[#ff44ff] h-[46px] w-full rounded-full bg-[#0d0221]/50 text-white  outline-none border border-[#ff44ff]/40 focus:border-[#ff44ff] placeholder:text-[#ff44ff]/20  placeholder:font-['Orbitron'] transition-all"
+                                className="caret-[#ff44ff] h-[46px] w-full rounded-[12px] bg-[#0d0221]/50 text-white  outline-none border border-[#c44cff] glow-input  placeholder:text-[#ff44ff]/20  placeholder:font-['Orbitron'] transition-all"
                                 type="email" placeholder="Email" value={gmail} onChange={(e) => setgamil(e.target.value)}
                             />
                         </div>
                     </div>
-                    {/* Password - بنفس التصميم الموحد الآن */}
-                    <div className="w-full flex flex-col items-start px-2">
-                        <p className="text-[#ff44ff]/80 text-[10px] uppercase ml-4 mb-1 font-bold font-['Orbitron']">Password</p>
-                        <input
-                            style={{ WebkitTextFillColor: 'white' }}
-                            className="caret-[#ff44ff] h-[46px] w-full rounded-full bg-[#0d0221]/50 text-white px-6 outline-none border border-[#ff44ff]/40 focus:border-[#ff44ff] placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all text-sm"
-                            type="password"
-                            placeholder="Create a password"
-                            value={motdepass}
-                            onChange={(e) => setmotdepass(e.target.value)}
-                        />
+                    <div className="w-full flex flex-col items-start  justify-center px-[2px]">
+                        <div className="flex w-full h-full justify-center ">
+
+                            <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Password</p>
+                        </div>
+                        <div className="flex w-full h-full justify-center  ">
+
+                            <input
+                                style={{ WebkitTextFillColor: 'white' }}
+                                className="caret-[#ff44ff] h-[46px] w-[80%]  rounded-[12px] bg-[#0d0221]/50 text-white px-6 outline-none border border-[#c44cff] glow-input placeholder:text-[#ff44ff]/20 placeholder:font-['Orbitron'] transition-all text-sm"
+                                type="password"
+                                placeholder="Create a password"
+                                value={motdepass}
+                                onChange={(e) => setmotdepass(e.target.value)}
+                            />
+                        </div>
                     </div>
-                    {/* </section> */}
-                    {/* </div>
-                    </div> */}
-
-                    <footer className="w-full flex flex-col items-center mt-4">
-                        <button
-                            className="w-full h-[46px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#7d12ff] text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 shadow-[0_0_15px_rgba(255,68,255,0.3)] hover:shadow-[0_0_25px_rgba(255,68,255,0.6)] hover:scale-[1.02] active:scale-[0.98]"
-                            onClick={handleSignup}
-                        >
-                            Sign Up
-                        </button>
-
-                        <div className="flex items-center gap-4 mt-6">
-                            <button onClick={() => window.location.href = 'https://localhost:3010/api/auth/google'} className="p-3 bg-white/5 rounded-full border border-[#ff44ff]/20 hover:bg-[#ff44ff]/10 transition-all">
-                                <FaGoogle className="text-[#ff44ff] text-xl" />
+                    
+                    <footer className="flex-1 w-full mt-[15px] flex flex-col items-center gap-y-[14px]">
+                      
+                        <div className="flex flex-row items-center justify-center w-full gap-[30px] mt-[4px]">
+                            <button
+                                className="p-[3px] border-none outline-none bg-transparent shrink-0 group"
+                                onClick={handel_auth_goole}
+                            >
+                                <FaGoogle className="text-[#c44cff] text-[20px] transition-all duration-300 drop-shadow-[0_0_8px_rgba(255,68,255,0.8)] hover:scale-125 active:scale-90" />
                             </button>
-                            <button onClick={() => window.location.href = 'https://localhost:3010/api/auth/42'} className="p-3 bg-white/5 rounded-full border border-[#ff44ff]/20 hover:bg-[#ff44ff]/10 transition-all">
-                                <Si42 className="text-[#ff44ff] text-xl" />
+
+                            <button
+                                className="p-[3px] border-none outline-none bg-transparent shrink-0 group"
+                                onClick={handel_auth_42}
+                            >
+                                <Si42 className="text-[#c44cff] text-[20px] transition-all duration-300 drop-shadow-[0_0_8px_rgba(255,68,255,0.8)] hover:scale-125 active:scale-90" />
                             </button>
                         </div>
 
-                        <button onClick={gotohome} className="mt-6 text-[#ff44ff]/60 text-[10px] font-bold hover:text-[#ff44ff] hover:underline transition-all uppercase tracking-tighter">
-                            Back to Home
+                        
+                        <button
+                            className="w-full max-w-[280px] h-[46px] rounded-[12px] border-none outline-none
+             bg-gradient-to-r from-[#a25cff] via-[#c84cff] to-[#d86bff]
+             text-white text-xs font-extrabold tracking-widest
+             shadow-[0_0_20px_rgba(216,107,255,0.8)]
+             hover:shadow-[0_0_30px_rgba(216,107,255,1)]
+             transition-all  uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+                            onClick={handleSignup}
+                        >
+                            S'inscrire
                         </button>
+
+                        <a
+                            className="mt-[2px] text-[#c44cff] text-[11px] font-bold cursor-pointer hover:underline hover:text-[#ff99ff] transition-all uppercase tracking-tighter"
+                            onClick={gotohome}
+                        >
+                            Home
+                        </a>
                     </footer>
                 </section>
             </div>

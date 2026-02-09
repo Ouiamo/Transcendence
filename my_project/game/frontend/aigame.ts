@@ -14,7 +14,7 @@ let aicountDown = 3;
 let aigameCountDown : boolean = false;
 let aigameGO : boolean = false;
 
-const aimaxScore : number = 3;
+const aimaxScore : number = 11;
 
 
 

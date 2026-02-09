@@ -18,7 +18,7 @@ module.exports = async function(fastify, options) {
     console.error('Error creating stats table:', err);
   })
 
-  // Check if points column exists and add it if it doesn't
+
   const tableInfo = await dbAll("PRAGMA table_info(stats)");
   const hasPointsColumn = tableInfo.some(col => col.name === 'points');
   

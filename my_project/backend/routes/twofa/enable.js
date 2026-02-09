@@ -22,14 +22,17 @@ module.exports = async function (fastify) {
         [secret.base32, user.id]
       );
 
-      const qrCode = await QRCode.toDataURL(secret.otpauth_url, {color: {
-      dark: '#ff99ff', light: '#32174D' }});
+      const qrCode = await QRCode.toDataURL(secret.otpauth_url, {
+        color: {
+          dark: '#d27ff0',   // neon purple pixels
+          light: '#00000000'   // dark background
+        }
+      });
       return reply.send({ qrCode, secret: secret.base32,
         twofa_enabled: false,
       });
     } 
-    catch (err) 
-    {
+    catch (err) {
       console.error('2FA Enable Error:', err);
       return reply.code(500).send({ error: 'Internal server error', detail: err.message });
     }

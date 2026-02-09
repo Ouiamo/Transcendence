@@ -18,9 +18,6 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
     const [gmailogin, setgmailogin] = useState('');
 localStorage.setItem('page', 'LOGIN');
     const handel_auth_goole = async () => {
-// <<<<<<< HEAD
-//         window.location.href = 'https://localhost:3010/api/auth/google'
-// =======
         window.location.href = 'https://localhost:3010/api/auth/google'  //backend
         console.log("haniiiiiiiiiiiiiiiiiiiiiiii google");
         gotoDASHBOARD();
@@ -108,7 +105,7 @@ localStorage.setItem('page', 'LOGIN');
 
                         <input
                             style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }}
-                            className=" caret-[#ff44ff] w-[250px] h-[45px]  bg-[#0d0221]  outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40    transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Enter your email" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
+                            className="rounded-[10px]  caret-[#ff44ff] w-[250px] h-[45px]  bg-[#0d0221]  outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40    transition-all" autoComplete="off" spellCheck="false" type="email" placeholder="Enter your email" value={gmailogin} onChange={(e) => setgmailogin(e.target.value)} ></input>
                     </div>
                 </div>
                 <div className="flex flex-col  ">
@@ -116,14 +113,14 @@ localStorage.setItem('page', 'LOGIN');
                     <div className="relative flex items-center w-full  ">
                         <RiLockPasswordLine className="absolute left-[10px] text-[#c44cff] text-xl pointer-events-none z-10" />
                         <input
-                            style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }} className="caret-[#ff44ff]  w-[250px] h-[45px]   bg-[#0d0221] text-white outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40  transition-all" type="password" placeholder="Enter your password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
+                            style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }} className=" rounded-[10px] caret-[#ff44ff]  w-[250px] h-[45px]   bg-[#0d0221] text-white outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40  transition-all" type="password" placeholder="Enter your password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
 
                     </div>
                 </div>
 
 
                 <div className="flex flex-col gap-[0px] ">
-                    <button className=" mt-[20px] w-full  h-[45px]  bg-[#c44cff]  text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+                    <button className=" mt-[20px] rounded-[10px] w-full  h-[45px]  bg-[#c44cff]  text-white font-bold text-sm uppercase tracking-widest transition-all duration-300 outline-none border-none shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
                                 onClick={handelLogin} > sign in</button>
                     <div className="flex flex-row items-center justify-between w-full max-w-[80px] mx-auto  mt-[20px]">
 

@@ -32,7 +32,7 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj, listfriends, goto, 
                 <div>
                     <Sidebar user_={user} gotohome={gotohome} delete_obj={delete_obj} gotodashbord={gotodashbord} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotosetting} gotoleaderboard={gotoleaderboard} gotolocalgame={goto} setActiveSafe={setActiveSafe}/>
                 </div>
-                <div className="flex 1 h-full overflow-y-auto custom-scrollbar w-full">
+                <div className="flex-1 h-full overflow-y-auto custom-scrollbar bg-[#0b0618]">
 
                     <Grid listfriends={listfriends} goto={goto} goto_ia={gotoia} setActiveSafe={setActiveSafe}/>
                 </div>

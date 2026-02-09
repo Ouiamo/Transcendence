@@ -6,8 +6,8 @@ const gameStates = new Map();
 const onlineUsers = new Map(); // Map of userId -> socket.id
 const pendingOfflineUsers = new Map(); // Map of userId -> timeout for grace period
 
-const boardWidth = 1200; // Increased from 900
-const boardHeight = 600; // Increased from 450
+const boardWidth = 900; // Match frontend dimensions
+const boardHeight = 450; // Match frontend dimensions
 const paddleHeight = 80;
 const ballRadius = 15;
 const OFFLINE_GRACE_PERIOD = 3000; // 3 seconds grace period
@@ -57,7 +57,7 @@ module.exports = async function (fastify) {
       }
       console.log(`📊 Total online users: ${onlineUsers.size}`);
 
-      // 1. Send list of ALL currently online users to the newly connected user
+      // Send lALL currently online users to the newly connected user
       const onlineUsersList = Array.from(onlineUsers.entries()).map(([uid, sid]) => {
         const userSocket = gameSocket.sockets.sockets.get(sid);
         return {
@@ -69,7 +69,7 @@ module.exports = async function (fastify) {
       console.log(`📋 Sending online users list to ${username}:`, onlineUsersList);
       socket.emit("online_users", onlineUsersList);
 
-      // 2. Broadcast to ALL OTHER users that this user is now online (only if they weren't already online)
+      //  Broadcast to ALL OTHER users that this user is now online (only if they weren't already online)
       if (!wasOnline) {
         console.log(`📢 Broadcasting ${username} is online to all other users`);
         socket.broadcast.emit("user_status_update", {
@@ -98,13 +98,13 @@ module.exports = async function (fastify) {
       
       console.log(`🚪 User ${username} (${userId}) explicitly logged out`);
       
-      // Cancel any pending offline timeout
+     
       if (pendingOfflineUsers.has(userId)) {
         clearTimeout(pendingOfflineUsers.get(userId));
         pendingOfflineUsers.delete(userId);
       }
       
-      // Immediately remove from online users
+    
       onlineUsers.delete(userId);
       
       console.log(`❌ User ${username} (${userId}) is now OFFLINE (logout)`);
@@ -172,12 +172,12 @@ module.exports = async function (fastify) {
       }
     });
 
-    // Handle private game invitations
+    
     socket.on("join_private_game", (data) => {
       const { roomId, playerId, playerUsername } = data;
       console.log(`🎮 Player ${playerUsername} (${playerId}) joining private game room: ${roomId}`);
       
-      // Leave any existing game rooms first
+     
       if (socket.gameRoomId) {
         console.log(`🎮 Player ${playerUsername} leaving previous room: ${socket.gameRoomId}`);
         socket.leave(socket.gameRoomId);
@@ -197,14 +197,14 @@ module.exports = async function (fastify) {
       socket.join(roomId);
       socket.gameRoomId = roomId;
       
-      // Check if this room already has players
+      
       if (!gameRooms.has(roomId)) {
         gameRooms.set(roomId, { players: [] });
       }
       
       const room = gameRooms.get(roomId);
       
-      // Check if player already in room (prevent duplicates)
+    
       const existingPlayer = room.players.find(p => p.userId === playerId);
       if (existingPlayer) {
         console.log(`🎮 Player ${playerUsername} already in room, updating socket`);
@@ -219,12 +219,17 @@ module.exports = async function (fastify) {
       
       console.log(`🎮 Room ${roomId} now has ${room.players.length} players`);
       
-      // If we have 2 players, start the game
-      if (room.players.length === 2) {
+    
+      if (room.players.length === 2 && room.players[0].userId !== room.players[1].userId) {
         const player1 = room.players[0];
         const player2 = room.players[1];
         
-        // Assign roles
+        // Clear any existing game state for this room first
+        if (gameStates.has(roomId)) {
+          console.log(`🧹 Clearing existing game state for room ${roomId}`);
+        }
+        
+    
         const player1Socket = gameSocket.sockets.sockets.get(player1.socketId);
         const player2Socket = gameSocket.sockets.sockets.get(player2.socketId);
         
@@ -251,23 +256,74 @@ module.exports = async function (fastify) {
         
         startGameLoop(roomId, gameSocket);
         console.log(`🎮 Private game started in room ${roomId} between ${player1.username} and ${player2.username}`);
+      } else if (room.players.length > 2) {
+        console.error(`⚠️ Room ${roomId} has too many players (${room.players.length}), cleaning up`);
+        
+        room.players = room.players.slice(0, 2);
+      }
+    });
+
+    socket.on("player_leaving_game", (data) => {
+      const { roomID } = data;
+      console.log(`⚠️ Player intentionally leaving game room: ${roomID}`);
+      
+      const state = gameStates.get(roomID);
+      if (state && !state.gameEnd) {
+      
+        state.gameEnd = true;
+        
+        // Determine winner based on who left
+        const room = gameRooms.get(roomID);
+        if (room && room.players) {
+          const leavingPlayer = room.players.find(p => p.socketId === socket.id);
+        
+          if (leavingPlayer) {
+            state.winner = room.players[0].socketId === socket.id ? 2 : 1;
+          }
+        }
+        
+        
+        gameSocket.to(roomID).emit("gameUpdate", state);
+        gameSocket.to(roomID).emit("player_disconnected", {
+          message: "Opponent left the game"
+        });
+        
+        console.log(`🏆 Game ended in room ${roomID} due to player leaving`);
+      }
+      
+     
+      socket.leave(roomID);
+      if (socket.gameRoomId === roomID) {
+        socket.gameRoomId = undefined;
       }
     });
 
     socket.on("disconnect", () => {
       console.log("⚠️ Game client disconnected:", socket.id);
-      
-      // Remove from waiting players
+     
       const index = waitingPlayers.indexOf(socket.id);
       if (index > -1) {
         waitingPlayers.splice(index, 1);
       }
       
-      // Clean up game room if player was in one
+    
       if (socket.gameRoomId) {
         console.log(`🧹 Cleaning up game room ${socket.gameRoomId} for disconnected player`);
         const room = gameRooms.get(socket.gameRoomId);
         if (room) {
+          // Check if game is still active
+          const state = gameStates.get(socket.gameRoomId);
+          if (state && !state.gameEnd) {
+           
+            state.gameEnd = true;
+            state.winner = -1; 
+            gameSocket.to(socket.gameRoomId).emit("gameUpdate", state);
+            gameSocket.to(socket.gameRoomId).emit("player_disconnected", {
+              message: "Opponent disconnected"
+            });
+            console.log(`⚠️ Player disconnected mid-game in room ${socket.gameRoomId}`);
+          }
+          
           room.players = room.players.filter(p => p.socketId !== socket.id);
           if (room.players.length === 0) {
             gameRooms.delete(socket.gameRoomId);
@@ -277,11 +333,11 @@ module.exports = async function (fastify) {
         }
       }
       
-      // Handle user going offline with grace period
+      
       if (socket.userId) {
         console.log(`⏳ User ${socket.username} (${socket.userId}) disconnected, starting grace period...`);
         
-        // Set up grace period timeout
+       
         const offlineTimeout = setTimeout(() => {
           // Only mark offline if user hasn't reconnected
           if (onlineUsers.get(socket.userId) === socket.id) {
@@ -298,11 +354,11 @@ module.exports = async function (fastify) {
             });
           }
           
-          // Clean up the pending timeout
+          
           pendingOfflineUsers.delete(socket.userId);
         }, OFFLINE_GRACE_PERIOD);
         
-        // Store the timeout so it can be cancelled if user reconnects
+       
         pendingOfflineUsers.set(socket.userId, offlineTimeout);
       }
     });
@@ -321,12 +377,12 @@ module.exports = async function (fastify) {
       state.ballX += state.ballStepX;
       state.ballY += state.ballStepY;
 
-      // Ball collision with top/bottom walls
+    
       if (state.ballY + ballRadius > boardHeight || state.ballY - ballRadius < 0) {
         state.ballStepY = -state.ballStepY;
       }
 
-      // Player 1 paddle collision
+    
       const player1_X = 20;
       const paddleWidth = 15;
       if (state.ballStepX < 0) {
@@ -339,7 +395,7 @@ module.exports = async function (fastify) {
         }
       }
 
-      // Player 2 paddle collision
+    
       const player2_X = boardWidth - 20 - paddleWidth;
       if (state.ballStepX > 0) {
         if (state.ballX + ballRadius >= player2_X &&
@@ -360,26 +416,28 @@ module.exports = async function (fastify) {
         resetBall(state);
       }
 
-      // Win condition
-      if (state.score1 === 3) {
+   
+      const MAX_SCORE = 11;
+      
+      if (state.score1 === MAX_SCORE) {
         state.gameEnd = true;
         state.winner = 1;
         clearInterval(interval);
         console.log(`🏆 Game ended in room ${roomID}: Player 1 wins!`);
         
-        // Clean up room after 5 seconds
+        
         setTimeout(() => {
           gameRooms.delete(roomID);
           gameStates.delete(roomID);
           console.log(`🧹 Cleaned up finished game room: ${roomID}`);
         }, 5000);
-      } else if (state.score2 === 3) {
+      } else if (state.score2 === MAX_SCORE) {
         state.gameEnd = true;
         state.winner = 2;
         clearInterval(interval);
         console.log(`🏆 Game ended in room ${roomID}: Player 2 wins!`);
         
-        // Clean up room after 5 seconds
+        
         setTimeout(() => {
           gameRooms.delete(roomID);
           gameStates.delete(roomID);
@@ -388,7 +446,7 @@ module.exports = async function (fastify) {
       }
 
       io.to(roomID).emit("gameUpdate", state);
-    }, 1000 / 60); // 60 FPS
+    }, 1000 / 60); 
   }
 
   function resetBall(state) {

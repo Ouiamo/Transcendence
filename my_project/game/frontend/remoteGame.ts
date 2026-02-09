@@ -51,6 +51,7 @@ const gameState={
     roomID : "",
     role : "",
     inGame : false,
+    isCleaningUp: false,
     
     ballX : boardWidth/2,
     ballY : boardHeight/2,
@@ -121,10 +122,17 @@ function connectServer() {
     });
 
     socket.on("gameUpdate", (data: any) => {
+        // Update ball position from server
         gameState.ballX = data.ballX;
         gameState.ballY = data.ballY;
-        gameState.player1_Y = data.player1_Y;
-        gameState.player2_Y = data.player2_Y;
+        
+        // Only update opponent paddle, not own paddle (for smoother local control)
+        if (gameState.role === "player1") {
+            gameState.player2_Y = data.player2_Y; // Only update opponent
+        } else if (gameState.role === "player2") {
+            gameState.player1_Y = data.player1_Y; // Only update opponent
+        }
+        
         gameState.score1 = data.score1;
         gameState.score2 = data.score2;
         gameState.gameEnd = data.gameEnd;
@@ -140,9 +148,26 @@ export function getSocket() {
   return socket;
 }
 
+export function getRemoteGameState() {
+  return {
+    player1Username: gameState.player1Username,
+    player2Username: gameState.player2Username,
+    score1: gameState.score1,
+    score2: gameState.score2,
+    inGame: gameState.inGame,
+    gameEnd: gameState.gameEnd,
+    winner: gameState.winner
+  };
+}
+
 export function cleanupGame() {
     console.log("Cleaning up remote game...");
     
+    // Notify server if we're leaving an active game
+    if (gameState.inGame && socket && gameState.roomID) {
+        console.log("⚠️ Notifying server of game cleanup");
+        socket.emit("player_leaving_game", { roomID: gameState.roomID });
+    }
 
     gameState.inGame = false;
     gameState.gameEnd = false;
@@ -151,6 +176,7 @@ export function cleanupGame() {
     gameState.score2 = 0;
     gameState.roomID = "";
     gameState.role = "";
+    gameState.isCleaningUp = false;
     gameState.player1Username = "Player 1";
     gameState.player2Username = "Player 2";
     
@@ -186,23 +212,60 @@ function setupPrivateGame(gameData: any) {
     socket?.on("gameUpdate", (data: any) => {
         gameState.ballX = data.ballX;
         gameState.ballY = data.ballY;
-        gameState.player1_Y = data.player1_Y;
-        gameState.player2_Y = data.player2_Y;
+        
+        
+        if (gameState.role === "player1") {
+            gameState.player2_Y = data.player2_Y; 
+        } else if (gameState.role === "player2") {
+            gameState.player1_Y = data.player1_Y; 
+        }
+        
         gameState.score1 = data.score1;
         gameState.score2 = data.score2;
         gameState.gameEnd = data.gameEnd;
         gameState.winner = data.winner;
         
-      
-        if (data.gameEnd && data.winner) {
+        // Handle game end properly
+        if (data.gameEnd && data.winner && !gameState.isCleaningUp) {
             console.log(`🏆 Game ended! Winner: Player ${data.winner}`);
+            gameState.isCleaningUp = true;
+            gameState.inGame = false;
+            
             setTimeout(() => {
-                console.log("🧹 Auto-cleaning up finished game...");
+                console.log("🧹 Cleaning up finished game...");
                 localStorage.removeItem('private_game_room');
                 localStorage.removeItem('private_game_data');
-                // Trigger a page refresh to go back to friends list
-                window.location.reload();
+                
+                
+                window.dispatchEvent(new CustomEvent('game_ended', { 
+                    detail: { winner: data.winner } 
+                }));
             }, 3000);
+        }
+    });
+    
+    // Handle opponent disconnect
+    socket?.on("player_disconnected", (data: any) => {
+        console.log("⚠️ Opponent disconnected:", data.message);
+        
+        if (!gameState.isCleaningUp) {
+            gameState.isCleaningUp = true;
+            gameState.inGame = false;
+            gameState.gameEnd = true;
+            
+            // Show message to user
+            alert("Opponent disconnected. You win!");
+            
+            setTimeout(() => {
+                console.log("🧹 Cleaning up after opponent disconnect...");
+                localStorage.removeItem('private_game_room');
+                localStorage.removeItem('private_game_data');
+                
+                // Trigger event to navigate back
+                window.dispatchEvent(new CustomEvent('game_ended', { 
+                    detail: { winner: gameState.role === "player1" ? 1 : 2 } 
+                }));
+            }, 1000);
         }
     });
     
@@ -210,15 +273,14 @@ function setupPrivateGame(gameData: any) {
     const roomId = localStorage.getItem('private_game_room');
     if (roomId && socket) {
         console.log("🎮 Joining private game room:", roomId);
-        // The join_private_game was already sent by socketService
-        // Just wait for gameStart event
     }
 }
 
 export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socket, roomData?: any) {
    board = canvas;
-   console.log(" Initializing remote game...");
-   console.log(" Room data:", roomData);
+   console.log("🎮 Initializing remote game...");
+   console.log("🎮 Room data:", roomData);
+   console.log("🎮 Existing socket:", !!existingSocket);
    
    gameState.inGame = false;
    gameState.gameEnd = false;
@@ -227,6 +289,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socke
    gameState.score2 = 0;
    gameState.roomID = "";
    gameState.role = "";
+   gameState.isCleaningUp = false;
    gameState.player1Username = "player1";
    gameState.player2Username = "player2";
    
@@ -239,20 +302,28 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socke
    document.removeEventListener("keyup", handleKeyUp);
    document.addEventListener("keydown", handleKeyDown);
    document.addEventListener("keyup", handleKeyUp);
+   
+   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+       if (gameState.inGame && socket && gameState.roomID) {
+           console.log("⚠️ Player leaving game (refresh/close)");
+           socket.emit("player_leaving_game", { roomID: gameState.roomID });
+       }
+   };
+   window.addEventListener("beforeunload", handleBeforeUnload);
 
   
    const privateRoom = localStorage.getItem('private_game_room');
    const privateGameData = localStorage.getItem('private_game_data');
    
-//    if (privateRoom && privateGameData && existingSocket) {
-//        console.log(" Setting up private game with existing socket");
-//        socket = existingSocket;
-//        const gameData = JSON.parse(privateGameData);
-//        setupPrivateGame(gameData);
-//    } else {
-    //    console.log(" Setting up regular matchmaking");
+   if (privateRoom && privateGameData && existingSocket) {
+       console.log("🎮 Setting up private game with existing socket");
+       socket = existingSocket;
+       const gameData = JSON.parse(privateGameData);
+       setupPrivateGame(gameData);
+   } else {
+       console.log("🎮 Setting up regular matchmaking");
        connectServer();
-//    }
+   }
 };
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -282,6 +353,10 @@ function movePlayer() {
             myPaddleY += paddleSpeed;
             moved = true;
         }
+        
+        if (moved) {
+            gameState.player1_Y = myPaddleY;
+        }
     } else if (gameState.role === "player2") {
         if (keys['ArrowUp'] && myPaddleY > 0) {
             myPaddleY -= paddleSpeed;
@@ -290,8 +365,12 @@ function movePlayer() {
             myPaddleY += paddleSpeed;
             moved = true;
         }
+        
+        if (moved) {
+            gameState.player2_Y = myPaddleY;
+        }
     }
-    //hna kaytsifto l movess l server
+    
     if (moved) {
         socket.emit("paddleMove", {
             roomID: gameState.roomID,
@@ -329,7 +408,7 @@ function drawWinner()
 
     // Main winner text
     contex.fillStyle = "white";
-    contex.font = "bold 60px Arial"; // Slightly smaller to fit longer usernames
+    contex.font = "bold 60px Arial"; 
     contex.textAlign = "center"; 
     contex.textBaseline = "middle";
     contex.fillText(winnerName, boardWidth/2, boardHeight/2 - 50);

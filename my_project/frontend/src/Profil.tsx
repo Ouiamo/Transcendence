@@ -273,7 +273,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <h4 className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
+                  <h4 className="ml-[10px] text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
                     {user.username}
                   </h4>
                   <span className={`w-fit text-[8px] sm:text-[9px] px-1.5 py-[1px] rounded-md font-bold ${match.match_type === 'REMOTE' ? 'bg-blue-500/20 text-blue-400' :
@@ -294,18 +294,12 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 <p className="text-[10px] sm:text-[14px] text-gray-500 uppercase font-bold tracking-[1px] sm:tracking-[2px]">Score</p>
               </div>
 
-
-              <div className="flex items-center gap-[12px] sm:gap-[4px] flex-[1.5] min-w-0 justify-end">
-                <div className="flex flex-col min-w-0 items-end ">
-                  <h4 className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
+         
+              <div className="flex items-center gap-2 sm:gap-[4px] flex-[1.5] min-w-0 justify-end">
+                <div className="flex flex-col min-w-0 items-end">
+                  <h4 className="mr-[10px] text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
                     {match.opp_username}
                   </h4>
-                  <div className={`px-[2px] py-[1px] rounded-lg font-black text-[9px] sm:text-[12px] shadow-sm ${match.isWin
-                    ? 'bg-[#00ff88]/10 text-[#00ff88] border border-[#00ff88]/20'
-                    : 'bg-[#ff4444]/10 text-[#ff4444] border border-[#ff4444]/20'
-                    }`}>
-                    {match.isWin ? 'VICTORY' : 'DEFEAT'}
-                  </div>
                 </div>
                 <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-[2px] p-[2px] border-[#c44cff]`}>
                   <img

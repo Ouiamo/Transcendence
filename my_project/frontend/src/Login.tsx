@@ -88,7 +88,7 @@ localStorage.setItem('page', 'LOGIN');
 
     }
     return (
-        <div className=" flex  flex-col  items-center h-auto w-[400px] min-h-[600px]  shrink-0 border-[2px] border-[#c44cff]/50 bg-[#06060d] shadow-[0_0_20px_rgba(255,68,255,0.8)] ">
+        <div className=" flex  flex-col  items-center h-auto w-[400px] min-h-[600px]  shrink-0 border-[2px] border-[#c44cff] rounded-[12px] bg-[#0d0221] ">
             <header className="flex flex-col gap-y-5 items-center justify-center w-full mt-[30px] ">
                 <div className="py-[3px]  px-[3px] flex w-[50px] h-[50px] bg-[#d86bff] items-center justify-center rounded-full shadow-[0_0_30px_#ff44ff,0_0_10px_#ffffff]">
                     < IoPersonCircleOutline className=" text-white " size={30}/>
@@ -113,7 +113,7 @@ localStorage.setItem('page', 'LOGIN');
                     <div className="relative flex items-center w-full  ">
                         <RiLockPasswordLine className="absolute left-[10px] text-[#c44cff] text-xl pointer-events-none z-10" />
                         <input
-                            style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }} className=" rounded-[10px] caret-[#ff44ff]  w-[250px] h-[45px]   bg-[#0d0221] text-white outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40  transition-all" type="password" placeholder="Enter your password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
+                            style={{ paddingLeft: '35px', color: 'white !important', WebkitTextFillColor: 'white' }} className=" rounded-[10px] caret-[#ff44ff]  w-[250px] h-[45px]  bg-[#0d0221] text-white outline-none border border-[#c44cff] placeholder:text-[#ff44ff]/40  transition-all" type="password" placeholder="Enter your password" autoComplete="off" spellCheck="false" value={passlogin} onChange={(e) => setpasslogin(e.target.value)}></input>
 
                     </div>
                 </div>
@@ -136,7 +136,7 @@ localStorage.setItem('page', 'LOGIN');
 
 
                 </div>
-                <div className="flex flex-row items-center justify-center gap-[15px]">
+                <div className="flex flex-row items-center justify-center gap-[15px] mb-[10px]">
 
                     <p className="text-white/60 text-[12px]">
                         Don’t have an account?

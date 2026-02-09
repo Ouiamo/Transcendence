@@ -10,9 +10,7 @@ body {
   color: white;
   font-family: 'Orbitron', sans-serif;
 }
-/* input::placeholder {
-  text-indent: 15px; /* ⬅️ يحرك النص داخل الـ placeholder فقط */
-/* } */ 
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
@@ -26,7 +24,21 @@ input:-webkit-autofill:active {
   width: 20px;
   height: auto;
 }
+.glow-input:focus {
+  border-color: #d86bff !important;
+  box-shadow: 0 0 10px #d86bff, 0 0 20px #a855f7;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
 
+/* لمنع المتصفح من تغيير اللون عند الكتابة أو الـ Autofill */
+.glow-input:-webkit-autofill,
+.glow-input:-webkit-autofill:hover, 
+.glow-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0d0221 inset !important; /* يحافظ على خلفية غامقة */
+  transition: background-color 5000s ease-in-out 0s;
+}
 /* optional glow */
 .glow-text {
   text-shadow:

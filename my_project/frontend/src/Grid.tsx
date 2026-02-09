@@ -24,7 +24,7 @@ interface gridinter {
 }
 function StatBox({ icon, label, value }: { icon: JSX.Element, label: string, value: number | string }) {
     return (
-        <div className="min-w-[300px] max-w-[300px] bg-[#120d1d]/40 border border-[#c44cff]/50  rounded-[12px] flex flex-row gap-[20px] items-center ">
+        <div className="min-w-[300px] max-w-[300px] bg-[#120d1d]/40 border-[2px] border-[#c44cff]/50  rounded-[12px] flex flex-row gap-[20px] items-center ">
             <div className="p-[3px] bg-[#241b35] rounded-full text-[#c44cff] text-xl flex items-center ml-[10px] ">
                 {icon } 
             </div>
@@ -40,7 +40,7 @@ function StatBox({ icon, label, value }: { icon: JSX.Element, label: string, val
 function GameCard({ icon, title, description, color, onClick }: { icon: JSX.Element, title: string, description: string, color: string, onClick: () => void }) {
     return (<div className="
   flex gap-[25px] min-h-[300px] max-h-[380px] flex-col items-center
-  bg-[#120d1d]/60 border  border-[#c44cff]/50 rounded-[12px]
+  bg-[#120d1d]/60 border-[2px]  border-[#c44cff]/50 rounded-[12px]
   flex-1 min-w-[300px] max-w-[300px]
   transition-all duration-300 ease-out
   hover:shadow-[0_0_20px_rgba(255,68,255,0.8)]
@@ -81,13 +81,13 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
       }, []);
 
     return (
-        < div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full  mx-auto space-y-[12px] bg-[#0d0221] min-h-screen text-white   " >
+        < div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full  mx-auto space-y-[12px] bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] min-h-screen text-white   " >
             <div className="flex  justify-center   ">
                 <div className=" ">
                     <div className="flex justify-center items-center gap-[30px]">
 
                         <header className="space-y-[2px] justify-center ">
-                            <h1 className="text-5xl font-bold tracking-tight  mt-[0px]">
+                            <h1 className="text-5xl font-bold tracking-tight  mt-[18px]">
                                <span className="glow-text">Welcome back,</span><span className="text-[#c44cff] ">Player</span>
                             </h1>
                             <p className="text-gray-400  mt-[20px]">Choose your game mode and start competing</p>
@@ -129,7 +129,7 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
 
                             <h2 className="mt-[20px] ">Gaming Stats & Skill Progress</h2>
                         </div>
-                        <div className="bg-[#120d1d]/40  flex  ">
+                        <div className=" flex  ">
                             <StatsCharts />
                         </div>
                     </section>

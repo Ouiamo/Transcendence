@@ -206,14 +206,14 @@ function StatsCharts() {
   return (
 <div className="grid grid-cols-2 w-full gap-[100px] md:gap-[100px] items-start justify-center  mt-[5px] p-[14px]">
   
-  <div className="w-full max-w-[400px] aspect-[4/3]  bg-[#0d0221] rounded-[12px] p-[16px] border border-[#c44cff]/50">
+  <div className="w-full max-w-[400px] aspect-[4/3]  bg-[#0d0221] rounded-[12px] p-[16px] border-[2px] border-[#c44cff]/50">
     <div className="relative w-full h-full flex items-center justify-center">
         <Doughnut data={donutData} options={donutOptions} />
     </div>
   </div>
 
  
-  <div className="w-full max-w-[400px] aspect-[4/3]  bg-[#0d0221] rounded-[12px] p-[16px] border  border-[#c44cff]/50">
+  <div className="w-full max-w-[400px] aspect-[4/3]  bg-[#0d0221] rounded-[12px] p-[16px] border-[2px]  border-[#c44cff]/50">
     <div className="relative w-full h-full flex items-center justify-center">
         <Line data={lineData} options={lineOptions} />
     </div>

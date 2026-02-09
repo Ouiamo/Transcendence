@@ -54,7 +54,9 @@ const active = localStorage.getItem('sidebar-active');
 
     return (
 
-        <aside className="fixed top-0 left-0  w-[88px] h-screen bg-[#0b0618] border-r border-[#c44cff]/20 flex flex-col items-center justify-between h-full py-4">
+        <aside className="fixed top-0 left-0 z-50 h-screen bg-[#0b0618] border-r border-[#c44cff]/20 
+                 flex flex-col items-center justify-between py-4 transition-all duration-300
+                 w-[60px] md:w-[88px]">
             <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center border border-[#c44cff]/60 text-[#c44cff] shadow-[0_0_16px_#c44cff] mt-[10px] text-[30px]">
                 {user_?.username?.[0]?.toUpperCase()}
             </div>

@@ -240,7 +240,7 @@ if(loading) return <div>Loading...</div>
     />
   </div>
 
-  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">  
+  <div className="flex-1 flex flex-col pl-[88px] items-center justify-center p-4 min-w-0 overflow-auto  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">  
     <div className="w-full h-full max-w-[1200px] flex flex-col items-center justify-center ">
       <GamePage username={user_data.username}/>
     </div>
@@ -261,7 +261,7 @@ if(loading) return <div>Loading...</div>
     />
   </div>
 
-  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto">
+  <div className="flex-1 flex flex-col items-center justify-center pl-[88px]  min-w-0 overflow-auto">
     {privateGameActive && localStorage.getItem('private_game_room') ? (
       <Gamepage_r/>
       ) : (
@@ -280,19 +280,19 @@ if(loading) return <div>Loading...</div>
         <div  className="flex-none z-50">
         <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
         </div>
-          <div className="flex-1 flex flex-col items-center justify-center  min-w-0 overflow-auto bg-[#ffff]">  
+          <div className="flex-1 flex flex-col items-center justify-center pl-[88px]  min-w-0 overflow-auto bg-[#ffff]">  
           < Gamepage_i  username={user_data.username}/>
       </div>
       </div>
     }
     
     {currentPage === 'PROFIL' && (
-  <div className="flex flex-row min-h-screen w-full bg-[#0d0221] gap-[60px] overflow-x-hidden">
+  <div className="flex flex-row min-h-screen w-full bg-[#0d0221]  overflow-x-hidden">
     <div className="flex-none w-[60px] md:w-[250px] transition-all duration-300">
       <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
     </div>
-    <div className="flex-grow flex justify-center p-2 md:p-8 " >
-      <div className="w-full max-w-[1200px]">
+    <div className="flex-grow flex justify-center p-[2px] md:p-8 bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]" >
+      <div className="w-full max-w-[1200px]  ">
         <Profil user={user_data  } delete_obj={obj_login} gotohome={gotoHome} gotosetting={gotoseting}/>
       </div>
     </div>

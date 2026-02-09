@@ -51,7 +51,7 @@ export function GamePage(userdata: any) {
   return (
     <div className="flex flex-col items-center justify-start w-full h-full   px-[40px]">
       <div className="flex flex-col items-center text-center mb-[30px]">
-        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter">Local Game</h1>
+        <h1 className=" uppercase glow-text ">Local Game</h1>
         <p className="text-gray-400 text-sm">Play with a friend on the same device</p>
       </div>
 
@@ -223,7 +223,7 @@ export function Gamepage_i(userdata: any) {
   return (
    <div className="flex flex-col items-center justify-start w-full h-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] pt-[5vh] px-[40px]">
       <div className="flex flex-col items-center text-center mb-[30px]">
-        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter">IA Game</h1>
+        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter glow-text">IA Game</h1>
        <p className="text-gray-400 text-sm">Challenge our advanced AI and test your skills</p>
       </div>
 

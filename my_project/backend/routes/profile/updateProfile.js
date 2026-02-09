@@ -8,18 +8,18 @@ const console = require('console');
 
  module.exports = async function (fastify) {
 
-// fastify.get('/api/avatar/file/:filename', async (request, reply) => {
-//   const { filename } = request.params;
+fastify.get('/api/avatar/file/:filename', async (request, reply) => {
+  const { filename } = request.params;
 
-//   const filePath = path.join(__dirname, '../../avatar/file', filename);
+  const filePath = path.join(__dirname, '../../avatar/file', filename);
 
-//   if (!fs.existsSync(filePath)) {
-//     return reply.code(404).send({ error: 'File not found' });
-//   }
+  if (!fs.existsSync(filePath)) {
+    return reply.code(404).send({ error: 'File not found' });
+  }
 
-//   reply.type('image/png');
-//   return reply.send(fs.createReadStream(filePath));
-// });
+  reply.type('image/png');
+  return reply.send(fs.createReadStream(filePath));
+});
 
 
  fastify.patch('/api/profile', async(request, reply) => {
@@ -82,14 +82,21 @@ const console = require('console');
       const base64Data = avatar_url.replace(/^data:image\/\w+;base64,/, "");
       const buffer = Buffer.from(base64Data, 'base64');
      
-      const fileName = `avatar-${payload.id}-${Date.now()}.png`;
+      let fileName = `avatar-${payload.id}-${Date.now()}.png`;
       const uploadPath = path.join(__dirname, '../../avatar/file', fileName);
     
       fs.writeFileSync(uploadPath, buffer);
+      const user = await dbGet(`SELECT provider FROM users WHERE id = ?`, [payload.id]);
       fields.push('avatar_url = ?');
-      values.push(fileName);
+      if(user.provider !== 'local') {
+        // return reply.code(400).send({ error: 'Avatar can only be updated for local accounts' });
+         fileName = `https://localhost:3010/api/avatar/file/${fileName}`;
+        values.push(fileName);
+      }
+      else 
+        values.push(fileName);
     }
-    
+
     console.log("fields------>", firstname, lastname, username, email, avatar_url);
     console.log("values------>", values);
     if (fields.length === 0) {

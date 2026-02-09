@@ -11,12 +11,14 @@ import { Sidebar } from './Sidebar';
 import { GamePage, Gamepage_i, Gamepage_r } from "./G.tsx";
 import { Friendlist } from './Friendlist.tsx';
 import Friends from './Friends.tsx';
+import PrivacyPolicy from './PrivacyPolicy';
+import TermsOfService from './TermsOfService';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
 import { connectSocket, disconnectSocket, clearUserDataFromStorage } from './socketService.tsx';
 
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD'
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
 function App(){
   
   type side = 'dashboard' | 'game' | 'leaderboard' | 'settings' | 'profile' | 'friends';
@@ -194,7 +196,12 @@ if(loading) return <div>Loading...</div>
       )}
       {currentPage === 'HOME' && (
         <div className=" min-h-screen w-full flex items-center justify-center bg-[#0d0221]">
-         <Home gotologin={()=> setCurrentPage('LOGIN')} gotosignup={()=> setCurrentPage('SIGNUP')}/>
+          <Home 
+          gotologin={()=> setCurrentPage('LOGIN')} 
+          gotosignup={()=> setCurrentPage('SIGNUP')}
+          gotoprivacy={()=> setCurrentPage('PRIVACY')}
+          gototerms={()=> setCurrentPage('TERMS')}
+          />
         </div>
       )}
 
@@ -318,6 +325,8 @@ if(loading) return <div>Loading...</div>
         </div> 
       </div>
     }
+    {currentPage === 'PRIVACY' && <PrivacyPolicy gotohome={gotoHome} />}
+    {currentPage === 'TERMS' && <TermsOfService gotohome={gotoHome} />}
     {/* {
       // currentPage === 'email' &&(
       //   <div className="fex flex-col w-full h-full ">
@@ -328,7 +337,6 @@ if(loading) return <div>Loading...</div>
     </div>
   );
 }
-
 
 export default App;
 

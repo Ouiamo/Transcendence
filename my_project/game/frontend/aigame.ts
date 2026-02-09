@@ -16,6 +16,9 @@ let aigameGO : boolean = false;
 
 const aimaxScore : number = 11;
 
+// Animation frame ID for cleanup
+let aiAnimationFrameId: number | null = null;
+
 
 
 let aiplayer = {
@@ -88,10 +91,28 @@ export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
     aiboard.height = 450;
     aicontex = aiboard.getContext("2d");
     
+    // Cancel any existing animation frame before starting a new one
+    if (aiAnimationFrameId !== null) {
+        cancelAnimationFrame(aiAnimationFrameId);
+        aiAnimationFrameId = null;
+    }
 
     aidraw(player1);
     document.addEventListener("keydown", aihandleKeyDown);
     document.addEventListener("keyup", aihandleKeyUp);
+    
+    return () => {
+        // Cancel the animation frame
+        if (aiAnimationFrameId !== null) {
+            cancelAnimationFrame(aiAnimationFrameId);
+            aiAnimationFrameId = null;
+        }
+        
+        document.removeEventListener("keydown", aihandleKeyDown);
+        document.removeEventListener("keyup", aihandleKeyUp);
+        
+        console.log("AI Game Cleaned Up");
+    };
 };
 
 function aihandleKeyDown(event: KeyboardEvent)
@@ -287,7 +308,7 @@ function aidraw(player1:string) {
         aidrawStart();
     }
    
-    requestAnimationFrame(() => aidraw(player1));
+    aiAnimationFrameId = requestAnimationFrame(() => aidraw(player1));
 }
 
 function aidrawBoard(x: number, y: number, w:number, h:number)

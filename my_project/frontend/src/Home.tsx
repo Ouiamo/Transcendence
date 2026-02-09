@@ -42,9 +42,11 @@ import Lottie from "lottie-react"
 interface HomeInterface {
   gotologin: () => void
   gotosignup: () => void
+  gotoprivacy: () => void
+  gototerms: () => void
 }
 
-function Home({ gotologin, gotosignup }: HomeInterface) {
+function Home({ gotologin, gotosignup, gotoprivacy, gototerms }: HomeInterface) {
   localStorage.setItem('page', 'HOME');
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] flex flex-col items-center justify-center text-white relative overflow-hidden">
@@ -100,10 +102,24 @@ function Home({ gotologin, gotosignup }: HomeInterface) {
 
 
       </div>
-   <div className=" w-full flex flex-col items-center gap-[4px] text-[14px] mt-[60px]">
-  <span className="text-[#c4c4ff]/80 drop-shadow-[0_0_6px_#c4c4ff]">Enter the arena. Challenge players worldwide.</span>
-  <span className="text-[#c4c4ff]/60 drop-shadow-[0_0_4px_#b0aaff]">Become a legend.</span>
-</div>
+          <div className=" w-full flex flex-col items-center gap-[4px] text-[14px] mt-[60px]">
+          <span className="text-[#c4c4ff]/80 drop-shadow-[0_0_6px_#c4c4ff]">Enter the arena. Challenge players worldwide.</span>
+          <span className="text-[#c4c4ff]/60 drop-shadow-[0_0_4px_#b0aaff]">Become a legend.</span>
+      </div>
+      <div className="w-full flex flex-col items-center gap-[8px] text-[9px] mt-[120px]">
+        <span 
+          onClick={gotoprivacy}
+          className="underline hover:text-white cursor-pointer"
+        >
+          Privacy Policy
+        </span>
+        <span 
+          onClick={gototerms}
+          className="underline hover:text-white cursor-pointer"
+        >
+          Terms of Service
+        </span>
+      </div>
     </div>
   )
 }

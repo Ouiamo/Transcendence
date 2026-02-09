@@ -60,6 +60,7 @@ fastify.register(require('./routes/twofa/enable'));
 fastify.register(require('./routes/twofa/authenticator'));
 fastify.register(require('./routes/stats/stats'));
 fastify.register(require('./routes/stats/ranking'));
+fastify.register(require('./routes/stats/user_ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
 

@@ -21,30 +21,6 @@ function SmallStatCard({ icon, value, label }: any) {
 }
 
 
-function AchievementCard({ title, desc, done }: any) {
-  return (
-    <div className=" flex-1 bg-[#120d1d]/60 border border-[#c44cff]/20 rounded-xl p-[4px] flex items-center justify-between">
-
-      <div className="flex items-center gap-[3px] flex-col p-[4px] ">
-        <div className="w-[40px] h-[40px] bg-[#c44cff] rounded-full flex items-center justify-center">
-          <FaTrophy className="text-white" />
-        </div>
-
-        <div>
-          <p className="font-bold">{title}</p>
-          <p className="text-xs text-gray-400">{desc}</p>
-        </div>
-      </div>
-
-      {done ? (
-        <span className="text-green-400">✔</span>
-      ) : (
-        <span className="text-gray-600">🔒</span>
-      )}
-
-    </div>
-  );
-}
 
 interface ProfilInterface {
   user: any;
@@ -62,22 +38,23 @@ interface Stats {
 }
 
 interface History {
-  id: number; // غيرت user_id لـ id لتفادي مشاكل الـ key في الـ map
+  id: number;
   opp_username: string;
   user_score: number;
   opp_score: number;
   match_type: string;
   isWin: boolean;
 }
+
+
+
 function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
-   localStorage.setItem('page', 'PROFIL');
+  localStorage.setItem('page', 'PROFIL');
   const logout = async () => {
     try {
-      // First disconnect the socket to immediately mark user offline
       if (user && user.id && user.username) {
         logoutUser(user.id, user.username);
       }
-
       const logo = await fetch('https://localhost:3010/api/logout', {
         method: 'POST',
         credentials: 'include',
@@ -88,35 +65,82 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
         delete_obj(null);
         gotohome();
         localStorage.removeItem('page');
-       localStorage.removeItem('sidebar-active');
+        localStorage.removeItem('sidebar-active');
       }
     }
     catch (error) {
       alert("error in lougout");
     }
   }
-
+  
   const [stats, setStats] = useState<Stats | null>(null);
   const [history, setHistory] = useState<History[] | null>(null);
-
+  const [userRank, setRank] = useState<number>(0);
+  
   useEffect(() => {
     fetch('https://localhost:3010/api/stats', { credentials: "include" })
-      .then(res => res.json())
-      .then(data => setStats(data))
-      .catch(err => console.error(err));
+    .then(res => res.json())
+    .then(data => setStats(data))
+    .catch(err => console.error(err));
+  }, []);
+  
+  useEffect(() => {
+    fetch('https://localhost:3010/api/history/get_history', { credentials: "include" })
+    .then(res => res.json())
+    .then(data => setHistory(data))
+    .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
-    fetch('https://localhost:3010/api/history/get_history', { credentials: "include" })
-      .then(res => res.json())
-      .then(data => setHistory(data))
-      .catch(err => console.error(err));
+    fetch('https://localhost:3010/api/stats/user_ranking', { credentials: "include" })
+    .then(res => res.json())
+    .then(data => setRank(data))
+    .catch(err => console.error(err));
   }, []);
 
+  function AchievementCard({title, desc, done}: any) {
+    if (title === "First Victory" && stats?.wins && stats.wins > 0)
+      done = true;
+    if (title === "Century Club" && stats?.total_matches && stats.total_matches > 99)
+      done = true;
+    if (title === "Perfect Game" && stats?.total_matches)
+    {
+      history?.forEach((result:any) => {
+      if (result.user_score === 11 && result.opp_score === 0)
+        done = true;
+    });
+    }
+    console.log("user rank is :::", userRank);
+    if (title === "Legend" && userRank < 11)
+      done = true;
+    return (
+      <div className={`flex-1 rounded-xl p-[4px] flex items-center justify-between transition-all duration-300 ${
+        done 
+          ? 'bg-[#120d1d]/80 border border-[#c44cff]/60 shadow-[0_0_15px_rgba(196,76,255,0.3)]' 
+          : 'bg-[#120d1d]/20 border border-[#c44cff]/10 opacity-50'
+      }`}>
+        <div className="flex items-center gap-[3px] flex-col p-[4px]">
+          <div className={`w-[40px] h-[40px] rounded-full flex items-center justify-center transition-all duration-300 ${
+            done 
+              ? 'bg-[#c44cff] shadow-[0_0_10px_rgba(196,76,255,0.5)]' 
+              : 'bg-gray-600/30'
+          }`}>
+            <FaTrophy className={done ? 'text-white' : 'text-gray-500'} />
+          </div>
+
+          <div>
+            <p className={`font-bold ${done ? 'text-white' : 'text-gray-600'}`}>{title}</p>
+            <p className={`text-xs ${done ? 'text-gray-400' : 'text-gray-600'}`}>{desc}</p>
+          </div>
+        </div>
+
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-[#0e0818] text-white p-[6px] ">
 
-      {/* HEADER CARD */}
+   
       <div className=" mx-auto bg-[#120d1d]/80 border border-[#c44cff]/50 rounded-[12px] p-[6px] flex items-center  mt-[10px]  justify-between">
 
         <div className="flex items-center gap-[20px] mb-[10px]">
@@ -124,7 +148,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
   <img
     src={user.avatarUrl}
     className="w-full h-full object-cover "
-  />
+    />
 </div>
 
 
@@ -172,7 +196,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
         </button>
       </div>
 
-      {/* STATS GRID */}
+   
       <div className="max-w-5xl mx-auto flex flex-row flex-wrap gap-[12px] mt-[20px]">
 
 
@@ -200,26 +224,23 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
           value={stats?.loss}
           label="Losses"
         />
-
-
       </div>
 
-      {/* ACHIEVEMENTS */}
       <div className="max-w-5xl mx-auto mt-[10px] ">
         <h3 className="text-xl font-bold">Achievements</h3>
 
         <div className="max-w-5xl mx-auto flex flex-row flex-wrap gap-[12px] mt-[20px]">
-
+         
           <AchievementCard
             title="First Victory"
             desc="Win your first match"
-            done
+            
           />
 
           <AchievementCard
             title="Century Club"
             desc="Play 100 games"
-            done
+      
           />
 
           <AchievementCard
@@ -235,28 +256,27 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
         </div>
       </div>
 
-      {/* RECENT MATCHES */}
       <div className="max-w-5xl mx-auto mt-10 px-2 sm:px-0  bg-[#120d1d]/80 " >
-        <h3 className="text-xl font-bold mb-4">Recent Matches</h3>
+        <h3 className="text-xl font-bold mb-4">Match History</h3>
 
         <div className="flex flex-col gap-[10px] ">
-          {history?.map((match, index) => (
+          {history?.slice().reverse().map((match, index) => (
             <div
               key={index}
-              className="flex items-center justify-between   border border-[#c44cff]/50 p-[12px] sm:p-4 rounded-[12px] group w-full"
+              className="flex items-center justify-between border border-[#c44cff]/50 p-[12px] sm:p-4 rounded-[12px] group w-full"
             >
-              {/* 1. Left: Opponent Info - Responsive Gap */}
-              <div className="flex items-center gap-2 sm:gap-[4px]  gap-[10px] flex-[1.5] min-w-0">
-                <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px]  rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
+             
+              <div className="flex items-center gap-2 sm:gap-[4px] flex-[1.5] min-w-0">
+                <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
                   <img
-                    src={match.opp_username === 'AI' ? `https://localhost:3010/api/avatar/file/ia.png` : `https://localhost:3010/api/avatar/file/guest.png`}
-                    alt="opponent"
+                    src={user.avatarUrl}
+                    alt="you"
                     className="w-full h-full rounded-full object-cover bg-[#1a1033]"
                   />
                 </div>
                 <div className="flex flex-col min-w-0">
                   <h4 className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
-                    {match.opp_username}
+                    {user.username}
                   </h4>
                   <span className={`w-fit text-[8px] sm:text-[9px] px-1.5 py-[1px] rounded-md font-bold ${match.match_type === 'REMOTE' ? 'bg-blue-500/20 text-blue-400' :
                     match.match_type === 'AI' ? 'bg-purple-500/20 text-purple-400' : 'bg-orange-500/20 text-orange-400'
@@ -266,7 +286,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 </div>
               </div>
 
-              {/* 2. Center: Score - Reduced padding on mobile */}
+            
               <div className="flex flex-col items-center flex-1">
                 <div className="text-lg sm:text-2xl font-black text-white flex items-center gap-[2px] sm:gap-[3px]">
                   <span className={match.isWin ? 'text-[#00ff88]' : 'text-white'}>{match.user_score}</span>
@@ -276,14 +296,25 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 <p className="text-[10px] sm:text-[14px] text-gray-500 uppercase font-bold tracking-[1px] sm:tracking-[2px]">Score</p>
               </div>
 
-              {/* 3. Right: Result Badge - Hidden text on very small screens or smaller font */}
-              <div className="flex-1 flex justify-end">
-                <div className={`px-[2px] py-[1px] rounded-lg font-black text-[9px] sm:text-[12px] shadow-sm ${match.isWin
-                  ? 'bg-[#00ff88]/10 text-[#00ff88] border border-[#00ff88]/20'
-                  : 'bg-[#ff4444]/10 text-[#ff4444] border border-[#ff4444]/20'
-                  }`}>
-                  <span className="hidden xs:inline">{match.isWin ? 'VICTORY' : 'DEFEAT'}</span>
-                  <span className="xs:hidden">{match.isWin ? 'VICTORY' : 'DEFEAT'}</span>
+         
+              <div className="flex items-center gap-2 sm:gap-[4px] flex-[1.5] min-w-0 justify-end">
+                <div className="flex flex-col min-w-0 items-end">
+                  <h4 className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
+                    {match.opp_username}
+                  </h4>
+                  <div className={`px-[2px] py-[1px] rounded-lg font-black text-[9px] sm:text-[12px] shadow-sm ${match.isWin
+                    ? 'bg-[#00ff88]/10 text-[#00ff88] border border-[#00ff88]/20'
+                    : 'bg-[#ff4444]/10 text-[#ff4444] border border-[#ff4444]/20'
+                    }`}>
+                    {match.isWin ? 'VICTORY' : 'DEFEAT'}
+                  </div>
+                </div>
+                <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-2 p-[2px] border-[#c44cff]`}>
+                  <img
+                    src={match.opp_username === 'AI' ? `https://localhost:3010/api/avatar/file/ia.png` : `https://localhost:3010/api/avatar/file/guest.png`}
+                    alt="opponent"
+                    className="w-full h-full rounded-full object-cover bg-[#1a1033]"
+                  />
                 </div>
               </div>
             </div>

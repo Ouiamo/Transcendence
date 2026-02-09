@@ -12,6 +12,7 @@ interface Stats {
   loss: number;
   total_matches: number;
   win_rate: number | string;
+  points: number;
 } 
 
 interface gridinter {
@@ -96,7 +97,7 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
                     <div className="flex flex-wrap justify-center gap-[40px]">
                         <StatBox icon={<FiTarget size={32} />} label="Games Played" value={stats?.total_matches ?? 0} />
                         <StatBox icon={<FiAward  size={32} />} label="Win Rate" value={`${stats?.win_rate || 0}%`} />
-                        <StatBox icon={<FiZap  size={32} />} label="total win " value={stats?.wins ?? 0} />
+                        <StatBox icon={<FiZap  size={32} />} label="Points " value={stats?.points ?? 0} />
                     </div>
                     <section className="space-y-8">
                         <div className="flex justify-center  mt-[20px]">

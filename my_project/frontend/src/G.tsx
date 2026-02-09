@@ -20,17 +20,16 @@ export function GamePage(userdata: any) {
     const interval = setInterval(() => {
       const data = getLocalWinner();
       
-      // Update scores in real-time
-      setPlayer1Score(data.player1score);
-      setPlayer2Score(data.player2score);
+      setPlayer1Score(data.playerscore);
+      setPlayer2Score(data.Guestscore);
 
       if (data.winner !== null && data.winner !== lastWinnerRef.current) {
         lastWinnerRef.current = data.winner;
 
         const winner = data.winner;
         const opponent_username = "LOCAL_GUEST";
-        const user_score = data.player1score;
-        const opp_score = data.player2score;
+        const user_score = data.playerscore;
+        const opp_score = data.Guestscore;
         const match_type = "LOCAL";
 
         gameResults({ winner, opponent_username });
@@ -103,26 +102,85 @@ export function GamePage(userdata: any) {
 
 export function Gamepage_r() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastWinnerRef = useRef<string | null>(null);
+  
+  const [player1Score, setPlayer1Score] = useState(0);
+  const [player2Score, setPlayer2Score] = useState(0);
 
   useEffect(() => {
-    if (canvasRef.current) {
-      const existingSocket = getSocket();
-      const roomData = localStorage.getItem('private_game_data');
-      
-      console.log("🎮 Gamepage_r initializing with socket:", !!existingSocket);
-      console.log("🎮 Room data available:", !!roomData);
-      
+    if (!canvasRef.current) return;
+    const existingSocket = getSocket();
+    const roomData = localStorage.getItem('private_game_data');
+    
+    console.log("Gamepage_r initializing with socket:", !!existingSocket);
+    console.log("Room data available:", !!roomData);
+    
       initGame_remot(
         canvasRef.current, 
         existingSocket as any, 
         roomData ? JSON.parse(roomData) : undefined
       );
-    }
+      const interval = setInterval(() => {
+      // const data = getRemoteWinner();
+      
+      // setPlayer1Score(data.player1score);
+      // setPlayer2Score(data.player2score);
+      
+    }, 100);
+      return () => {
+      clearInterval(interval);
+      console.log("Game Cleaned Up");
+    };
   }, []);
 
   return (
-    <div>
-      <canvas id="board" ref={canvasRef}></canvas>
+     <div className="flex flex-col items-center justify-start w-full h-full bg-[#0b0618] pt-[5vh] px-[40px]">
+      <div className="flex flex-col items-center text-center mb-[30px]">
+        <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter">Remote Game</h1>
+        <p className="text-gray-400 text-sm">Play with a friend</p>
+      </div>
+
+      <div className="flex items-center gap-[60px] mb-[40px]">
+        <div className="flex flex-col items-center">
+          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>GUEST</p>
+          <span className="text-[40px] text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player1Score}</span>
+        </div>
+
+        <div className="text-3xl font-light text-gray-700 self-end pb-[2px]">:</div>
+
+        <div className="flex flex-col items-center">
+          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>USER</p>
+          <span className="text-[40px] font-black text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player2Score}</span>
+        </div>
+      </div>
+
+      <div className="relative p-[1px] border-[2px] border-[#ff44ff]/30  shadow-[0_0_20px_rgba(255,68,255,0.8)]">
+        <canvas
+          id="board"
+          ref={canvasRef}
+          className="max-w-full h-auto block mx-auto rounded-2xl bg-[#000]"
+          width={800}
+          height={450}
+        ></canvas>
+      </div>
+      <div className="mt-[30px] flex gap-[100px] text-[12px]   uppercase ">
+        <div className="flex items-center gap-[13px] ">
+          <p className="text-[#c44cff] text-[20px]">Player 1</p>
+          <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
+          <div className="flex gap-[13px]">
+            <kbd className="px-[4px] py-[4px] bg-white/5 border border-white/20 rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)]">W</kbd>
+            <kbd className="px-[4px] py-[4px] bg-white/5 border border-white/20 rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)]">S</kbd>
+          </div>
+        </div>
+        <div className="flex items-center gap-[13px]">
+          <p className="text-[#c44cff] text-[20px]">Player 2</p>
+            <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
+          <div className="flex gap-[13px]">
+            <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↑</kbd>
+            <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↓</kbd>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

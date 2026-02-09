@@ -15,7 +15,7 @@ let gameCountDown : boolean = false;
 let gameGO : boolean = false;
 
 let winner : string | null = null;
-const maxScore : number = 3;
+const maxScore : number = 11;
 
 
 
@@ -70,9 +70,9 @@ const keys: {[key:string] : boolean}={
 
 
 export function getLocalWinner() {
-    const player1score = player1.score;
-    const player2score = player2.score;
-    const data = {winner, player1score, player2score}
+    const Guestscore = player1.score;
+    const playerscore = player2.score;
+    const data = {winner, playerscore, Guestscore}
   return data;
 }
 

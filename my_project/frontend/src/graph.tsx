@@ -142,19 +142,21 @@ function StatsCharts() {
   const POINTS_PER_MATCH = 30;
 
   function calculatePoints(history:any) {
+    if (!history || history.length === 0) return [0];
+    
     let total = 0;
     const points = [0];
 
     history.forEach((result:any) => {
       console.log("results hnaa is ", result);
-      if (result.isWin === 1) total += POINTS_PER_MATCH;
-      if (result.isWin === 0) total -= POINTS_PER_MATCH;
+      if (result.isWin === 1 || result.isWin === true) total += POINTS_PER_MATCH;
+      else if (result.isWin === 0 || result.isWin === false) total -= POINTS_PER_MATCH;
       points.push(total);
       console.log("points hnaa is ", points);
     });
-
     return points;
   }
+  
   const pointsData = calculatePoints(history);
   console.log("points data is :::" ,pointsData);
 

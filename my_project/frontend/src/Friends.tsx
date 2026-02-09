@@ -214,17 +214,19 @@ function Friends() {
                         <div className="flex  md:flex-row gap-[111px] mb-[25px]">
                             <div className="relative flex-1">
                                 <input
+                                spellCheck="false"
+                                style={{ WebkitTextFillColor: 'white' }}
                                     type="text"
                                     placeholder="Enter username to search..."
                                     value={searchfriend}
                                     onChange={(e) => setsearchFriends(e.target.value)}
-                                    className="w-full h-[45px] bg-[#1a043a]/70 border-[2px] border-[#ff44ff]/40 rounded-full text-white px-[20px] pl-[45px] outline-none focus:border-[#ff44ff] focus:shadow-[0_0_15px_rgba(255,68,255,0.5)] transition-all duration-300 placeholder-[#ff99ff]/40"
+                                    className=" caret-[#ff44ff]  w-full h-[45px] bg-[#1a043a]/70 border-[2px] border-[#ff44ff]/40 rounded-full text-white px-[20px] pl-[45px] outline-none focus:border-[#ff44ff] focus:shadow-[0_0_15px_rgba(255,68,255,0.5)] transition-all duration-300 placeholder-[#ff99ff]/40"
                                 />
                                 <div className="absolute left-[15px] top-1/2 transform -translate-y-1/2 text-[#ff44ff] text-[18px]">🔍</div>
                             </div>
                             <button
                                 onClick={() => serch(searchfriend)}
-                                className="h-[45px] px-[30px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold text-[14px] uppercase transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+                                className="h-[45px] px-[30px] rounded-full bg-gradient-to-r from-[#ff44ff] to-[#ff99ff] text-white font-bold text-[14px] uppercase transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98] border-none outline-none"
                             >
                                 Search
                             </button>
@@ -254,14 +256,14 @@ function Friends() {
                                             {!user.is_friend ? (
                                                 <button
                                                     onClick={() => addnewfriend(user.username)}
-                                                    className="w-[110px] h-[40px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#098000] font-bold text-[17px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] hover:scale-[1.05] active:scale-[0.95]"
+                                                    className=" border-none outline-none w-[110px] h-[40px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#098000] font-bold text-[17px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] hover:scale-[1.05] active:scale-[0.95]"
                                                 >
                                                     Add
                                                 </button>
                                             ) : (
                                                 <button
                                                     onClick={() => handleRemoveFriend(user.id)}
-                                                    className="w-[100px] h-[35px] rounded-full bg-gradient-to-r from-[#ff0000]/80 to-[#ff4444]/80 text-white font-bold text-[12px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.5)] hover:scale-[1.05] active:scale-[0.95]"
+                                                    className="w-[100px] h-[35px] rounded-full bg-gradient-to-r from-[#ff0000]/80 to-[#ff4444]/80 text-white font-bold text-[12px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.5)] hover:scale-[1.05] active:scale-[0.95] border-none outline-none"
                                                 >
                                                     Remove
                                                 </button>
@@ -339,7 +341,7 @@ function Friends() {
                                         </div>
                                         <button
                                             onClick={() => handleRemoveFriend(f.id)}
-                                            className="w-[80px] h-[35px] rounded-full bg-gradient-to-r from-[#da043a]/60 to-[#da043a]/60 text-[#ac0000] font-bold text-[12px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.5)] hover:scale-[1.05] active:scale-[0.95]"
+                                            className=" border-none outline-none w-[80px] h-[35px] rounded-full bg-gradient-to-r from-[#da043a]/60 to-[#da043a]/60 text-[#ac0000] font-bold text-[12px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,0,0,0.5)] hover:scale-[1.05] active:scale-[0.95]"
                                         >
                                             Remove
                                         </button>

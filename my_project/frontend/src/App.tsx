@@ -11,12 +11,14 @@ import { Sidebar } from './Sidebar';
 import { GamePage, Gamepage_i, Gamepage_r } from "./G.tsx";
 import { Friendlist } from './Friendlist.tsx';
 import Friends from './Friends.tsx';
+import PrivacyPolicy from './PrivacyPolicy';
+import TermsOfService from './TermsOfService';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
 import { connectSocket, disconnectSocket, clearUserDataFromStorage } from './socketService.tsx';
 
 
-type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD'
+type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
 function App(){
   
   type side = 'dashboard' | 'game' | 'leaderboard' | 'settings' | 'profile' | 'friends';
@@ -196,10 +198,13 @@ if(loading) return <div>Loading...</div>
         </div>
       )}
       {currentPage === 'HOME' && (
-       
-        
-        <div className=" min-h-screen w-full flex items-center justify-center  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">
-         <Home gotologin={()=> setCurrentPage('LOGIN')} gotosignup={()=> setCurrentPage('SIGNUP')}/>
+        <div className=" min-h-screen w-full flex items-center justify-center bg-[#0d0221]">
+          <Home 
+          gotologin={()=> setCurrentPage('LOGIN')} 
+          gotosignup={()=> setCurrentPage('SIGNUP')}
+          gotoprivacy={()=> setCurrentPage('PRIVACY')}
+          gototerms={()=> setCurrentPage('TERMS')}
+          />
         </div>
       )}
 
@@ -242,29 +247,32 @@ if(loading) return <div>Loading...</div>
   </div> 
 </div>
     }
+
     {
-      currentPage === 'GAME_R'&& 
-      <div>
-        <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
-        
-        <div className="flex-1 ml-[200px] mt-[30px] w-full h-full flex items-center justify-center">
-          {/* Check if there's a private game in progress */}
-          {privateGameActive && localStorage.getItem('private_game_room') ? (
-            <div className="flex flex-col items-center justify-center">
-              <h2 className="text-white text-center mb-4 text-2xl">🎮 Private Game</h2>
-              <div className="border-2 border-purple-500 rounded-lg p-4 bg-black/50">
-                <Gamepage_r />
-              </div>
-            </div>
-          ) : (
+      currentPage ==='GAME_R' &&
+     <div className="flex w-full h-screen bg-[#0b0618] overflow-hidden"> 
+  <div className="flex-none z-50">
+    <Sidebar user_={user_data}  gotohome={() => setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} 
+      gotofriends={gotofriends} 
+      gotosetting={gotoseting} 
+      gotoleaderboard={gotoleaderboard} 
+      gotolocalgame={gotogamelocal} 
+      setActiveSafe={setActiveSafe}
+    />
+  </div>
+
+  <div className="flex-1 flex flex-col items-center justify-center p-4 min-w-0 overflow-auto">
+    {privateGameActive && localStorage.getItem('private_game_room') ? (
+      <Gamepage_r/>
+      ) : (
             <Friendlist onGameStart={() => {
               console.log("🎮 Game start callback triggered");
               setPrivateGameActive(true);
               setCurrentPage('GAME_R');
             }} />
           )}
-        </div>
-      </div>
+  </div> 
+</div>
     }
      {
       currentPage === 'GAME_I'&& 
@@ -323,6 +331,8 @@ if(loading) return <div>Loading...</div>
         </div> 
       </div>
     }
+    {currentPage === 'PRIVACY' && <PrivacyPolicy gotohome={gotoHome} />}
+    {currentPage === 'TERMS' && <TermsOfService gotohome={gotoHome} />}
     {/* {
       // currentPage === 'email' &&(
       //   <div className="fex flex-col w-full h-full ">
@@ -333,7 +343,6 @@ if(loading) return <div>Loading...</div>
     </div>
   );
 }
-
 
 export default App;
 

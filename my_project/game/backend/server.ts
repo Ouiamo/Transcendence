@@ -23,6 +23,9 @@ const boardHeight = 450;
 const paddleHeight = 80;
 const ballRadius = 15;
 
+
+
+
 // const server = Fastify({
 //     logger: true
 // });
@@ -177,12 +180,12 @@ function startGameLoop(roomID: string) {
             state.score1++;
             resetBall(state);
         }
-        if (state.score1 === 3 )
+        if (state.score1 === 11 )
         {
             state.gameEnd = true;
             state.winner = 1;
         }
-        else if (state.score2 === 3)
+        else if (state.score2 === 11)
         {
             state.gameEnd = true;
             state.winner = 2;

@@ -81,21 +81,21 @@ export function Leaderboard() {
             color: 'rgb(255, 255, 255)',
             size: '100px',
             fontSize: '36px',
-            shadow: '0 0 80px rgba(168, 85, 247, 0.8)'
+    
         };
         if (rank === 2) return { 
             background: 'linear-gradient(to bottom right, rgb(156, 163, 175), rgb(75, 85, 99))',
             color: 'rgb(255, 255, 255)',
             size: '100px',
             fontSize: '36px',
-            shadow: '0 0 50px rgba(156, 163, 175, 0.5)'
+         
         };
         if (rank === 3) return { 
             background: 'linear-gradient(to bottom right, rgb(249, 115, 22), rgb(194, 65, 12))',
             color: 'rgb(255, 255, 255)',
             size: '100px',
             fontSize: '36px',
-            shadow: '0 0 50px rgba(249, 115, 22, 0.5)'
+    
         };
         return { background: '', color: '', size: '', fontSize: '', shadow: '' };
     };
@@ -121,7 +121,7 @@ export function Leaderboard() {
                         Leaderboard
                     </h1>
                     <p className="text-[18px] text-blue-300 tracking-widest uppercase">
-                        Top players ranked by total wi4
+                        Top players ranked by total points
                     </p>
                 </div>
 
@@ -147,7 +147,7 @@ export function Leaderboard() {
                                                 background: circleStyle.background,
                                                 color: circleStyle.color,
                                                 fontSize: circleStyle.fontSize,
-                                                boxShadow: circleStyle.shadow
+                                
                                             }}
                                         >
                                             <span>{getInitials(player.username)} </span>
@@ -155,7 +155,7 @@ export function Leaderboard() {
                                         
                                         
                                         <p className="mt-[24px] text-[20px] font-bold tracking-wide" style={{ color: 'rgb(255, 255, 255)' }}>{player.username}</p>
-                                        <p className="text-[16px] mt-[8px]" style={{ color: 'rgb(156, 163, 175)' }}>{player.wins} wins</p>
+                                        <p className="text-[16px] mt-[8px]" style={{ color: 'rgb(156, 163, 175)' }}>{player.points} points</p>
                                     </div>
                                 );
                             })}
@@ -191,7 +191,7 @@ export function Leaderboard() {
                     <div className="grid grid-cols-4 gap-[24px] px-[48px] py-[20px] border-b border-gray-700/50 bg-[#08080f]">
                         <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase">RANK</div>
                         <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase">PLAYER</div>
-                        <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase text-center">WINS</div>
+                        <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase text-center">POINTS</div>
                         <div className="text-[14px] font-bold text-gray-400 tracking-widest uppercase text-center">WIN RATE</div>
                     </div>
                     
@@ -229,9 +229,8 @@ export function Leaderboard() {
                                     
                                     
                                     <div className="flex items-center justify-center">
-                                        <span className="text-[18px] font-bold text-white">{player.wins}</span>
+                                        <span className="text-[18px] font-bold text-white">{player.points}</span>
                                     </div>
-                                    
                                     
                                     <div className="flex items-center justify-center">
                                         <span className="text-[18px] font-bold text-white">{player.win_rate}%</span>

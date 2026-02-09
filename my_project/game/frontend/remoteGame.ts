@@ -5,8 +5,8 @@ let socket: Socket | null = null;
 
 let board: HTMLCanvasElement;
 
-const boardWidth: number = 1200; // Increased from 900
-const boardHeight: number = 600; // Increased from 450
+const boardWidth: number = 900; 
+const boardHeight: number = 450; 
 let contex : CanvasRenderingContext2D | null = null;
 
 // let gameMode: '1v1' | 'vAI' | 'local' | null = null;
@@ -95,6 +95,7 @@ const keys: {[key:string] : boolean}={
 //     context.shadowBlur = 0;
 // }
 
+
 function connectServer() {
     const serverUrl = `https://localhost:3010`;
 
@@ -133,11 +134,6 @@ function connectServer() {
     // socket.on("user_stats_update", (data) => {
     //       console.log(`${data.username} is now ${data.status}`);
     //     });
-
-   
-
-
-
     
 }
 export function getSocket() {
@@ -145,9 +141,9 @@ export function getSocket() {
 }
 
 export function cleanupGame() {
-    console.log("🧹 Cleaning up remote game...");
+    console.log("Cleaning up remote game...");
     
-    // Reset game state
+
     gameState.inGame = false;
     gameState.gameEnd = false;
     gameState.winner = 0;
@@ -158,11 +154,11 @@ export function cleanupGame() {
     gameState.player1Username = "Player 1";
     gameState.player2Username = "Player 2";
     
-    // Remove event listeners
+
     document.removeEventListener("keydown", handleKeyDown);
     document.removeEventListener("keyup", handleKeyUp);
     
-    // Clear canvas if it exists
+   
     if (contex) {
         contex.clearRect(0, 0, boardWidth, boardHeight);
     }
@@ -171,15 +167,13 @@ export function cleanupGame() {
 function setupPrivateGame(gameData: any) {
     console.log("🎮 Setting up private game with data:", gameData);
     
-    // Extract usernames from game data
+
     if (gameData.player1 && gameData.player2) {
         gameState.player1Username = gameData.player1.username || "Player 1";
         gameState.player2Username = gameData.player2.username || "Player 2";
         console.log(`🎮 Players: ${gameState.player1Username} vs ${gameState.player2Username}`);
     }
     
-    // The socket is already connected from socketService
-    // We just need to listen for game events
     
     socket?.on("gameStart", (data: { roomID: string, role: string }) => {        
         console.log("🎮 Private game starting:", data);
@@ -199,7 +193,7 @@ function setupPrivateGame(gameData: any) {
         gameState.gameEnd = data.gameEnd;
         gameState.winner = data.winner;
         
-        // If game ended, automatically clean up after showing winner for 3 seconds
+      
         if (data.gameEnd && data.winner) {
             console.log(`🏆 Game ended! Winner: Player ${data.winner}`);
             setTimeout(() => {
@@ -223,10 +217,9 @@ function setupPrivateGame(gameData: any) {
 
 export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socket, roomData?: any) {
    board = canvas;
-   console.log("🎮 Initializing remote game...");
-   console.log("🎮 Room data:", roomData);
+   console.log(" Initializing remote game...");
+   console.log(" Room data:", roomData);
    
-   // Reset game state
    gameState.inGame = false;
    gameState.gameEnd = false;
    gameState.winner = 0;
@@ -234,11 +227,11 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socke
    gameState.score2 = 0;
    gameState.roomID = "";
    gameState.role = "";
-   gameState.player1Username = "Player 1";
-   gameState.player2Username = "Player 2";
+   gameState.player1Username = "player1";
+   gameState.player2Username = "player2";
    
-   board.width = 1200;
-   board.height = 600;
+   board.width = 900;
+   board.height = 450;
    contex = board.getContext("2d");
 
    
@@ -251,15 +244,15 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socke
    const privateRoom = localStorage.getItem('private_game_room');
    const privateGameData = localStorage.getItem('private_game_data');
    
-   if (privateRoom && privateGameData && existingSocket) {
-       console.log("🎮 Setting up private game with existing socket");
-       socket = existingSocket;
-       const gameData = JSON.parse(privateGameData);
-       setupPrivateGame(gameData);
-   } else {
-       console.log("🎮 Setting up regular matchmaking");
+//    if (privateRoom && privateGameData && existingSocket) {
+//        console.log(" Setting up private game with existing socket");
+//        socket = existingSocket;
+//        const gameData = JSON.parse(privateGameData);
+//        setupPrivateGame(gameData);
+//    } else {
+    //    console.log(" Setting up regular matchmaking");
        connectServer();
-   }
+//    }
 };
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -298,7 +291,7 @@ function movePlayer() {
             moved = true;
         }
     }
-        //hna kaytsifto l movess l server
+    //hna kaytsifto l movess l server
     if (moved) {
         socket.emit("paddleMove", {
             roomID: gameState.roomID,
@@ -358,9 +351,9 @@ function draw() {
     drawRect(player2_X, gameState.player2_Y, paddleWidth, paddleHeight, playerColor);
     drawNet();
     drawBall(gameState.ballX, gameState.ballY, ballRadius, ballColor);
-    drawScore(score.x_l, score.y, gameState.score1, score.color);
-    drawScore(score.x_r, score.y, gameState.score2, score.color);
-    drawUsernames(); // Add username labels
+    // drawScore(score.x_l, score.y, gameState.score1, score.color);
+    // drawScore(score.x_r, score.y, gameState.score2, score.color);
+    // drawUsernames(); // Add username labels
     movePlayer();
     drawWinner();
     if (gameEnd === false)

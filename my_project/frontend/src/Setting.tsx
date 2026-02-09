@@ -6,8 +6,8 @@ import { logoutUser } from './socketService';
 
 interface intersetting {
   user: any;
-   delete_obj: (data: any) => void;
-    gotohome: () => void;
+  delete_obj: (data: any) => void;
+  gotohome: () => void;
 }
 
 const handleLogout = async () => {
@@ -25,31 +25,31 @@ const handleLogout = async () => {
 };
 
 
-function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
-   const logout = async () => {
-          try {
-              // First disconnect the socket to immediately mark user offline
-              if (user && user.id && user.username) {
-                  logoutUser(user.id, user.username);
-              }
-  
-              const logo = await fetch('https://localhost:3010/api/logout', {
-                  method: 'POST',
-                  credentials: 'include',
-              })
-              if (logo.ok) {
-                  alert("logout succes");
-                  console.log("logout sucess");
-                  delete_obj(null);
-                  gotohome();
-                  localStorage.removeItem('page');
-                  localStorage.removeItem('sidebar-active');
-              }
-          }
-          catch (error) {
-              alert("error in lougout");
-          }
+function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
+  const logout = async () => {
+    try {
+      // First disconnect the socket to immediately mark user offline
+      if (user && user.id && user.username) {
+        logoutUser(user.id, user.username);
       }
+
+      const logo = await fetch('https://localhost:3010/api/logout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      if (logo.ok) {
+        alert("logout succes");
+        console.log("logout sucess");
+        delete_obj(null);
+        gotohome();
+        localStorage.removeItem('page');
+        localStorage.removeItem('sidebar-active');
+      }
+    }
+    catch (error) {
+      alert("error in lougout");
+    }
+  }
   console.log("user f setting tsx hiiiiiiiiiiiiiiiii ", user);
   const [twoFactor, setTwoFactor] = useState<boolean>(user?.twofa_enabled ?? false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -255,21 +255,16 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[4px]">
+    <div className="w-full wh-full flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6px] w-full max-w-[700px] mx-auto bg-[#ffff]">
         {/* Avatar */}
-        <div className="  flex flex-col w-[750px] h-fit gap-[16px] rounded-2xl
+        <div className="  flex flex-col md:flex-row  max-auto max-w-[700px] h-fit gap-[16px] rounded-2xl
   bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70
   border border-[#c44cff]/20
   shadow-[0_0_40px_rgba(196,76,255,0.15)]
   p-[24px]">
           <div className="flex items-center gap-[4px]">
-            <div className="
-    w-[30px] h-[30px] rounded-full
-    flex items-center justify-center
-    bg-[#c44cff]/20
-    text-[#ff77ff]
-    shadow-[0_0_20px_rgba(196,76,255,0.6)]
+            <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center bg-[#c44cff]/20 text-[#ff77ff] shadow-[0_0_20px_rgba(196,76,255,0.6)]
   ">
               <FiUser size={24} />
             </div>
@@ -284,7 +279,7 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
               <div className="relative w-[60px] h-[60px]">
                 <div className="w-full h-full rounded-full overflow-hidden bg-[#c44cff]/10 border border-[#c44cff]/20 rounded-full outline-none focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]">
                   <img
-                    src={previewUrl || user?.avatarUrl }
+                    src={previewUrl || user?.avatarUrl}
                     alt="Avatar"
                     className=" w-full h-full object-cover"
                   />
@@ -312,8 +307,64 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
               <p className="text-[14px] text-[#ff77ff]">change avatar</p>
             </div>
           </div>
+          {/* 1. Name fields */}
+{/* استعملنا flex-col (عمودي) وفي الشاشات المتوسطة sm:flex-row (أفقي) */}
+<div className="flex flex-col sm:flex-row gap-[4px] sm:gap-[30px] justify-center px-[4px] sm:px-[40px] w-full">
+    <input
+        type="text"
+        placeholder="Firstname"
+        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+        onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
+    />
+    <input
+        type="text"
+        placeholder="Lastname"
+        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+        onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
+    />
+</div>
+
+{/* 2. Credentials fields */}
+<div className="flex flex-col sm:flex-row gap-[4px] sm:gap-[30px] justify-center px-[4px] sm:px-[40px] w-full mt-[4px] sm:mt-0">
+    <input
+        type="text"
+        placeholder="Username"
+        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+    />
+    <input
+        type="email"
+        placeholder="Email"
+        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+    />
+</div>
+
+{/* 3. Password fields */}
+<div className="flex flex-col gap-[4px] justify-center px-[4px] sm:px-[40px] w-full mt-[4px]">
+    <input
+        type="password"
+        placeholder="Current Password"
+        className="w-full bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+        onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
+    />
+    <div className="flex flex-col sm:flex-row gap-[4px] sm:gap-[30px]">
+        <input
+            type="password"
+            placeholder="New Password"
+            className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+            onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
+        />
+        <input
+            type="password"
+            placeholder="Confirm Password"
+            className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+        />
+    </div>
+</div>
           {/* Name fields */}
-          <div className="flex gap-[30px] justify-center px-[40px] ml-[10px]">
+          {/* <div className="flex gap-[30px] justify-center px-[40px] ml-[10px] ">
             <input
               type="text"
               placeholder="Firstname"
@@ -328,8 +379,8 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
             />
           </div>
           <div className="flex gap-[30px] justify-center px-[40px] ml-[10px]">
-            <input
-              type="text"
+            <input */}
+              {/* type="text"
               placeholder="Username"
               className="flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
@@ -342,7 +393,7 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
             />
           </div>
           {/* Password fields */}
-          <div className="flex flex-col gap-[15px] justify-center ml-[10px] px-[40px]">
+          {/* <div className="flex flex-col gap-[15px] justify-center ml-[10px] px-[40px]">
             <input
               type="password"
               placeholder="Current Password"
@@ -360,10 +411,10 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
                 type="password"
                 placeholder="Confirm Password"
                 className="flex-1 bg-[#0b0618]  text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-              />
-            </div>
-          </div>
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} */}
+              {/* /> */}
+            {/* </div> */}
+          {/* </div>  */}
 
           {/* Save Button */}
           <div className="flex justify-center mt-[4px]">
@@ -511,20 +562,28 @@ function TwoFASetting({ user, delete_obj, gotohome}: intersetting) {
   )
 }
 
-export default function Setting({ user, delete_obj, gotohome}: intersetting) {
+export default function Setting({ user, delete_obj, gotohome }: intersetting) {
   return (
-    <div className="min-h-screen w-full bg-text-white flex justify-center py-[20px]">
-      <div className="flex justify-center">
-        <div className="w-full max-w-6xl space-y-[10px]">
-          <div>
-            <h1 className="flex glow-text justify-center">Settings</h1>
-            <p className="text-[#8F929E] mt-[1px]">Manage your account</p>
-          </div>
-          <div className="flex flex-col gap-[20px]">
+   
+    <div className="min-h-screen w-full bg-[#0d0221] py-[6px] px-[4px] md:py-10">
 
-            <TwoFASetting user={user} delete_obj={delete_obj} gotohome={gotohome} />
-          </div>
+      <div className="max-w-6xl mx-auto w-full space-y-8">
+        <div className="text-center md:text-left space-y-2">
+          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter italic glow-text uppercase">
+            Settings
+          </h1>
+          <p className="text-[#8F929E] text-xs md:text-sm font-medium tracking-widest uppercase">
+            Manage your account & security
+          </p>
         </div>
+        <div className="w-full">
+          <TwoFASetting
+            user={user}
+            delete_obj={delete_obj}
+            gotohome={gotohome}
+          />
+        </div>
+
       </div>
     </div>
   )

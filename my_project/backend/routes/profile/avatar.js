@@ -54,27 +54,27 @@ module.exports = async function(fastify, options) {
     }
   });
 
-  // fastify.get('/api/avatar/file/:filename', async (request, reply) => {
-  //   const filename = request.params.filename;
-  //   const filepath = path.join(avatarFolder, filename);
+  fastify.get('/api/avatar/file/:filename', async (request, reply) => {
+    const filename = request.params.filename;
+    const filepath = path.join(avatarFolder, filename);
 
-  //   if (fs.existsSync(filepath)) {
-  //     try {
-  //       const extension = filename.split('.').pop().toLowerCase();
-  //       let contentType = 'image/jpeg';
-  //       if (extension === 'png') contentType = 'image/png';
-  //       else if (extension === 'gif') contentType = 'image/gif';
-  //       else if (extension === 'webp') contentType = 'image/webp';
+    if (fs.existsSync(filepath)) {
+      try {
+        const extension = filename.split('.').pop().toLowerCase();
+        let contentType = 'image/jpeg';
+        if (extension === 'png') contentType = 'image/png';
+        else if (extension === 'gif') contentType = 'image/gif';
+        else if (extension === 'webp') contentType = 'image/webp';
         
-  //       const imageBuffer = fs.readFileSync(filepath);
-  //       reply.header('Content-Type', contentType);
-  //       reply.send(imageBuffer);
+        const imageBuffer = fs.readFileSync(filepath);
+        reply.header('Content-Type', contentType);
+        reply.send(imageBuffer);
         
-  //     } catch (err) {
-  //       return reply.code(500).send({ error: 'Cannot read image' });
-  //     }
-  //   } else {
-  //     return reply.code(404).send({ error: 'Avatar not found' });
-  //   }
-  // });
+      } catch (err) {
+        return reply.code(500).send({ error: 'Cannot read image' });
+      }
+    } else {
+      return reply.code(404).send({ error: 'Avatar not found' });
+    }
+  });
 };

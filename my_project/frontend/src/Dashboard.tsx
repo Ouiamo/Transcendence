@@ -34,14 +34,14 @@ function Dashboard({ gotohome, gotoprofil, user, delete_obj, listfriends, goto, 
                     gotoleaderboard={gotoleaderboard} gotolocalgame={goto} 
                     setActiveSafe={setActiveSafe}
                 />
-                <div className="flex bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">
+                <div className="flex w-full h-full  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">
 
                 <div className="flex-1 h-screen overflow-y-auto  ml-[88px] p-4 md:p-10">
                     <Grid listfriends={listfriends} goto={goto} goto_ia={gotoia} setActiveSafe={setActiveSafe}/>
                 </div>
                 </div>
             </div>
-        </div>
+         </div>
     )
 }
 

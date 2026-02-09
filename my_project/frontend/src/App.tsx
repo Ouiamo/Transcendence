@@ -15,7 +15,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import TermsOfService from './TermsOfService';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
-import { connectSocket, disconnectSocket, clearUserDataFromStorage } from './socketService.tsx';
+import { connectSocket, disconnectSocket, clearUserDataFromStorage, getSocket } from './socketService.tsx';
 
 
 type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
@@ -104,7 +104,16 @@ const gotoHome =() =>{
       setCurrentPage('GAME_R');
     };
 
+    const handleGameEnded = () => {
+      console.log("🏆 Game ended, returning to friends page");
+      setPrivateGameActive(false);
+      localStorage.removeItem('private_game_room');
+      localStorage.removeItem('private_game_data');
+      setCurrentPage('GAME_R'); // This will show Friendlist since privateGameActive is now false
+    };
+
     window.addEventListener('private_game_start', handlePrivateGameStart);
+    window.addEventListener('game_ended', handleGameEnded);
     
     // Also check localStorage on mount
     const checkPrivateGame = () => {
@@ -118,8 +127,28 @@ const gotoHome =() =>{
     
     return () => {
       window.removeEventListener('private_game_start', handlePrivateGameStart);
+      window.removeEventListener('game_ended', handleGameEnded);
     };
   }, []);
+
+  // Handle navigation away from game
+  useEffect(() => {
+    const handlePageChange = () => {
+      const privateRoom = localStorage.getItem('private_game_room');
+      if (privateRoom && currentPage !== 'GAME_R') {
+        console.log("⚠️ User navigating away from game, notifying server...");
+        const socket = getSocket();
+        if (socket) {
+          socket.emit("player_leaving_game", { roomID: privateRoom });
+        }
+        localStorage.removeItem('private_game_room');
+        localStorage.removeItem('private_game_data');
+        setPrivateGameActive(false);
+      }
+    };
+    
+    handlePageChange();
+  }, [currentPage]);
 
 useEffect(() => {
   // console.log("items is ^^^^^^^^^^^^^ ", twofa);

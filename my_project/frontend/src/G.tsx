@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { initGame, getLocalWinner } from "../../game/frontend/game";
-import { initGame_remot } from "../../game/frontend/remoteGame";
+import { initGame_remot, cleanupGame, getRemoteGameState } from "../../game/frontend/remoteGame";
 import { aiinitGame, getaiWinner } from "../../game/frontend/aigame";
 import { getSocket } from "./socketService";
 
@@ -106,6 +106,8 @@ export function Gamepage_r() {
   
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
+  const [player1Name, setPlayer1Name] = useState("Player 1");
+  const [player2Name, setPlayer2Name] = useState("Player 2");
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -121,14 +123,17 @@ export function Gamepage_r() {
         roomData ? JSON.parse(roomData) : undefined
       );
       const interval = setInterval(() => {
-      // const data = getRemoteWinner();
+      const data = getRemoteGameState();
       
-      // setPlayer1Score(data.player1score);
-      // setPlayer2Score(data.player2score);
+      setPlayer1Score(data.score1);
+      setPlayer2Score(data.score2);
+      setPlayer1Name(data.player1Username);
+      setPlayer2Name(data.player2Username);
       
     }, 100);
       return () => {
       clearInterval(interval);
+      cleanupGame(); // Cleanup game on unmount
       console.log("Game Cleaned Up");
     };
   }, []);
@@ -142,14 +147,14 @@ export function Gamepage_r() {
 
       <div className="flex items-center gap-[60px] mb-[40px]">
         <div className="flex flex-col items-center">
-          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>GUEST</p>
+          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>{player1Name}</p>
           <span className="text-[40px] text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player1Score}</span>
         </div>
 
         <div className="text-3xl font-light text-gray-700 self-end pb-[2px]">:</div>
 
         <div className="flex flex-col items-center">
-          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>USER</p>
+          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2" style={{ WebkitTextStroke: '2px #c44cff' }}>{player2Name}</p>
           <span className="text-[40px] font-black text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player2Score}</span>
         </div>
       </div>
@@ -159,7 +164,7 @@ export function Gamepage_r() {
           id="board"
           ref={canvasRef}
           className="max-w-full h-auto block mx-auto rounded-2xl bg-[#000]"
-          width={800}
+          width={900}
           height={450}
         ></canvas>
       </div>

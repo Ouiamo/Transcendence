@@ -159,6 +159,18 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
       console.log("!!!!!!!!!!!!!!result ", result);
       if (response.ok) {
         alert("Profile updated successfully! ✅");
+        setFormData({
+          firstname: '',
+          lastname: '',
+          username: '',
+          email: '',
+          avatar_url: '',
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: ''
+        });
+        setSelectedFile(null);
+        setPreviewUrl(null);
       } else {
         alert(result.error || 'Update failed.');
       }
@@ -271,29 +283,30 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
               <p className="text-sm text-[#8F929E]">Update your profile information</p>
             </div>
           </div>
-          <div className="flex flex-col gap-[20px]">
-            <div className="flex flex-row ml-[60px] bg-[#ffff]">
-              <div className="relative w-[100px] h-fite">
-                <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#c44cff]/10 border border-[#c44cff]/20 rounded-full outline-none focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]">
+          <div className="flex flex-col gap-[4px] ">
+            <div className="flex flex-row gap-[14px] ml-[20px] sm:ml-[60px]">
+
+              <div className="relative w-[60px] h-[60px] flex-none">
+                <div className="w-full h-full rounded-full overflow-hidden bg-[#c44cff]/10 border border-[#c44cff]/20 shadow-[0_0_10px_rgba(255,68,255,0.5)]">
                   <img
                     src={previewUrl || user?.avatarUrl}
                     alt="Avatar"
-                    className=" w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
-                <label
-                  htmlFor="avatar-upload"
-                  className=" absolute bottom-1 right-1 w-full h-full  border border-transparent rounded-full
-                  flex items-center justify-center text-[#ff77ff] cursor-pointer shadow-[0_0_18px_rgba(196,76,255,0.6)] hover:bg-[#c44cff]/20 transition">
-                    <div className="flex flex-row w-full h-full bg-[#ffff]">
-                   <p className="text-[14px] text-[#ff77ff]">change avatar</p>
-                      <div className="flex">
+              </div>
 
-                  <FiEdit2 size={16} />
-                      </div>
+              <label
+                htmlFor="avatar-upload"
+                className="flex items-center gap-[4px] cursor-pointer group transition-all"
+              >
+                <span className="text-[14px] text-[#ff77ff] font-medium group-hover:text-white transition-colors">
+                  Change avatar
+                </span>
+                <div className="p-1.5 rounded-full bg-[#c44cff]/10 border border-[#c44cff]/20 text-[#ff77ff] group-hover:bg-[#c44cff]/30 shadow-[0_0_10px_rgba(196,76,255,0.3)]">
+                  <FiEdit2 size={14} />
+                </div>
 
-                    </div>
-                </label>
                 <input
                   id="avatar-upload"
                   type="file"
@@ -307,260 +320,237 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
                     }
                   }}
                 />
-              </div>
-             
+              </label>
             </div>
           </div>
-          {/* 1. Name fields */}
-{/* استعملنا flex-col (عمودي) وفي الشاشات المتوسطة sm:flex-row (أفقي) */}
-<div className="flex flex-col sm:flex-row gap-[4px] sm:gap-[30px] justify-center px-[4px] sm:px-[40px] w-full">
-    <input
-        type="text"
-        placeholder="Firstname"
-        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-        onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
-    />
-    <input
-        type="text"
-        placeholder="Lastname"
-        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-        onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
-    />
-</div>
-
-{/* 2. Credentials fields */}
-<div className="flex flex-col sm:flex-row gap-[4px] sm:gap-[30px] justify-center px-[4px] sm:px-[40px] w-full mt-[4px] sm:mt-0">
-    <input
-        type="text"
-        placeholder="Username"
-        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-    />
-    <input
-        type="email"
-        placeholder="Email"
-        className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-    />
-</div>
-
-{/* 3. Password fields */}
-<div className="flex flex-col gap-[4px] justify-center px-[4px] sm:px-[40px] w-full mt-[4px]">
-    <input
-        type="password"
-        placeholder="Current Password"
-        className="w-full bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-        onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
-    />
-    <div className="flex flex-col sm:flex-row gap-[4px] sm:gap-[30px]">
-        <input
-            type="password"
-            placeholder="New Password"
-            className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-            onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
-        />
-        <input
-            type="password"
-            placeholder="Confirm Password"
-            className="w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-4 focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-        />
-    </div>
-</div>
-          {/* Name fields */}
-          {/* <div className="flex gap-[30px] justify-center px-[40px] ml-[10px] ">
+          <div className="flex flex-row gap-[12px] sm:gap-[30px] justify-center px-[4px] sm:px-[40px] w-full">
             <input
               type="text"
+              value={formData.firstname}
               placeholder="Firstname"
-              className="flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+              className="caret-[#ff44ff] w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[16px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
               onChange={(e) => setFormData({ ...formData, firstname: e.target.value })}
             />
             <input
               type="text"
+              value={formData.lastname}
               placeholder="Lastname"
-              className="flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+              className="caret-[#ff44ff] w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[16px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
               onChange={(e) => setFormData({ ...formData, lastname: e.target.value })}
             />
           </div>
-          <div className="flex gap-[30px] justify-center px-[40px] ml-[10px]">
-            <input */}
-              {/* type="text"
+          <div className="flex flex-row sm:flex-row gap-[12px] sm:gap-[30px] justify-center px-[4px] sm:px-[40px] w-full mt-[4px] sm:mt-0">
+            <input
+              type="text"
+              value={formData.username}
               placeholder="Username"
-              className="flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+              className="caret-[#ff44ff] w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[16px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
               onChange={(e) => setFormData({ ...formData, username: e.target.value })}
             />
             <input
               type="email"
+              value={formData.email}
               placeholder="Email"
-              className="flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+              className="caret-[#ff44ff] w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[16px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
           </div>
-          {/* Password fields */}
-          {/* <div className="flex flex-col gap-[15px] justify-center ml-[10px] px-[40px]">
+
+          {/* 3. Password fields */}
+          <div className="flex flex-col gap-[10px] justify-center items-center  sm:px-[40px] w-full mt-[4px]">
             <input
               type="password"
+              value={formData.currentPassword}
               placeholder="Current Password"
-              className="bg-[#0b0618]  text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full  outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+              className=" px-[4px] caret-[#ff44ff] w-[98%] px-[4px] bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[8px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
               onChange={(e) => setFormData({ ...formData, currentPassword: e.target.value })}
             />
-            <div className="flex gap-[30px] ">
+            <div className="flex w-full items-center flex-row sm:flex-row gap-[10px] sm:gap-[30px]">
               <input
+                value={formData.newPassword}
                 type="password"
                 placeholder="New Password"
-                className="flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+                className="caret-[#ff44ff] w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[16px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
                 onChange={(e) => setFormData({ ...formData, newPassword: e.target.value })}
               />
               <input
                 type="password"
+                value={formData.confirmPassword}
                 placeholder="Confirm Password"
-                className="flex-1 bg-[#0b0618]  text-[#ffffff] border border-[#c44cff]/40 h-[30px] rounded-full outline-none px-[4px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })} */}
-              {/* /> */}
-            {/* </div> */}
-          {/* </div>  */}
-
+                className="caret-[#ff44ff] w-full sm:flex-1 bg-[#0b0618] text-[#ffffff] border border-[#c44cff]/40 h-[35px] rounded-full outline-none px-[8px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]"
+                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              />
+            </div>
+          </div>
           {/* Save Button */}
           <div className="flex justify-center mt-[4px]">
             <button
-              className="w-[150px] h-[30px] rounded-full bg-[#d86bff]
-                 text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
+              className="w-[150px] h-[30px] rounded-full bg-[#d86bff] mt-[10px]
+                 text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98] outline-none border-none"
               onClick={handelupdateprofile}
             >
               Save Changes
             </button>
           </div>
         </div>
-        {/* security */}
-        <div className="flex flex-col w-[750px] h-fit gap-[4px] rounded-2xl justify-center
-                        bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70
-                        border border-[#c44cff]/20
-                        shadow-[0_0_40px_rgba(196,76,255,0.15)] p-[24px]">
-          <div className="flex items-center gap-[4px]">
-            <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center bg-[#c44cff]/20 text-[#ff77ff] shadow-[0_0_20px_rgba(196,76,255,0.6)]">
-              <FiShield size={24} />
-            </div>
+       {/* Security Section */}
+<div className="
+    flex flex-col 
+    w-full 
+    lg:max-w-[750px]
+    h-fit 
+    gap-4 
+    rounded-2xl
+    bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70
+    border border-[#c44cff]/20
+    shadow-[0_0_40px_rgba(196,76,255,0.15)] 
+    p-4 sm:p-6
+">
 
-            <div>
-              <h3 className="text-lg font-semibold text-white">Security</h3>
-              <p className="text-sm text-[#8F929E]">Protect your account</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-between ml-[30px]">
-            <div>
-              <h4 className="text-white font-medium">
-                Two-Factor Authentication
-              </h4>
-              <p className="text-xs text-[#8F929E]">
-                Add an extra layer of security
-              </p>
-            </div>
-
-            {/* Toggle */}
-            <button
-              onClick={toggle2FA}
-              className={`relative w-[48px] h-[24px] rounded-full
-              transition-colors duration-300
-              ${twoFactor
-                  ? 'bg-[#22c55e]/50 shadow-[0_0_20px_rgba(34,197,94,0.8)]'
-                  : 'bg-[#8F929E]/30'}`}>
-              <span
-                className={`absolute top-[3px] left-[3px] w-[16px] h-[16px] rounded-full
-                transform transition-all duration-300 ease-in-out
-                ${twoFactor
-                    ? 'translate-x-[24px] bg-[#4ade80] shadow-[0_0_12px_rgba(34,197,94,0.7)]'
-                    : 'translate-x-0 bg-[#8F929E]/40'}`}
-              />
-            </button>
-          </div>
-          <div
-            className={`ml-[30px] flex items-center gap-[4px]
-    rounded-[20px] p-[30px] border border-[#c44cff]/40 h-[20px] px-[20px] focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]`}>
-            <div className={` w-[20px] h-[20px] rounded-full flex items-center justify-center
-                ${twoFactor ? 'text-[#4ade80]' : 'text-[#f87171]'}`}>
-              <div
-                className={` w-[24px] h-[24px] rounded-full
-    flex items-center justify-center
-    ${twoFactor
-                    ? 'bg-[#22c55e]/15 text-[#4ade80] shadow-[0_0_10px_rgba(34,197,94,0.6)]'
-                    : 'bg-[#ef4444]/15 text-[#f87171]'}
-  `}>
-                <FiShield size={18} />
-              </div>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-white">
-                Security Status: {twoFactor ? 'Enhanced' : 'Basic'}
-              </p>
-              <p className="text-xs text-[#8F929E]">
-                {twoFactor
-                  ? 'Your account is protected with 2FA'
-                  : 'Enable 2FA for better protection'}
-              </p>
-            </div>
-          </div>
-
-
-          {showVerification && (
-            <div className="flex flex-col items-center gap-[8px]">
-              {qrCode && (
-                <div className="flex flex-col items-center gap-2 mb-4">
-                  <p className="text-center">Scan this QR code with your Authenticator app:</p>
-                  <img src={qrCode} alt="Scan this QR code" className="border-[1px] border-[#c44cff]/20 shadow-[0_0_10px_rgba(255,68,255,0.5)] rounded-lg " />
-                </div>
-              )}
-
-              <p className="text-center font-semibold">Enter the 6-digit code from your app:</p>
-              <div className="flex gap-[2px] justify-center">
-                {verificationCode.map((digit, index) => (
-                  <input
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      backgroundColor: '#06060d',
-                      color: '#8F929E',
-                      textAlign: 'center',
-                      fontSize: '18px',
-                      // border: '1px solid #c44cff',
-                      boxShadow: '0 0 20px rgba(255,68,255,0.5)',
-                      borderRadius: '8px',
-                    }}
-                    key={index}
-                    id={`code-input-${index}`}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleCodeChange(index, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(index, e)}
-                  />
-                ))}
-              </div>
-              <div className="flex justify-center mt-[10px]">
-                <button
-                  onClick={verifyCode}
-                  className="w-[150px] h-[30px] rounded-full bg-[#d86bff]
-                   text-white shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:shadow-[0_0_25px_rgba(255,68,255,0.7)] hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  Verify Code
-                </button>
-              </div>
-            </div>
-          )}
+    {/* Header */}
+    <div className="flex items-center gap-[20px] ml-[10px]  ">
+        <div className="  w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#c44cff]/20 text-[#ff77ff] 
+            shadow-[0_0_20px_rgba(196,76,255,0.6)] 
+            shrink-0
+        ">
+            <FiShield size={24} />
         </div>
+
+        <div>
+            <h3 className="text-lg font-semibold text-white">Security</h3>
+            <p className="text-sm text-[#8F929E]">Protect your account</p>
+        </div>
+    </div>
+
+    {/* 2FA Row */}
+    <div className="flex flex-wrap items-center justify-between gap-[3px] sm:ml-[55px] ml-[10px] mr-[10px]
+    ">
+        <div>
+            <h4 className="text-white font-medium text-sm sm:text-base ml-[10px]">
+                Two-Factor Authentication
+            </h4>
+            <p className="text-[11px] sm:text-xs text-[#8F929E] ml-[10px]">
+                Add an extra layer of security
+            </p>
+        </div>
+
+        {/* Toggle */}
+        <button
+            onClick={toggle2FA}
+            className={`border-none 
+                relative w-[48px] h-[24px] rounded-full 
+                shrink-0 transition-colors duration-300
+                ${twoFactor 
+                  ? 'bg-[#22c55e]/50 shadow-[0_0_20px_rgba(34,197,94,0.8)]' 
+                  : 'bg-[#8F929E]/30'}
+            `}
+        >
+            <span className={`
+                absolute top-[3px] left-[3px] 
+                w-[16px] h-[16px] rounded-full 
+                transform transition-all duration-300
+                ${twoFactor 
+                  ? 'translate-x-[24px] bg-[#4ade80]' 
+                  : 'translate-x-0 bg-[#8F929E]/40'}
+            `} />
+        </button>
+    </div>
+
+    {/* Security Status Box */}
+    <div className="ml-[10px] mr-[10px] w-[96%]  mb-[10px] sm:ml-[55px] flex flex-col sm:flex-row  items-start sm:items-center gap-[3px] rounded-[20px] p-[3px] sm:p-5 border border-[#c44cff]/40 min-h-[60px] shadow-[0_0_10px_rgba(255,68,255,0.5)] bg-[#0b0618]/60
+    ">
+        <div className={`w-[40px] h-[40px] rounded-full flex items-center justify-center ml-[10px] mt-[10px]
+            shrink-0
+            ${twoFactor 
+              ? 'bg-[#22c55e]/15 text-[#4ade80] shadow-[0_0_10px_rgba(34,197,94,0.6)]' 
+              : 'bg-[#ef4444]/15 text-[#f87171]'}
+        `}>
+            <FiShield size={24} />
+        </div>
+
+        <div className="flex flex-col min-w-0 ml-[10px]">
+            <p className="text-sm font-medium text-white break-words">
+                Security Status: {twoFactor ? 'Enhanced' : 'Basic'}
+            </p>
+
+            <p className="text-xs text-[#8F929E] leading-relaxed break-words">
+                {twoFactor 
+                  ? 'Your account is protected' 
+                  : 'Enable 2FA for better protection'}
+            </p>
+        </div>
+    </div>
+
+{/* </div> */}
+
+    {/* Verification Section */}
+    {showVerification && (
+        <div className="flex flex-col items-center gap-[15px] mt-4">
+            {qrCode && (
+                <div className="flex flex-col items-center gap-3">
+                    <p className="text-center text-xs text-[#8F929E] px-4">Scan this QR code with your Authenticator app:</p>
+                    <div className="p-2 bg-white rounded-lg">
+                        <img src={qrCode} alt="Scan this" className="w-[130px] h-[130px] sm:w-[150px] sm:h-[150px]" />
+                    </div>
+                </div>
+            )}
+
+            <p className="text-center text-sm font-semibold text-white">Enter the 6-digit code:</p>
+            
+            {/* الأرقام الستة: حافظنا على الـ Style ديالك ولكن درنا flex-wrap باش ميهربوش في الموبايل */}
+            <div className="flex gap-[6px] justify-center flex-wrap px-2">
+                {verificationCode.map((digit, index) => (
+                    <input
+                        key={index}
+                        id={`code-input-${index}`}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleCodeChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
+                        style={{
+                            width: '38px', // كبرناهم شوية باش يسهل الضغط عليهم في الموبايل
+                            height: '38px',
+                            backgroundColor: '#06060d',
+                            color: '#c44cff',
+                            textAlign: 'center',
+                            fontSize: '18px',
+                            boxShadow: '0 0 15px rgba(255,68,255,0.3)',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(196, 76, 255, 0.3)'
+                        }}
+                    />
+                ))}
+            </div>
+
+            <div className="flex justify-center mt-2 w-full">
+                <button
+                    onClick={verifyCode}
+                    className="w-[180px] h-[35px] rounded-full bg-[#d86bff] text-white font-bold
+                    shadow-[0_0_15px_rgba(255,68,255,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
+                    Verify Code
+                </button>
+            </div>
+        </div>
+    )}
+</div>
       </div>
-      <button
-        onClick={logout}
-        className="mt-[20px] flex items-center gap-[8px] bg-transparent 
-          rounded-[10px] border border-[#f87171]/40
-          px-[12px] py-[6px] text-[#f87171] text-xs
-          hover:bg-[#f87171]/10 hover:shadow-[0_0_20px_rgba(248,113,113,0.6)] transition-all
-        "
-      >
-        <IoLogOutOutline size={24} />
-        <span>Logout</span>
-      </button>
+      <div className="w-full flex justify-center md:justify-start">
+        <button
+          onClick={logout}
+          className="mt-[20px] flex items-center justify-center gap-[8px] bg-transparent 
+      rounded-[10px] border-[2px] border-[#f87171]/40
+      w-[140px] h-[40px] 
+      text-[#f87171] text-sm font-bold
+      hover:bg-[#f87171]/10 hover:shadow-[0_0_20px_rgba(248,113,113,0.6)] transition-all
+      active:scale-95"
+        >
+          <IoLogOutOutline size={22} />
+          <span>Logout</span>
+        </button>
+      </div>
 
     </div>
   )
@@ -568,12 +558,12 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
 
 export default function Setting({ user, delete_obj, gotohome }: intersetting) {
   return (
-   
+
     <div className="min-h-screen w-full bg-[#0d0221] py-[6px] px-[4px] md:py-10">
 
       <div className="max-w-6xl mx-auto w-full space-y-[8px]">
         <div className="text-center md:text-left space-y-2">
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter italic glow-text uppercase">
+          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter  glow-text uppercase">
             Settings
           </h1>
           <p className="text-[#8F929E] text-xs md:text-sm font-medium tracking-widest uppercase">

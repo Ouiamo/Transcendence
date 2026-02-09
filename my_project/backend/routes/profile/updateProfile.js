@@ -8,18 +8,18 @@ const console = require('console');
 
  module.exports = async function (fastify) {
 
-fastify.get('/api/avatar/file/:filename', async (request, reply) => {
-  const { filename } = request.params;
+// fastify.get('/api/avatar/file/:filename', async (request, reply) => {
+//   const { filename } = request.params;
 
-  const filePath = path.join(__dirname, '../../avatar/file', filename);
+//   const filePath = path.join(__dirname, '../../avatar/file', filename);
 
-  if (!fs.existsSync(filePath)) {
-    return reply.code(404).send({ error: 'File not found' });
-  }
+//   if (!fs.existsSync(filePath)) {
+//     return reply.code(404).send({ error: 'File not found' });
+//   }
 
-  reply.type('image/png');
-  return reply.send(fs.createReadStream(filePath));
-});
+//   reply.type('image/png');
+//   return reply.send(fs.createReadStream(filePath));
+// });
 
 
  fastify.patch('/api/profile', async(request, reply) => {

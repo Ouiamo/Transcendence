@@ -114,9 +114,9 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
     if (title === "Legend" && userRank < 11)
       done = true;
     return (
-      <div className={`flex-1 rounded-xl p-[4px] flex items-center justify-between transition-all duration-300 ${done
-          ? 'bg-[#120d1d]/80 border border-[#c44cff]/60 shadow-[0_0_15px_rgba(196,76,255,0.3)]'
-          : 'bg-[#120d1d]/20 border border-[#c44cff]/10 opacity-50'
+      <div className={`flex-1 rounded-[12px] p-[4px] flex items-center justify-center  transition-all duration-300 ${done
+          ? 'bg-[#120d1d]/80 border-[2px] border-[#c44cff]/60 shadow-[0_0_15px_rgba(196,76,255,0.3)]'
+          : 'bg-[#120d1d]/20 border-[2px] border-[#ffff]/60 opacity-50'
         }`}>
         <div className="flex items-center gap-[3px] flex-col p-[4px]">
           <div className={`w-[40px] h-[40px] rounded-full flex items-center justify-center transition-all duration-300 ${done
@@ -126,7 +126,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
             <FaTrophy className={done ? 'text-white' : 'text-gray-500'} />
           </div>
 
-          <div>
+          <div className="flex flex-col justify-center items-center  ">
             <p className={`font-bold ${done ? 'text-white' : 'text-gray-600'}`}>{title}</p>
             <p className={`text-xs ${done ? 'text-gray-400' : 'text-gray-600'}`}>{desc}</p>
           </div>
@@ -295,8 +295,8 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
               </div>
 
 
-              <div className="flex items-center gap-2 sm:gap-[4px] flex-[1.5] min-w-0 justify-end">
-                <div className="flex flex-col min-w-0 items-end">
+              <div className="flex items-center gap-[12px] sm:gap-[4px] flex-[1.5] min-w-0 justify-end">
+                <div className="flex flex-col min-w-0 items-end ">
                   <h4 className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
                     {match.opp_username}
                   </h4>
@@ -307,7 +307,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                     {match.isWin ? 'VICTORY' : 'DEFEAT'}
                   </div>
                 </div>
-                <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-2 p-[2px] border-[#c44cff]`}>
+                <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-[2px] p-[2px] border-[#c44cff]`}>
                   <img
                     src={match.opp_username === 'AI' ? `https://localhost:3010/api/avatar/file/ia.png` : `https://localhost:3010/api/avatar/file/guest.png`}
                     alt="opponent"

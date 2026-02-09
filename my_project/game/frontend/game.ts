@@ -17,6 +17,8 @@ let gameGO : boolean = false;
 let winner : string | null = null;
 const maxScore : number = 11;
 
+let animationFrameId: number | null = null;
+
 
 
 let player1 = {
@@ -82,6 +84,11 @@ export function initGame(canvas: HTMLCanvasElement, player: string) {
     board.height = 450;
     contex = board.getContext("2d");
     
+
+    if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+    }
     
     draw(player); 
 
@@ -91,6 +98,11 @@ export function initGame(canvas: HTMLCanvasElement, player: string) {
 
     
     return () => {
+        if (animationFrameId !== null) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+        
         document.removeEventListener("keydown", handleKeyDown);
         document.removeEventListener("keyup", handleKeyUp);
       
@@ -305,7 +317,7 @@ function  resetBall()
     }
    
 
-    requestAnimationFrame(() => draw(player));
+    animationFrameId = requestAnimationFrame(() => draw(player));
 }
 
 function drawBoard(x: number, y: number, w:number, h:number)

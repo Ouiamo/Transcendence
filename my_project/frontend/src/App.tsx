@@ -292,7 +292,7 @@ if(loading) return <div>Loading...</div>
       <Sidebar user_={user_data} gotohome={()=> setCurrentPage('HOME')} delete_obj={obj_login} gotodashbord={gotodash} gotoprofil={gotoprofil} gotofriends={gotofriends} gotosetting={gotoseting} gotoleaderboard={gotoleaderboard} gotolocalgame={gotogamelocal} setActiveSafe={setActiveSafe}/>
     </div>
     <div className="flex-grow flex justify-center p-[2px] md:p-8 bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]" >
-      <div className="w-full max-w-[1200px]  ">
+      <div className="w-full max-w-[1200px]   pr-[88px]">
         <Profil user={user_data  } delete_obj={obj_login} gotohome={gotoHome} gotosetting={gotoseting}/>
       </div>
     </div>

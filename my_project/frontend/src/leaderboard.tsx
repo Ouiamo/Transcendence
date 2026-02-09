@@ -150,7 +150,7 @@ export function Leaderboard() {
                                 
                                             }}
                                         >
-                                            <div>
+                                            <div className='mt-[8px]'>
                                                 <img
                                                     src={player.avatar_url}
                                                     alt="you"
@@ -229,7 +229,7 @@ export function Leaderboard() {
                                             }}
                                         >
                                             {/* {getInitials(player.username)} */}
-                                            <div className="mr-[10px]">
+                                            <div>
                                                 <img
                                                     src={player.avatar_url}
                                                     alt="you"

@@ -256,28 +256,25 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
 
   return (
     <div className="w-full wh-full flex flex-col">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6px] w-full max-w-[700px] mx-auto bg-[#ffff]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[6px] w-full max-w-[700px] mx-auto ">
         {/* Avatar */}
         <div className="  flex flex-col md:flex-row  max-auto max-w-[700px] h-fit gap-[16px] rounded-2xl
-  bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70
-  border border-[#c44cff]/20
-  shadow-[0_0_40px_rgba(196,76,255,0.15)]
-  p-[24px]">
-          <div className="flex items-center gap-[4px]">
-            <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center bg-[#c44cff]/20 text-[#ff77ff] shadow-[0_0_20px_rgba(196,76,255,0.6)]
+  bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70 border border-[#c44cff]/20 p-[24px]">
+          <div className="flex items-center gap-[20px]  ">
+            <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#c44cff]/20 text-[#ff77ff] shadow-[0_0_20px_rgba(196,76,255,0.6)]
   ">
               <FiUser size={24} />
             </div>
 
-            <div>
+            <div className="flex flex-col  ">
               <h3 className="text-lg font-semibold text-white">Profile</h3>
               <p className="text-sm text-[#8F929E]">Update your profile information</p>
             </div>
           </div>
-          <div className="flex flex-col gap-[15px]">
-            <div className="flex flex-col ml-[60px]">
-              <div className="relative w-[60px] h-[60px]">
-                <div className="w-full h-full rounded-full overflow-hidden bg-[#c44cff]/10 border border-[#c44cff]/20 rounded-full outline-none focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]">
+          <div className="flex flex-col gap-[20px]">
+            <div className="flex flex-row ml-[60px] bg-[#ffff]">
+              <div className="relative w-[100px] h-fite">
+                <div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-[#c44cff]/10 border border-[#c44cff]/20 rounded-full outline-none focus:border-[#c44cff] shadow-[0_0_10px_rgba(255,68,255,0.5)]">
                   <img
                     src={previewUrl || user?.avatarUrl}
                     alt="Avatar"
@@ -286,9 +283,16 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
                 </div>
                 <label
                   htmlFor="avatar-upload"
-                  className=" absolute bottom-1 right-1 w-[10px] h-[10px]  border border-transparent rounded-full
+                  className=" absolute bottom-1 right-1 w-full h-full  border border-transparent rounded-full
                   flex items-center justify-center text-[#ff77ff] cursor-pointer shadow-[0_0_18px_rgba(196,76,255,0.6)] hover:bg-[#c44cff]/20 transition">
+                    <div className="flex flex-row w-full h-full bg-[#ffff]">
+                   <p className="text-[14px] text-[#ff77ff]">change avatar</p>
+                      <div className="flex">
+
                   <FiEdit2 size={16} />
+                      </div>
+
+                    </div>
                 </label>
                 <input
                   id="avatar-upload"
@@ -304,7 +308,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
                   }}
                 />
               </div>
-              <p className="text-[14px] text-[#ff77ff]">change avatar</p>
+             
             </div>
           </div>
           {/* 1. Name fields */}
@@ -567,7 +571,7 @@ export default function Setting({ user, delete_obj, gotohome }: intersetting) {
    
     <div className="min-h-screen w-full bg-[#0d0221] py-[6px] px-[4px] md:py-10">
 
-      <div className="max-w-6xl mx-auto w-full space-y-8">
+      <div className="max-w-6xl mx-auto w-full space-y-[8px]">
         <div className="text-center md:text-left space-y-2">
           <h1 className="text-3xl md:text-5xl font-black text-white tracking-tighter italic glow-text uppercase">
             Settings
@@ -576,7 +580,7 @@ export default function Setting({ user, delete_obj, gotohome }: intersetting) {
             Manage your account & security
           </p>
         </div>
-        <div className="w-full">
+        <div className="w-full ">
           <TwoFASetting
             user={user}
             delete_obj={delete_obj}
@@ -590,3 +594,4 @@ export default function Setting({ user, delete_obj, gotohome }: intersetting) {
 }
 
 
+// shadow-[0_0_40px_rgba(196,76,255,0.15)] shadow dyl setting 7aydto

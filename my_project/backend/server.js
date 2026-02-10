@@ -64,7 +64,7 @@ fastify.register(require('./routes/stats/user_ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
 
-fastify.listen({ port: 3010, host: 'localhost' }, (err) => {
+fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
   if (err) {
     console.error('Server error:', err);
     process.exit(1);

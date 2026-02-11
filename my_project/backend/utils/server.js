@@ -25,7 +25,7 @@ fastify.register(require('@fastify/jwt'), {
 fastify.register(require('./plugins/auth'));
 
 fastify.register(require('@fastify/cors'), {
-  origin: 'https://localhost:5173',
+  origin: 'https://10.13.249.23:5173',
   credentials: true,
   methods: ['GET','POST','PATCH','DELETE']
 });
@@ -61,7 +61,7 @@ fastify.register(require('./routes/stats/ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
 
-fastify.listen({ port: 3010, host: 'localhost' }, (err) => {
+fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
   if (err) {
     console.error('Server error:', err);
     process.exit(1);

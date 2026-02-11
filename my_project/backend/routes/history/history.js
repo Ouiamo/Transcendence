@@ -16,6 +16,19 @@ module.exports = async function(fastify, options) {
     console.error('Error creating history table:', err);
   })
 
+  const tableInfo = await dbAll("PRAGMA table_info(history)");
+  const hasOppavatarColumn = tableInfo.some(col => col.name === 'opp_id');
+  
+  if (!hasOppavatarColumn) {
+    await dbRun(`ALTER TABLE history ADD COLUMN opp_id INTEGER NOT NULL DEFAULT -1`)
+      .then(() => {
+        console.log('opp_id column added to history table');
+      })
+      .catch(err => {
+        console.error('Error adding opp_id column:', err);
+      });
+  }
+
   fastify.post('/api/history/new_score', async (request, reply) => {
     const token = request.cookies.access_token;
     if(!token){
@@ -24,14 +37,14 @@ module.exports = async function(fastify, options) {
     try{
         const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
         const userId = payload.id;
-        const {opponent_username, user_score, opp_score, match_type} = request.body;
+        const {opponent_username, user_score, opp_score,opp_id, match_type} = request.body;
         console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
         if (user_score > opp_score)
           isWin = true;
         await dbRun(
-            'INSERT INTO history (user_id, opp_username, user_score, opp_score, match_type, isWin) VALUES (?, ?, ?, ?, ?, ?)',
-            [userId, opponent_username, user_score, opp_score, match_type, isWin]
+            'INSERT INTO history (user_id, opp_username, user_score, opp_score, match_type, isWin, opp_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [userId, opponent_username, user_score, opp_score, match_type, isWin, opp_id]
           );
         return reply.send({
         success: true,
@@ -58,7 +71,33 @@ module.exports = async function(fastify, options) {
           [userId]
       );
 
-      return reply.send(history);
+      const historyWithAvatars = await Promise.all(
+        history.map(async (match) => {
+          let oppAvatarUrl = `https://10.13.249.23:3010/api/avatar/file/default-avatar.png`;
+          
+          if (match.opp_id && match.opp_id !== -1) {
+            const opponent = await dbGet(
+              'SELECT avatar_url, provider FROM users WHERE id = ?',
+              [match.opp_id]
+            );
+            
+            if (opponent && opponent.avatar_url) {
+              if (opponent.provider === 'local') {
+                oppAvatarUrl = `https://10.13.249.23:3010/api/avatar/file/${opponent.avatar_url}`;
+              } else {
+                oppAvatarUrl = opponent.avatar_url;
+              }
+            }
+          }
+          
+          return {
+            ...match,
+            opp_avatar: oppAvatarUrl
+          };
+        })
+      );
+
+      return reply.send(historyWithAvatars);
       }
       catch(err){
         console.error('get history error:', err);

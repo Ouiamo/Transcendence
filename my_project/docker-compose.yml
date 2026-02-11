@@ -1,32 +1,22 @@
-version: "3.9"
-
 services:
   backend:
     build: ./backend
-    # Do NOT publish backend port to the host — keep it internal for security
-    # ports:
-    #  - "3010:3010"
+    ports:
+      - "3010:3010"
     env_file:
       - ./backend/.env
     volumes:
       - ./backend/certs:/app/certs:ro
-    networks:
-      - webnet
 
   frontend:
     build:
-      context: .
+      context: .  
       dockerfile: frontend/Dockerfile
+      args:
+        - VITE_API_URL=localhost:3010
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./frontend/certs:/etc/nginx/certs:ro
+      - "5173:5173"
     depends_on:
       - backend
-    networks:
-      - webnet
-
-networks:
-  webnet:
-    driver: bridge
+    environment:
+      - VITE_API_URL=localhost:3010

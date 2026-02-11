@@ -1,3 +1,4 @@
+
 const jwt = require('jsonwebtoken');
 const { dbGet } = require('../../utils/dbHelpers');
 const path = require('path');
@@ -31,16 +32,14 @@ fastify.get('/api/profile', async (request, reply) => {
         [payload.id]
       );
 
-      // Use relative paths so nginx (frontend container) proxies the request to the backend
-      let avatarUrl = `/api/avatar/file/default-avatar.png`;
+      let avatarUrl =  `https://10.13.249.23:3010/api/avatar/file/default-avatar.png`;
 
       if (user.avatar_url) {
         if (user.provider === 'local') {
-          avatarUrl = `/api/avatar/file/${user.avatar_url}`;
+          avatarUrl = `https://10.13.249.23:3010/api/avatar/file/${user.avatar_url}`;
         } 
         else {
           console.log("Callback in profile =====================");
-          // keep external provider URLs as-is (they are already absolute)
           avatarUrl = user.avatar_url; // google / 42
         }
       }

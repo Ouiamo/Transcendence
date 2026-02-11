@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
-const backendUrl = process.env.BACKEND_URL || '';
+const backendUrl = process.env.BACKEND_URL || 'https://10.13.249.23:3010';
 
 const db = new sqlite3.Database('pong.db',  (err) => {
     if (err)

@@ -202,5 +202,5 @@ function resetBall(state: any) {
     state.ballStepY = Math.random() < 0.5 ? -5 : 5;
 }
 
-console.log("🚀 Server running on https://localhost:3010");
+console.log("🚀 Server running on https://10.13.249.23:3010");
 };

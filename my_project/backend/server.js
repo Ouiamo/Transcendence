@@ -1,28 +1,18 @@
 const fs = require('fs');
 const path = require('path');
-// const fastify = require('fastify')({
-//   https: {
-//     key: fs.readFileSync('certs/key.pem'), 
-//     cert: fs.readFileSync('certs/cert.pem')
-//   }
-// });
-
 const fastify = require('fastify')({
-  logger: true,
+  https: {
+    key: fs.readFileSync('certs/key.pem'), 
+    cert: fs.readFileSync('certs/cert.pem')
+  }
 });
 
 require('dotenv').config();
 require('./db/db');
 
-// fastify.register(require('@fastify/cookie'), {
-//   secret: process.env.COOKIE_SECRET
-// });
-
 fastify.register(require('@fastify/cookie'), {
-  secret: process.env.COOKIE_SECRET,
-  hook: 'onRequest',
+  secret: process.env.COOKIE_SECRET
 });
-
 
 fastify.register(require('@fastify/jwt'), {
   secret: process.env.JWT_SECRET,
@@ -34,49 +24,12 @@ fastify.register(require('@fastify/jwt'), {
 
 fastify.register(require('./plugins/auth'));
 
-// fastify.register(require('@fastify/cors'), {
-//   origin: 'https://localhost:5173',
-//   credentials: true,
-//   methods: ['GET','POST','PATCH','DELETE']
-// });
-
-// fastify.register(require('@fastify/cors'), {
-//   origin: (origin, cb) => {
-//     const allowed = [
-//       'https://localhost:5173',
-//       'https://127.0.0.1:5173',
-//     ];
-
-//     // allow server-to-server & tools (no origin)
-//     if (!origin) return cb(null, true);
-
-//     if (allowed.includes(origin)) {
-//       cb(null, true);
-//     } else {
-//       cb(new Error('Not allowed by CORS'), false);
-//     }
-//   },
-//   credentials: true,
-// });
-
 fastify.register(require('@fastify/cors'), {
-  origin: (origin, cb) => {
-    const allowed = [
-      'https://localhost',
-      'https://127.0.0.1',
-    ];
-
-    // Allow requests with no origin (server-to-server, tools)
-    if (!origin) return cb(null, true);
-
-    if (allowed.includes(origin)) {
-      cb(null, true);
-    } else {
-      cb(new Error('Not allowed by CORS'), false);
-    }
-  },
+  origin: 'https://10.13.249.23:5173',
   credentials: true,
+  methods: ['GET','POST','PATCH','DELETE']
 });
+
 
 fastify.register(require('fastify-multipart'));
 
@@ -111,16 +64,9 @@ fastify.register(require('./routes/stats/user_ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
 
-// fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
-//   if (err) {
-//     console.error('Server error:', err);
-//     process.exit(1);
-//   }
-// });
-
 fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
   if (err) {
-    console.error(err);
+    console.error('Server error:', err);
     process.exit(1);
   }
 });

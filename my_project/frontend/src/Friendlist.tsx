@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { API_URL } from "./Api";
 import { OnlineUsers, onOnlineUsersChange } from './socketService.tsx';
 
 interface Friend {
@@ -29,7 +28,7 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/friends`, {
+        const res = await fetch('https://10.13.249.23:3010/api/friends', {
           method: 'GET',
           credentials: 'include',
         });
@@ -92,7 +91,7 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
 
   const fetchGameInvitations = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/game/invitations`, {
+      const res = await fetch('https://10.13.249.23:3010/api/game/invitations', {
         method: 'GET',
         credentials: 'include',
       });
@@ -107,7 +106,7 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
 
   const sendGameInvitation = async (friendUsername: string) => {
     try {
-      const res = await fetch(`${API_URL}/api/game/invitation`, {
+      const res = await fetch('https://10.13.249.23:3010/api/game/invitation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ friendUsername }),
@@ -129,7 +128,7 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
 
   const acceptGameInvitation = async (invitationId: number, senderUsername: string) => {
     try {
-      const res = await fetch(`${API_URL}/api/game/accept`, {
+      const res = await fetch('https://10.13.249.23:3010/api/game/accept', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ invitationId }),
@@ -165,7 +164,7 @@ export function Friendlist({ onGameStart }: FriendlistProps) {
 
   const declineGameInvitation = async (invitationId: number) => {
     try {
-      const res = await fetch(`${API_URL}/api/game/invitation/${invitationId}`, {
+      const res = await fetch(`https://10.13.249.23:3010/api/game/invitation/${invitationId}`, {
         method: 'DELETE',
         credentials: 'include',
       });

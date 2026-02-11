@@ -157,5 +157,5 @@ function resetBall(state) {
     state.ballStepX = state.score1 > state.score2 ? 5 : -5;
     state.ballStepY = Math.random() < 0.5 ? -5 : 5;
 }
-console.log("🚀 Server running on http://localhost:3001");
+console.log("🚀 Server running on http://10.13.249.23:3001");
 //# sourceMappingURL=server.js.map

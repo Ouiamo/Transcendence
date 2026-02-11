@@ -3,6 +3,10 @@ const { dbGet, dbRun } = require('../../utils/dbHelpers');
 
 module.exports = async function(fastify){
 fastify.post('/api/signup', async (request, reply) => {
+    console.log("=== SIGNUP REQUEST ===");
+    console.log("Origin:", request.headers.origin);
+    console.log("Body:", request.body);
+    
     const { firstname, lastname, username, email, password } = request.body;
     
     if (!username || !email || !password) {

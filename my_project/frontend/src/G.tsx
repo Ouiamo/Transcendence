@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { initGame, getLocalWinner } from "../../game/frontend/game";
-import { initGame_remot, cleanupGame, getRemoteGameState } from "../../game/frontend/remoteGame";
+import { initGame_remot, cleanupGame, getRemoteGameState} from "../../game/frontend/remoteGame";
 import { aiinitGame, getaiWinner } from "../../game/frontend/aigame";
 import { getSocket } from "./socketService";
-import { API_URL } from "./Api";
 
 
 export function GamePage(userdata: any) {
@@ -30,11 +29,12 @@ export function GamePage(userdata: any) {
         const winner = data.winner;
         const opponent_username = "LOCAL_GUEST";
         const user_score = data.playerscore;
+        const opp_id = -1;
         const opp_score = data.Guestscore;
         const match_type = "LOCAL";
 
         gameResults({ winner, opponent_username });
-        gamescore({ opponent_username, user_score, opp_score, match_type });
+        gamescore({ opponent_username, user_score, opp_score,opp_id, match_type });
       }
       else if (data.winner === null && lastWinnerRef.current !== null) {
         lastWinnerRef.current = null;
@@ -103,8 +103,8 @@ export function GamePage(userdata: any) {
 
 export function Gamepage_r() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // const lastWinnerRef = useRef<string | null>(null);
-  
+  const lastWinnerRef = useRef<string | null>(null);
+
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
   const [player1Name, setPlayer1Name] = useState("Player 1");
@@ -114,10 +114,8 @@ export function Gamepage_r() {
     if (!canvasRef.current) return;
     const existingSocket = getSocket();
     const roomData = localStorage.getItem('private_game_data');
-    
     console.log("Gamepage_r initializing with socket:", !!existingSocket);
     console.log("Room data available:", !!roomData);
-    
       initGame_remot(
         canvasRef.current, 
         existingSocket as any, 
@@ -125,16 +123,30 @@ export function Gamepage_r() {
       );
       const interval = setInterval(() => {
       const data = getRemoteGameState();
-      
       setPlayer1Score(data.score1);
       setPlayer2Score(data.score2);
       setPlayer1Name(data.player1Username);
       setPlayer2Name(data.player2Username);
-      
+      if (data.winner !== null && data.winner !== lastWinnerRef.current) {
+        lastWinnerRef.current = data.winner;
+
+        const winner = data.winner;
+        const opponent_username = data.player1Username;
+        const opp_id = data.oppid;
+        const user_score = data.score1;
+        const opp_score = data.score2;
+        const match_type = "REMOTE";
+
+        gameResults({ winner, opponent_username });
+        gamescore({ opponent_username, user_score, opp_score,opp_id, match_type });
+      }
+      else if (data.winner === null && lastWinnerRef.current !== null) {
+        lastWinnerRef.current = null;
+      }
     }, 100);
       return () => {
       clearInterval(interval);
-      cleanupGame(); // Cleanup game on unmount
+      cleanupGame();
       console.log("Game Cleaned Up");
     };
   }, []);
@@ -212,11 +224,12 @@ export function Gamepage_i(userdata: any) {
         const winner = data.aiwinner;
         const opponent_username = "AI";
         const user_score = data.playerscore;
+        const opp_id = -1;
         const opp_score = data.aiscore;
         const match_type = "AI";
         gameResults({ winner, opponent_username });
         console.log("hadxiiiii li 3ndi f front ::::: ", opponent_username, user_score, opp_score, match_type);
-        gamescore({ opponent_username, user_score, opp_score, match_type });
+        gamescore({ opponent_username, user_score, opp_score,opp_id, match_type });
       }
       else if (data.aiwinner === null && lastWinnerRef.current !== null) {
         lastWinnerRef.current = null;
@@ -274,7 +287,7 @@ export async function gameResults(data: {
   winner: string;
   opponent_username: string;
 }) {
-  const response = await fetch(`${API_URL}/api/stats/game_results`, {
+  const response = await fetch(`https://10.13.249.23:3010/api/stats/game_results`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -288,10 +301,11 @@ export async function gamescore(data: {
   opponent_username: string;
   user_score: number;
   opp_score: number;
+  opp_id: number;
   match_type: string;
 }) {
   console.log("game score g front:: ", data.opponent_username, data.user_score, data.opp_score, data.match_type);
-  const response = await fetch(`${API_URL}/api/history/new_score`, {
+  const response = await fetch(`https://10.13.249.23:3010/api/history/new_score`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

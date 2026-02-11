@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { FiEdit2, FiUser, FiShield } from "react-icons/fi";
 import { IoLogOutOutline } from "react-icons/io5";
 import { logoutUser } from './socketService';
-import { API_URL } from "./Api";
 
 interface intersetting {
   user: any;
@@ -11,19 +10,19 @@ interface intersetting {
   gotohome: () => void;
 }
 
-// const handleLogout = async () => {
-//   try {
-//     await fetch(`${API_URL}/api/logout`, {
-//       method: "POST",
-//       credentials: "include",
-//     });
+const handleLogout = async () => {
+  try {
+    await fetch("https://10.13.249.23:3010/api/logout", {
+      method: "POST",
+      credentials: "include",
+    });
 
-//     // redirect after logout
-//     window.location.href = "/login"; // or /signup
-//   } catch (err) {
-//     console.error("Logout failed", err);
-//   }
-// };
+    // redirect after logout
+    window.location.href = "/login"; // or /signup
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
+};
 
 
 function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
@@ -34,7 +33,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
         logoutUser(user.id, user.username);
       }
 
-      const logo = await fetch(`${API_URL}/api/logout`, {
+      const logo = await fetch('https://10.13.249.23:3010/api/logout', {
         method: 'POST',
         credentials: 'include',
       })
@@ -72,7 +71,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
     }
     else {
       try {
-        const res = await fetch(`${API_URL}/api/2fa/disable`, {
+        const res = await fetch("https://10.13.249.23:3010/api/2fa/disable", {
           method: "POST",
           credentials: "include",
         });
@@ -148,7 +147,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
       return;
     }
     try {
-      const response = await fetch(`${API_URL}/api/profile`, {
+      const response = await fetch('https://10.13.249.23:3010/api/profile', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -184,7 +183,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
   const enable2FA = async (mthd: "authenticator") => {
     try {
 
-      const res = await fetch(`${API_URL}/api/2fa/enable`, {
+      const res = await fetch("https://10.13.249.23:3010/api/2fa/enable", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -241,7 +240,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/2fa/authenticator/verify`, {
+      const res = await fetch("https://10.13.249.23:3010/api/2fa/authenticator/verify", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

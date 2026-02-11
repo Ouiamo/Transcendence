@@ -2,7 +2,6 @@ import { IoGridOutline, IoGameControllerOutline, IoSettingsOutline, IoPersonCirc
 import { FaUsers } from "react-icons/fa";
 import { Trophy } from 'lucide-react';
 import { logoutUser } from './socketService';
-import { API_URL } from "./Api";
 
 interface sideb {
     user_: any;
@@ -26,7 +25,7 @@ const active = localStorage.getItem('sidebar-active');
                 logoutUser(user_.id, user_.username);
             }
 
-            const logo = await fetch(`${API_URL}/api/logout`, {
+            const logo = await fetch('https://10.13.249.23:3010/api/logout', {
                 method: 'POST',
                 credentials: 'include',
             })

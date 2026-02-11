@@ -4,7 +4,6 @@ import { IoPersonCircleOutline } from "react-icons/io5";
 import { FaGoogle } from "react-icons/fa";
 import { Si42 } from "react-icons/si";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { API_URL } from "./Api";
 interface Logintest {
     gotohome: () => void;
     gotoDASHBOARD: () => void;
@@ -18,14 +17,19 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
     const [passlogin, setpasslogin] = useState('');
     const [gmailogin, setgmailogin] = useState('');
 localStorage.setItem('page', 'LOGIN');
+
+    const openApiCertificate = () => {
+        window.open('https://10.13.249.23:3010', '_blank');
+    };
+
     const handel_auth_goole = async () => {
-        window.location.href = '/api/auth/google'  //backend
+        window.location.href = 'https://10.13.249.23:3010/api/auth/google'  //backend
         console.log("haniiiiiiiiiiiiiiiiiiiiiiii google");
         gotoDASHBOARD();
 
     }
     const handel_auth_42 = async () => {
-        window.location.href = ('/api/auth/42');
+        window.location.href = ('https://10.13.249.23:3010/api/auth/42');
         gotoDASHBOARD();
     }
     const handelLogin = async () => {
@@ -40,7 +44,7 @@ localStorage.setItem('page', 'LOGIN');
             if (result.twofa_required) {
                 if (result.method === "authenticator" && result.twofa_enabled) {
                      try {
-                    const res1 = await fetch(`${API_URL}/api/profile`, {
+                    const res1 = await fetch('https://10.13.249.23:3010/api/profile', {
                         method: 'GET',
                         credentials: 'include',
                     });
@@ -63,7 +67,7 @@ localStorage.setItem('page', 'LOGIN');
             else if (result.success) {
                 alert("login sucess");
                 try {
-                    const res = await fetch(`${API_URL}/api/profile`, {
+                    const res = await fetch('https://10.13.249.23:3010/api/profile', {
                         method: 'GET',
                         credentials: 'include',
                     });
@@ -84,7 +88,10 @@ localStorage.setItem('page', 'LOGIN');
             }
         }
         catch (erro) {
-            alert("🚨 Server erroreeeeeeeeeeeee");
+            const shouldOpenCert = confirm("Connection failed. You need to accept the security certificate for the API server.\n\nClick OK to open the API page in a new tab, accept the certificate, then close that tab and try again.");
+            if (shouldOpenCert) {
+                openApiCertificate();
+            }
         }
 
     }
@@ -96,6 +103,12 @@ localStorage.setItem('page', 'LOGIN');
                 </div>
                 <p className="text-white text-[25px] font-[900] glow-text  ">Login</p>
                 <p className="text-[#c44cff] text-[14px] ">Welcome! Log in to your account</p>
+                <button
+                    onClick={openApiCertificate}
+                    className="text-[#ff44ff]/60 text-[9px] underline hover:text-[#ff44ff] transition-all"
+                >
+                    First time? Click here to enable API access
+                </button>
             </header>
             <section className="flex flex-col gap-[20px] bg-red-500/10 ">
                 <div className="flex flex-col  ">

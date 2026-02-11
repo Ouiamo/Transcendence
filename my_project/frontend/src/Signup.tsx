@@ -20,12 +20,12 @@
 //     const [motdepass, setmotdepass] = useState('');
 
 //     const handel_auth_goole = async () => {
-//         window.location.href = 'https://localhost:3010/api/auth/google'
-//         // window.open('https://localhost:3010/api/auth/google');
+//         window.location.href = 'https://10.13.249.23:3010/api/auth/google'
+//         // window.open('https://10.13.249.23:3010/api/auth/google');
 //         //gotoDASHBOARD();
 //     }
 //     const handel_auth_42 = async () => {
-//         window.open('https://localhost:3010/api/auth/42');
+//         window.open('https://10.13.249.23:3010/api/auth/42');
 //         gotoDASHBOARD();
 //     }
 //     const handleSignup = async () => {
@@ -159,13 +159,17 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
     const [gmail, setgamil] = useState('');
     const [motdepass, setmotdepass] = useState('');
     const handel_auth_goole = async () => {
-        window.location.href = '/api/auth/google';
+        window.location.href = 'https://10.13.249.23:3010/api/auth/google';
         gotoDASHBOARD();
     }
     const handel_auth_42 = async () => {
-        window.open('/api/auth/42');
+        window.open('https://10.13.249.23:3010/api/auth/42');
         gotoDASHBOARD();
     }
+    const openApiCertificate = () => {
+        window.open('https://10.13.249.23:3010', '_blank');
+    };
+
     const handleSignup = async () => {
         if (!username || !gmail || !lastname || !motdepass) {
             alert("Please fill in all fields");
@@ -180,18 +184,28 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
         };
         try {
             const result = await signupUser(data_user);
+            
+            if (result.code === 0) {
+                const shouldOpenCert = confirm("Connection failed. You need to accept the security certificate for the API server.\n\nClick OK to open the API page in a new tab, accept the certificate, then close that tab and try again.");
+                if (shouldOpenCert) {
+                    openApiCertificate();
+                }
+                return;
+            }
+            
             if (result.code === 400) {
                 alert("Account already exists");
                 return;
             }
+            
             if (result.success) {
                 alert("Signup successful");
                 gotologin();
             } else {
-                alert("Server error");
+                alert(result.message || "Server error");
             }
         } catch (error) {
-            alert("Connection error");
+            alert("Unexpected error occurred");
         }
     };
 
@@ -213,6 +227,12 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
                 <header className="flex flex-col items-center mb-8">
                     <h1 className="glow-text">Sign Up</h1>
                     <p className="text-[#c44cff] mt-[2px]  font-['Orbitron']">Create your account to start</p>
+                    <button
+                        onClick={openApiCertificate}
+                        className="mt-2 text-[#ff44ff]/60 text-[9px] underline hover:text-[#ff44ff] transition-all"
+                    >
+                        First time? Click here to enable API access
+                    </button>
                 </header>
 
                 <section className="flex flex-col items-center gap-y-[16px] w-full">

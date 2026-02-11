@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { FaTrophy, FaSkull, FaGamepad, FaPercentage } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { logoutUser } from './socketService';
-import { API_URL } from "./Api";
 
 function SmallStatCard({ icon, value, label }: any) {
   return (
@@ -44,6 +43,7 @@ interface History {
   opp_username: string;
   user_score: number;
   opp_score: number;
+  opp_avatar: string;
   match_type: string;
   isWin: boolean;
 }
@@ -58,7 +58,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
       if (user && user.id && user.username) {
         logoutUser(user.id, user.username);
       }
-      const logo = await fetch(`${API_URL}/api/logout`, {
+      const logo = await fetch('https://10.13.249.23:3010/api/logout', {
         method: 'POST',
         credentials: 'include',
       })
@@ -81,21 +81,21 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
   const [userRank, setRank] = useState<number>(0);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/stats`, { credentials: "include" })
+    fetch('https://10.13.249.23:3010/api/stats', { credentials: "include" })
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/history/get_history`, { credentials: "include" })
+    fetch('https://10.13.249.23:3010/api/history/get_history', { credentials: "include" })
       .then(res => res.json())
       .then(data => setHistory(data))
       .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/stats/user_ranking`, { credentials: "include" })
+    fetch('https://10.13.249.23:3010/api/stats/user_ranking', { credentials: "include" })
       .then(res => res.json())
       .then(data => setRank(data))
       .catch(err => console.error(err));
@@ -145,14 +145,13 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 
         <div className="flex items-center gap-[20px] mb-[10px]">
           <div className="w-[80px] h-[80px] rounded-full border-2 border-[#c44cff] overflow-hidden animate__animated animate__flip">
-<img
-  src={user.avatarUrl}
-  referrerPolicy="no-referrer"
-  crossOrigin="anonymous"
-  className="w-full h-full object-cover aspect-square"
-/>
-</div>
-
+            <img
+              src={user.avatarUrl}
+              referrerPolicy="no-referrer"
+              crossOrigin="anonymous"
+              className="w-full h-full object-cover aspect-square"
+            />
+          </div>
           <div>
             <div className="flex items-center gap-[12px]">
               <h2 className="text-3xl font-bold">{user.username}</h2>
@@ -160,10 +159,10 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 onClick={gotosetting}
                 className="group relative p-[2px] bg-transparent cursor-pointer no-underline outline-none border-none border-0 focus:ring-0"
               >
-                <FiEdit className="text-[#c44cff] group-hover:scale-110 transition-transform   transition-all duration-300 ease-in-out uppercase font-bold text-xs tracking-widest active:scale-95 
-    hover:text-[#ffff] 
-    hover:shadow-[0_0_20px_rgba(196,76,255,0.6),0_0_40px_rgba(196,76,255,0.2)]
-    hover:border-white" size={20} />
+              <FiEdit className="text-[#c44cff] group-hover:scale-110 transition-transform   transition-all duration-300 ease-in-out uppercase font-bold text-xs tracking-widest active:scale-95 
+                hover:text-[#ffff] 
+                hover:shadow-[0_0_20px_rgba(196,76,255,0.6),0_0_40px_rgba(196,76,255,0.2)]
+                hover:border-white" size={20} />
               </button>
             </div>
             <p className="text-gray-400 text-sm">
@@ -178,7 +177,6 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
             </div>
           </div>
         </div>
-
         <button
           onClick={logout}
           className="
@@ -196,12 +194,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
           LOGOUT
         </button>
       </div>
-
-
       <div className="max-w-5xl mx-auto flex flex-row flex-wrap gap-[12px] mt-[20px]">
-
-
-
         <SmallStatCard
           icon={<FaGamepad className="text-[#00F7FF] " size={24} />}
           value={stats?.total_matches}
@@ -235,28 +228,24 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
           <AchievementCard
             title="First Victory"
             desc="Win your first match"
-
-          />
-
-          <AchievementCard
-            title="Century Club"
-            desc="Play 100 games"
-
           />
 
           <AchievementCard
             title="Perfect Game"
             desc="Win 11-0"
           />
-
+            <AchievementCard
+              title="Legend"
+              desc="Reach top 10 leaderboard"
+            />
           <AchievementCard
-            title="Legend"
-            desc="Reach top 10 leaderboard"
+            title="Century Club"
+            desc="Play 100 games"
+
           />
 
         </div>
       </div>
-
       <div className=" mx-auto mt-[10px] px-[px] sm:px-0   " >
         <h3 className="text-xl font-bold mb-4">Match History</h3>
 
@@ -266,7 +255,6 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
               key={index}
               className="flex items-center justify-between border border-[#c44cff]/50 p-[12px] sm:p-4 rounded-[12px] group w-full"
             >
-
               <div className="flex items-center gap-[12px] sm:gap-[4px] flex-[1.5] min-w-0">
                 <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
                   <img
@@ -287,7 +275,6 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 </div>
               </div>
 
-
               <div className="flex flex-col items-center flex-1">
                 <div className="text-lg sm:text-2xl font-black text-white flex items-center gap-[2px] sm:gap-[3px]">
                   <span className={match.isWin ? 'text-[#00ff88]' : 'text-white'}>{match.user_score}</span>
@@ -297,32 +284,36 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 <p className="text-[10px] sm:text-[14px] text-gray-500 uppercase font-bold tracking-[1px] sm:tracking-[2px]">Score</p>
               </div>
 
-
               <div className="flex items-center gap-[12px] sm:gap-[4px] flex-[1.5] min-w-0 justify-end">
                 <div className="flex flex-col min-w-0 items-end ">
                   <h4 className="text-white font-bold text-xs sm:text-sm uppercase tracking-wide truncate">
                     {match.opp_username}
                   </h4>
-                  <div className={`px-[2px] py-[1px] rounded-lg font-black text-[9px] sm:text-[12px] shadow-sm ${match.isWin
+                  {/* <div className={`px-[2px] py-[1px] rounded-lg font-black text-[9px] sm:text-[12px] shadow-sm ${match.isWin
                     ? 'bg-[#00ff88]/10 text-[#00ff88] border border-[#00ff88]/20'
                     : 'bg-[#ff4444]/10 text-[#ff4444] border border-[#ff4444]/20'
                     }`}>
                     {match.isWin ? 'VICTORY' : 'DEFEAT'}
-                  </div>
+                  </div> */}
                 </div>
                 <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-[2px] p-[2px] border-[#c44cff]`}>
-                  <img
-                    src={match.opp_username === 'AI' ? `/api/avatar/file/ia.png` : `/api/avatar/file/guest.png`}
-                    alt="opponent"
-                    className="w-full h-full rounded-full object-cover bg-[#1a1033]"
-                  />
+        <img
+          src={
+            match.match_type === 'AI' 
+              ? `https://10.13.249.23:3010/api/avatar/file/ia.png` 
+              : match.match_type === 'LOCAL'
+              ? `https://10.13.249.23:3010/api/avatar/file/guest.png`
+              : match.opp_avatar
+          }
+          alt="opponent"
+          className="w-full h-full rounded-full object-cover bg-[#1a1033]"
+        />
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-
     </div>
 
   );
@@ -339,7 +330,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 //   useEffect(() => {
 //     const fetchStats = async () => {
 //       try {
-//         const res = await fetch(`${API_URL}/api/stats', { credentials: "include" });
+//         const res = await fetch('https://10.13.249.23:3010/api/stats', { credentials: "include" });
 //         if (res.ok) {
 //           const data = await res.json();
 //           setStats(data);
@@ -352,7 +343,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 //   useEffect(() => {
 //     const fetchHistory = async () => {
 //       try {
-//         const res = await fetch(`${API_URL}/api/history/get_history', { credentials: "include" });
+//         const res = await fetch('https://10.13.249.23:3010/api/history/get_history', { credentials: "include" });
 //         if (res.ok) {
 //           const data = await res.json();
 //           setHistory(data);
@@ -426,7 +417,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 //         {/* 1. Left: Opponent Info */}
 //         <div className="flex items-center p-[10px] gap-[10px] flex-1">
 //           <div className={`w-[50px] h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
-//             <img src={match.opp_username === 'AI' ? `https://localhost:3010/api/avatar/file/ia.png` : `https://localhost:3010/api/avatar/file/guest.png`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
+//             <img src={match.opp_username === 'AI' ? `https://10.13.249.23:3010/api/avatar/file/ia.png` : `https://10.13.249.23:3010/api/avatar/file/guest.png`}  alt="opponent" className="w-full h-full rounded-full object-cover bg-[#1a1033]" />
 //           </div>
 //           <div className="flex flex-col">
 //             <h4 className="text-white font-bold text-[14px] uppercase tracking-wide">{match.opp_username}</h4>

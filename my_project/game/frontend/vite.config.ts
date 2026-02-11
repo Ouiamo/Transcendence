@@ -5,7 +5,7 @@ export default defineConfig({
     host: true,
     allowedHosts: [
       '.loca.lt',
-      'localhost'
+      '10.13.249.23'
     ]
   }
 })

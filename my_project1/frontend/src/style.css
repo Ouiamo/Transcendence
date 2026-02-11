@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #0d0221; 
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #0d0221 inset !important; 
+  -webkit-text-fill-color: white !important; 
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.shrink-img {
+  width: 20px;
+  height: auto;
+}
+.glow-input:focus {
+  border-color: #d86bff !important;
+  box-shadow: 0 0 10px #d86bff, 0 0 20px #a855f7;
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
+/* لمنع المتصفح من تغيير اللون عند الكتابة أو الـ Autofill */
+.glow-input:-webkit-autofill,
+.glow-input:-webkit-autofill:hover, 
+.glow-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: white !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0d0221 inset !important; /* يحافظ على خلفية غامقة */
+  transition: background-color 5000s ease-in-out 0s;
+}
+/* optional glow */
+.glow-text {
+  text-shadow:
+    0 0 10px #d86bff,
+    0 0 20px #d86bff,
+    0 0 40px #a855f7;
+}
+
+
+@keyframes profile-entry {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.animate-profile {
+  animation: profile-entry 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #0d0221; 
+  color: white;
+  font-family: sans-serif;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px #0d0221 inset !important; 
+    -webkit-text-fill-color: white !important; 
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.shrink-img {
+  width: 20px;
+  height: auto; /* Ensures the aspect ratio is preserved */
+  /* Or use object-fit if you need specific container fitting */
+  /* object-fit: cover; */ 
+/* } */ 

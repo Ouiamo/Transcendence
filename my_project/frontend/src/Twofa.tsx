@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { API_URL } from "./Api";
 interface twotinter{
   gotoDASHBOARD :()=>void;
   gotohome : ()=>void;
@@ -9,7 +8,8 @@ function Twofa( {gotoDASHBOARD, gotohome}:twotinter)  {
     const verify_twofa= async(code: string) =>{
     try {
           console.log(" code isssss ________________-+ ", code);
-          const res = await fetch(`${API_URL}/api/2fa/authenticator/verify`,
+          const res = await fetch(
+          "https://10.13.249.23:3010/api/2fa/authenticator/verify",
           {
             method: "POST",
             credentials: "include",

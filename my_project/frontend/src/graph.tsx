@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Line, Doughnut } from "react-chartjs-2";
-import { API_URL } from "./Api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,9 +10,8 @@ import {
   Tooltip,
   Legend,
   ArcElement,
-  Filler,
 } from 'chart.js';
-import type { ChartOptions, TooltipItem } from 'chart.js';
+import type { ChartOptions } from 'chart.js';
 
 // Register Chart.js components
 ChartJS.register(
@@ -24,8 +22,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement,
-  Filler
+  ArcElement
 );
 
 interface Stats {
@@ -49,7 +46,7 @@ function StatsCharts() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch(`${API_URL}/api/stats`, {
+        const res = await fetch('https://10.13.249.23:3010/api/stats', {
           method: 'GET',
           credentials: 'include',
         });
@@ -59,7 +56,7 @@ function StatsCharts() {
           setStats(data);
         }
 
-        const History_res = await fetch(`${API_URL}/api/history/is_win`, {
+        const History_res = await fetch('https://10.13.249.23:3010/api/history/is_win', {
           method: 'GET',
           credentials: 'include',
         });
@@ -94,7 +91,7 @@ function StatsCharts() {
         label: 'Win Rate',
         data: [stats.wins, stats.loss],
         backgroundColor: [
-          'rgba(158, 154, 175, 1)',  // rgb(255, 119, 255)
+          'rgba(158, 154, 175, 1)',
           'rgba(180, 84, 224, 0.84)',
         ],
         borderColor: [
@@ -131,7 +128,7 @@ function StatsCharts() {
       },
       tooltip: {
         callbacks: {
-          label: function(context: TooltipItem<'doughnut'>) {
+          label: function(context) {
             const label = context.label || '';
             const value = context.parsed || 0;
             const percentage = stats.win_rate;

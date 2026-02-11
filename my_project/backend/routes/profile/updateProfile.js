@@ -90,7 +90,7 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
       fields.push('avatar_url = ?');
       if(user.provider !== 'local') {
         // return reply.code(400).send({ error: 'Avatar can only be updated for local accounts' });
-         fileName = `/api/avatar/file/${fileName}`;
+         fileName = `https://10.13.249.23:3010/api/avatar/file/${fileName}`;
         values.push(fileName);
       }
       else 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Trophy, Award, Medal } from 'lucide-react';
-import { API_URL } from "./Api";
 
 interface User {
     user_id: number;
@@ -20,7 +19,7 @@ export function Leaderboard() {
     useEffect(() => {
         const fetchRanking = async () => {
             try {
-                const res = await fetch(`${API_URL}/api/ranking`, {
+                const res = await fetch('https://10.13.249.23:3010/api/ranking', {
                     method: 'GET',
                     credentials: 'include',
                 });

@@ -19,7 +19,7 @@ fastify.get('/api/ranking', async (request, reply) => {
         `);
         stats.forEach((element) => {
             if (element.provider === "local")
-                element.avatar_url = "https://localhost:3010/api/avatar/file/" + element.avatar_url;
+                element.avatar_url = "/api/avatar/file/" + element.avatar_url;
         });
         console.log("haaaa elements ",stats);
     return reply.send(stats);

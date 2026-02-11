@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_URL } from "./Api";
 // import { FiGlobe, } from "react-icons/fi";
 // import { IoGameControllerOutline } from "react-icons/io5";
 import { FiTarget, FiAward, FiZap, FiMonitor, FiWifi } from "react-icons/fi";
@@ -75,7 +76,7 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
       const [stats, setStats] = useState<Stats | null>(null);
 
      useEffect(() => {
-        fetch('https://localhost:3010/api/stats', { credentials: "include" })
+        fetch(`${API_URL}/api/stats`, { credentials: "include" })
           .then(res => res.json())
           .then(data => setStats(data))
           .catch(err => console.error(err));

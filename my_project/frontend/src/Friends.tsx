@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { OnlineUsers, onOnlineUsersChange } from './socketService.tsx';
+import { API_URL } from "./Api";
 
 function Friends() {
     localStorage.setItem('page', 'FRIENDS');
@@ -36,14 +37,14 @@ function Friends() {
 
     const accept_invitation = async (requestId: any) => {
         try {
-            const accept = await fetch("https://localhost:3010/api/friends/accept", {
+            const accept = await fetch(`${API_URL}/api/friends/accept`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ requestId: requestId }),
                 credentials: 'include'
             });
             if (accept.ok) {
-                const acc = await accept.json();
+                // const acc = await accept.json();
                 setappendfriend((prev) => prev.filter((item) => item.request_id !== requestId));
                 alert("Friend accepted! 🎉");
                 fetchFriends();
@@ -57,7 +58,7 @@ function Friends() {
 
     const appending_f = async () => {
         try {
-            const app = await fetch("https://localhost:3010/api/friends/requests", {
+            const app = await fetch(`${API_URL}/api/friends/requests`, {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -82,7 +83,7 @@ function Friends() {
         console.log("🔍 Starting search for:", searchText);
         
         try {
-            const response = await fetch(`https://localhost:3010/api/users/search/${encodeURIComponent(searchText)}`, {
+            const response = await fetch(`${API_URL}/api/users/search/${encodeURIComponent(searchText)}`, {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -110,7 +111,7 @@ function Friends() {
 
     const fetchFriends = async () => {
         try {
-            const response = await fetch('https://localhost:3010/api/friends', {
+            const response = await fetch(`${API_URL}/api/friends`, {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -133,7 +134,7 @@ function Friends() {
         }
 
         try {
-            const response = await fetch('https://localhost:3010/api/friends/invitation', {
+            const response = await fetch(`${API_URL}/api/friends/invitation`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendUsername: new_f }),
@@ -165,7 +166,7 @@ function Friends() {
         if (!confirm("Are you sure you want to remove this friend?")) return;
         
         try {
-            const del = await fetch('https://localhost:3010/api/friends/remove', {
+            const del = await fetch(`${API_URL}/api/friends/remove`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ friendId: id }),
@@ -183,11 +184,11 @@ function Friends() {
         }
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            serch(searchfriend);
-        }
-    };
+    // const handleKeyPress = (e: React.KeyboardEvent) => {
+    //     if (e.key === 'Enter') {
+    //         serch(searchfriend);
+    //     }
+    // };
 
         return (
         <div className=" bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] p-[100px] overflow-auto">

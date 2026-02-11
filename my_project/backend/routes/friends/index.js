@@ -143,7 +143,7 @@ module.exports = async function(fastify, options) {
         let fullAvatarUrl = null;
         if (user.avatar_url) {
           if (user.provider === 'local') {
-            fullAvatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
+            fullAvatarUrl = `/api/avatar/file/${user.avatar_url}`;
           } else {
             fullAvatarUrl = user.avatar_url;
           }
@@ -241,7 +241,7 @@ module.exports = async function(fastify, options) {
           let avatarUrl = null;
           if (friend.avatar_url) {
             if (friend.provider === 'local') {
-              avatarUrl = `https://localhost:3010/api/avatar/file/${friend.avatar_url}`;
+              avatarUrl = `/api/avatar/file/${friend.avatar_url}`;
             } else {
               avatarUrl = friend.avatar_url;
             }
@@ -318,7 +318,7 @@ module.exports = async function(fastify, options) {
             
             let fullAvatarUrl = user.avatar_url;
             if (user.avatar_url && user.provider === 'local') {
-                fullAvatarUrl = `https://localhost:3010/api/avatar/file/${user.avatar_url}`;
+                fullAvatarUrl = `/api/avatar/file/${user.avatar_url}`;
             }
             
             formattedUsers.push({

@@ -54,12 +54,12 @@ const aiball = {
     stepY : 5,
 };
 
-const aiscore={
-    x_l : aiboardWidth/4,
-    x_r : 3 * aiboardWidth/4,
-    y : aiboardHeight/8,
-    color: "white",
-}
+// const aiscore={
+//     x_l : aiboardWidth/4,
+//     x_r : 3 * aiboardWidth/4,
+//     y : aiboardHeight/8,
+//     color: "white",
+// }
 
 const aikeys: {[key:string] : boolean}={
     'ArrowUp' : false,
@@ -351,16 +351,16 @@ function aidrawBall(x: number, y: number, radius: number, color:string)
     aicontex.shadowBlur = 0;
 }
 
-function aidrawScore(x: number, y:number, score: number, color: string, player: string)
-{
-    if (!aicontex) return;
-    aicontex.fillStyle = color;
-    aicontex.font = "48px Arial";
-    aicontex.textAlign = "center";
-    // console.log("player is  ", player);
-    aicontex.fillText(player, x, y);
-    aicontex.fillText(score.toString(), x, y + 50);
-}
+// function aidrawScore(x: number, y:number, score: number, color: string, player: string)
+// {
+//     if (!aicontex) return;
+//     aicontex.fillStyle = color;
+//     aicontex.font = "48px Arial";
+//     aicontex.textAlign = "center";
+//     // console.log("player is  ", player);
+//     aicontex.fillText(player, x, y);
+//     aicontex.fillText(score.toString(), x, y + 50);
+// }
 
 function aidrawCountDown()
 {

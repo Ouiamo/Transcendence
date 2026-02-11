@@ -1,7 +1,12 @@
 // const API_URL = `https://${import.meta.env.VITE_API_URL || 'localhost:3010'}`; // kant backend
-const API_URL = 'https://localhost:3010'
-// export function showMessage(app: HTMLElement, text: string, type: 'success' | 'error' = 'error') {
-//     const msg = document.createElement('div');
+// const API_URL = 'https://localhost:3010'
+// const devUrl = import.meta.env.VITE_API_URL;
+
+// In production, use relative path so NGINX can proxy /api
+// export const API_URL = import.meta.env.MODE === "development" ? devUrl : "/api"; //     const msg = document.createElement('div');
+// api.tsx
+export const API_URL = ""; // empty, use relative
+
 //     msg.className = `message ${type}`;
 //     msg.textContent = text;
 //     app.appendChild(msg);

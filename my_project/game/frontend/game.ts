@@ -54,12 +54,12 @@ const ball = {
     stepY : 5,
 };
 
-const score={
-    x_l : boardWidth/4,
-    x_r : 3 * boardWidth/4,
-    y : boardHeight/8 ,
-    color: "white",
-}
+// const score={
+//     x_l : boardWidth/4,
+//     x_r : 3 * boardWidth/4,
+//     y : boardHeight/8 ,
+//     color: "white",
+// }
 
 const keys: {[key:string] : boolean}={
     'w' : false,
@@ -363,15 +363,15 @@ function drawBall(x: number, y: number, radius: number, color:string)
 
 //draw score
 
-function drawScore(x: number, y:number, score: number, color: string, player:string)
-{
-    if (!contex) return;
-    contex.fillStyle = color;
-    contex.font = "48px Arial";
-    contex.textAlign = "center";
-    contex.fillText(player, x, y);
-    contex.fillText(score.toString(), x, y+50);
-}
+// function drawScore(x: number, y:number, score: number, color: string, player:string)
+// {
+//     if (!contex) return;
+//     contex.fillStyle = color;
+//     contex.font = "48px Arial";
+//     contex.textAlign = "center";
+//     contex.fillText(player, x, y);
+//     contex.fillText(score.toString(), x, y+50);
+// }
 
 function drawCountDown()
 {

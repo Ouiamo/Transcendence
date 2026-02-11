@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Line, Doughnut } from "react-chartjs-2";
+import { API_URL } from "./Api";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,8 +11,9 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  Filler,
 } from 'chart.js';
-import type { ChartOptions } from 'chart.js';
+import type { ChartOptions, TooltipItem } from 'chart.js';
 
 // Register Chart.js components
 ChartJS.register(
@@ -22,7 +24,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
+  Filler
 );
 
 interface Stats {
@@ -46,7 +49,7 @@ function StatsCharts() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('https://localhost:3010/api/stats', {
+        const res = await fetch(`${API_URL}/api/stats`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -56,7 +59,7 @@ function StatsCharts() {
           setStats(data);
         }
 
-        const History_res = await fetch('https://localhost:3010/api/history/is_win', {
+        const History_res = await fetch(`${API_URL}/api/history/is_win`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -81,7 +84,7 @@ function StatsCharts() {
   }
 
   if (!stats) {
-    return <div className="text-center p-4">errooooooooooooooooor</div>;
+    return <div className="text-center p-4"></div>;
   }
 
   const donutData = {
@@ -128,7 +131,7 @@ function StatsCharts() {
       },
       tooltip: {
         callbacks: {
-          label: function(context) {
+          label: function(context: TooltipItem<'doughnut'>) {
             const label = context.label || '';
             const value = context.parsed || 0;
             const percentage = stats.win_rate;

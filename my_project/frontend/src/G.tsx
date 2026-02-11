@@ -3,6 +3,7 @@ import { initGame, getLocalWinner } from "../../game/frontend/game";
 import { initGame_remot, cleanupGame, getRemoteGameState } from "../../game/frontend/remoteGame";
 import { aiinitGame, getaiWinner } from "../../game/frontend/aigame";
 import { getSocket } from "./socketService";
+import { API_URL } from "./Api";
 
 
 export function GamePage(userdata: any) {
@@ -102,7 +103,7 @@ export function GamePage(userdata: any) {
 
 export function Gamepage_r() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const lastWinnerRef = useRef<string | null>(null);
+  // const lastWinnerRef = useRef<string | null>(null);
   
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
@@ -273,7 +274,7 @@ export async function gameResults(data: {
   winner: string;
   opponent_username: string;
 }) {
-  const response = await fetch(`https://localhost:3010/api/stats/game_results`, {
+  const response = await fetch(`${API_URL}/api/stats/game_results`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -290,7 +291,7 @@ export async function gamescore(data: {
   match_type: string;
 }) {
   console.log("game score g front:: ", data.opponent_username, data.user_score, data.opp_score, data.match_type);
-  const response = await fetch(`https://localhost:3010/api/history/new_score`, {
+  const response = await fetch(`${API_URL}/api/history/new_score`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

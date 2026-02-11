@@ -159,11 +159,11 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
     const [gmail, setgamil] = useState('');
     const [motdepass, setmotdepass] = useState('');
     const handel_auth_goole = async () => {
-        window.location.href = 'https://localhost:3010/api/auth/google';
+        window.location.href = '/api/auth/google';
         gotoDASHBOARD();
     }
     const handel_auth_42 = async () => {
-        window.open('https://localhost:3010/api/auth/42');
+        window.open('/api/auth/42');
         gotoDASHBOARD();
     }
     const handleSignup = async () => {

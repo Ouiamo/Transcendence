@@ -1,6 +1,7 @@
 import './style.css';
+import { API_URL } from "./Api";
 import { useEffect,useState } from 'react';
-import { useRef } from "react";
+// import { useRef } from "react";
 import Twofa from './Twofa.tsx';
 import Signup from './Signup';
 import Home from './Home'
@@ -154,7 +155,7 @@ useEffect(() => {
   // console.log("items is ^^^^^^^^^^^^^ ", twofa);
   const checkSession = async () => {
     try {
-      const res = await fetch('https://localhost:3010/api/profile', {
+      const res = await fetch(`${API_URL}/api/profile`, {
         method: 'GET',
         credentials: 'include',
       });
@@ -481,7 +482,7 @@ export default App;
 //   useEffect(() => {
 //     const checkSession = async () => {
 //       try {
-//         const res = await fetch('https://localhost:3010/api/profile', {
+//         const res = await fetch(`${API_URL}/api/profile', {
 //           method: 'GET',
 //           credentials: 'include',
 //         });

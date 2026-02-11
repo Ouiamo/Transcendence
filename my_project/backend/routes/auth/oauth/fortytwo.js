@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const { dbGet, dbRun } = require('../../../utils/dbHelpers');
 
 require('dotenv').config();
-const backendUrl = process.env.BACKEND_URL || 'https://localhost:3010'
+const backendUrl = process.env.BACKEND_URL || 'https://localhost'
 
 module.exports = async function (fastify) {
 

@@ -111,7 +111,7 @@ fastify.get('/api/game/invitations', async (request, reply) => {
       sender_id: inv.sender_id,
       sender_username: inv.sender_username,
       avatarUrl: inv.provider === 'local' 
-        ? `https://localhost:3010/api/avatar/file/${inv.avatar_url}`
+        ? `/api/avatar/file/${inv.avatar_url}`
         : inv.avatar_url,
       created_at: inv.created_at
     }));

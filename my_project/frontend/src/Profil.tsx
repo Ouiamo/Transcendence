@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { FaTrophy, FaSkull, FaGamepad, FaPercentage } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { logoutUser } from './socketService';
+import { API_URL } from "./Api";
 
 function SmallStatCard({ icon, value, label }: any) {
   return (
@@ -57,7 +58,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
       if (user && user.id && user.username) {
         logoutUser(user.id, user.username);
       }
-      const logo = await fetch('https://localhost:3010/api/logout', {
+      const logo = await fetch(`${API_URL}/api/logout`, {
         method: 'POST',
         credentials: 'include',
       })
@@ -80,21 +81,21 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
   const [userRank, setRank] = useState<number>(0);
 
   useEffect(() => {
-    fetch('https://localhost:3010/api/stats', { credentials: "include" })
+    fetch(`${API_URL}/api/stats`, { credentials: "include" })
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
-    fetch('https://localhost:3010/api/history/get_history', { credentials: "include" })
+    fetch(`${API_URL}/api/history/get_history`, { credentials: "include" })
       .then(res => res.json())
       .then(data => setHistory(data))
       .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
-    fetch('https://localhost:3010/api/stats/user_ranking', { credentials: "include" })
+    fetch(`${API_URL}/api/stats/user_ranking`, { credentials: "include" })
       .then(res => res.json())
       .then(data => setRank(data))
       .catch(err => console.error(err));
@@ -311,7 +312,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 </div>
                 <div className={`flex-shrink-0 w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full border-[2px] p-[2px] border-[#c44cff]`}>
                   <img
-                    src={match.opp_username === 'AI' ? `https://localhost:3010/api/avatar/file/ia.png` : `https://localhost:3010/api/avatar/file/guest.png`}
+                    src={match.opp_username === 'AI' ? `/api/avatar/file/ia.png` : `/api/avatar/file/guest.png`}
                     alt="opponent"
                     className="w-full h-full rounded-full object-cover bg-[#1a1033]"
                   />
@@ -338,7 +339,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 //   useEffect(() => {
 //     const fetchStats = async () => {
 //       try {
-//         const res = await fetch('https://localhost:3010/api/stats', { credentials: "include" });
+//         const res = await fetch(`${API_URL}/api/stats', { credentials: "include" });
 //         if (res.ok) {
 //           const data = await res.json();
 //           setStats(data);
@@ -351,7 +352,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 //   useEffect(() => {
 //     const fetchHistory = async () => {
 //       try {
-//         const res = await fetch('https://localhost:3010/api/history/get_history', { credentials: "include" });
+//         const res = await fetch(`${API_URL}/api/history/get_history', { credentials: "include" });
 //         if (res.ok) {
 //           const data = await res.json();
 //           setHistory(data);

@@ -57,8 +57,10 @@ export const connectSocket = (userId: number, username: string) => {
   // Save user data to localStorage for future reconnections
   saveUserDataToStorage(userId, username);
 
-  const serverUrl = "https://localhost:3010";
-  socket = io(serverUrl, { 
+  // Connect to same-origin server (let nginx proxy to backend)
+  const serverOrigin = window.location.origin; // e.g. https://localhost
+  socket = io(serverOrigin, { 
+    path: '/socket.io',
     reconnection: true, 
     reconnectionAttempts: 5, 
     reconnectionDelay: 500,

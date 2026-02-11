@@ -4,6 +4,7 @@ import { IoPersonCircleOutline } from "react-icons/io5";
 import { FaGoogle } from "react-icons/fa";
 import { Si42 } from "react-icons/si";
 import { RiLockPasswordLine } from "react-icons/ri";
+import { API_URL } from "./Api";
 interface Logintest {
     gotohome: () => void;
     gotoDASHBOARD: () => void;
@@ -18,13 +19,13 @@ function Login({ gotohome, gotoDASHBOARD, onloginsucces, gotosingup, gotwofa }: 
     const [gmailogin, setgmailogin] = useState('');
 localStorage.setItem('page', 'LOGIN');
     const handel_auth_goole = async () => {
-        window.location.href = 'https://localhost:3010/api/auth/google'  //backend
+        window.location.href = '/api/auth/google'  //backend
         console.log("haniiiiiiiiiiiiiiiiiiiiiiii google");
         gotoDASHBOARD();
 
     }
     const handel_auth_42 = async () => {
-        window.location.href = ('https://localhost:3010/api/auth/42');
+        window.location.href = ('/api/auth/42');
         gotoDASHBOARD();
     }
     const handelLogin = async () => {
@@ -39,7 +40,7 @@ localStorage.setItem('page', 'LOGIN');
             if (result.twofa_required) {
                 if (result.method === "authenticator" && result.twofa_enabled) {
                      try {
-                    const res1 = await fetch('https://localhost:3010/api/profile', {
+                    const res1 = await fetch(`${API_URL}/api/profile`, {
                         method: 'GET',
                         credentials: 'include',
                     });
@@ -62,7 +63,7 @@ localStorage.setItem('page', 'LOGIN');
             else if (result.success) {
                 alert("login sucess");
                 try {
-                    const res = await fetch('https://localhost:3010/api/profile', {
+                    const res = await fetch(`${API_URL}/api/profile`, {
                         method: 'GET',
                         credentials: 'include',
                     });

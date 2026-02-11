@@ -32,12 +32,12 @@ const ballRadius : number = 15;
 const  playerColor: string ="#829cbdff";
 let gameEnd: boolean = false;
 
-const score={
-    x_l : boardWidth/4,          // Left score position
-    x_r : 3 * boardWidth/4,      // Right score position  
-    y : boardHeight/6,           // Adjusted for larger board
-    color: "white",
-}
+// const score={
+//     x_l : boardWidth/4,          // Left score position
+//     x_r : 3 * boardWidth/4,      // Right score position  
+//     y : boardHeight/6,           // Adjusted for larger board
+//     color: "white",
+// }
 
 const net = {
     x :  boardWidth/2 - 10 /2,
@@ -302,8 +302,8 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socke
    document.removeEventListener("keyup", handleKeyUp);
    document.addEventListener("keydown", handleKeyDown);
    document.addEventListener("keyup", handleKeyUp);
-   
-   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+
+   const handleBeforeUnload = () => {
        if (gameState.inGame && socket && gameState.roomID) {
            console.log("⚠️ Player leaving game (refresh/close)");
            socket.emit("player_leaving_game", { roomID: gameState.roomID });
@@ -480,28 +480,28 @@ function drawBall(x: number, y: number, radius: number, color:string)
 
 
 
-function drawScore(x: number, y:number, score: number, color: string)
-{
-    if (!contex) return;
-    contex.fillStyle = color;
-    contex.font = "48px Arial";
-    contex.textAlign = "center"; 
-    contex.fillText(score.toString(), x, y);
-}
+// function drawScore(x: number, y:number, score: number, color: string)
+// {
+//     if (!contex) return;
+//     contex.fillStyle = color;
+//     contex.font = "48px Arial";
+//     contex.textAlign = "center"; 
+//     contex.fillText(score.toString(), x, y);
+// }
 
-function drawUsernames()
-{
-    if (!contex) return;
-    contex.fillStyle = "white";
-    contex.font = "20px Arial";
-    contex.textAlign = "center";
+// function drawUsernames()
+// {
+//     if (!contex) return;
+//     contex.fillStyle = "white";
+//     contex.font = "20px Arial";
+//     contex.textAlign = "center";
     
-    // Draw player 1 username (left side)
-    contex.fillText(gameState.player1Username, score.x_l, score.y - 60);
+//     // Draw player 1 username (left side)
+//     contex.fillText(gameState.player1Username, score.x_l, score.y - 60);
     
-    // Draw player 2 username (right side)
-    contex.fillText(gameState.player2Username, score.x_r, score.y - 60);
-}
+//     // Draw player 2 username (right side)
+//     contex.fillText(gameState.player2Username, score.x_r, score.y - 60);
+// }
 
 // function drawCountDown()
 // {

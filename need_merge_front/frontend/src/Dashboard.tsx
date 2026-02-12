@@ -3,7 +3,6 @@
 
 import { Sidebar } from './Sidebar';
 import { Grid } from './Grid';
-import Snowfall from 'react-snowfall';
 interface Dashboardtest {
     user: any;
     gotohome: () => void;
@@ -38,7 +37,6 @@ console.log("ana fe dashbord akhotiii ");
                 <div className="flex w-full h-full  bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">
 
                 <div className="flex-1 h-screen overflow-y-auto  ml-[88px] md:p-10">
-                     <Snowfall color="#82C3D9"/>
                     <Grid listfriends={listfriends} goto={goto} goto_ia={gotoia} setActiveSafe={setActiveSafe}/>
                 </div>
                 </div>

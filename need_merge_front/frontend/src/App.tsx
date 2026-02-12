@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Snowfall from 'react-snowfall';
+
 import { useNavigate } from 'react-router-dom';
 import './style.css';
 import { useEffect,useState } from 'react';
@@ -186,7 +186,6 @@ const Layout = ({ children, gotohome, gotoprofil, user, delete_obj, goto, gotoda
         />
       </div>
  <div className="flex-1 overflow-hidden pl-[80px] min-w-0 bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]">
-  <Snowfall color="#82C3D9"/>
     {children}
 </div>
     </div>
@@ -222,8 +221,7 @@ return (
     <Route path="/signup" element={<Signup gotohome={()=>navigate('/HOME') } gotologin={()=>navigate('/LOGIN')}  gotoDASHBOARD={()=> navigate('/dashboard')}/>} />
 
     <Route path="/dashboard" element={ 
-      user_data ? (
-      < Dashboard gotohome={()=>navigate('/HOME')} gotoprofil={ ()=>navigate('/profil')} user={user_data} delete_obj={obj_login}  listfriends={()=>navigate("/remoteGame")}  goto={()=>navigate("/localGame")} gotoia={()=>navigate("iaGame")} gotodashbord={()=>navigate('/dashboard')}  gotofriends={()=> navigate('/friends')} gotosetting={()=> navigate('/setting')} gotoleaderboard={()=> navigate('/leaderboard')} setActiveSafe={setActiveSafe}/>):
+      user_data ? (< Dashboard gotohome={()=>navigate('/HOME')} gotoprofil={ ()=>navigate('/profil')} user={user_data} delete_obj={obj_login}  listfriends={()=>navigate("/remoteGame")}  goto={()=>navigate("/localGame")} gotoia={()=>navigate("iaGame")} gotodashbord={()=>navigate('/dashboard')}  gotofriends={()=> navigate('/friends')} gotosetting={()=> navigate('/setting')} gotoleaderboard={()=> navigate('/leaderboard')} setActiveSafe={setActiveSafe}/>):
       (  <div className="text-white p-10">Loading...</div>)}/>
  <Route 
   path="/leaderboard" 

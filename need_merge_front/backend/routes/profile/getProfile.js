@@ -28,7 +28,7 @@ fastify.get('/api/profile', async (request, reply) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     
     const user = await dbGet(
-        'SELECT id, username, email, avatar_url, provider,  , twofa_enabled FROM users WHERE id = ?',
+        'SELECT id, username, email, avatar_url, provider, firstname, lastname , twofa_enabled FROM users WHERE id = ?',
         [payload.id]
       );
 

@@ -576,12 +576,34 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
       transition-all duration-300
       active:scale-[0.97]
     "
-    onClick={() => {
+    onClick={async () => {
       const confirmDelete = window.confirm(
         "Are you sure you want to delete your account? This action cannot be undone."
       );
-      if (confirmDelete) {
-        console.log("delete account logic here");
+      if (!confirmDelete) return;
+
+      try {
+        console.log("🗑️ Deleting account...");
+        
+        const response = await fetch('https://localhost:3010/api/profile', {
+          method: 'DELETE',
+          credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Account deleted successfully');
+          localStorage.clear();
+          delete_obj(null);
+          gotohome();
+          
+        } else {
+          alert('Error: ' + (data.error || 'Failed to delete account'));
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+        alert('Network error');
       }
     }}
   >

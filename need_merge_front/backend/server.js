@@ -63,6 +63,7 @@ fastify.register(require('./routes/stats/ranking'));
 fastify.register(require('./routes/stats/user_ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
+fastify.register(require('./routes/profile/deleteProfile'));
 
 fastify.listen({ port: 3010, host: 'localhost' }, (err) => {
   if (err) {

@@ -271,7 +271,7 @@ function Friends() {
                                         </div>
                                     </div>
                                 ))
-                            ) : (searchfriend && (searchLoading || datafriend.length > 0)) ? (
+                            ) : (searchfriend && (searchLoading || true)) ? (
                                 <div className="flex flex-col items-center justify-center py-[30px]">
                                     <div className="w-[60px] h-[60px] rounded-full bg-gradient-to-r from-[#1a043a] to-[#0d0221] flex items-center justify-center mb-[15px]">
                                         <span className="text-[30px]">😕</span>

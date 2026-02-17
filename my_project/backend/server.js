@@ -89,6 +89,7 @@ fastify.register(require('./routes/auth/oauth/fortytwo'));
 
 fastify.register(require('./routes/profile/getProfile'));
 fastify.register(require('./routes/profile/updateProfile'));
+fastify.register(require('./routes/profile/deleteProfile'));
 fastify.register(require('./routes/game/gameSocket'));
 //fastify.register(require('./routes/profile/avatar'));
 

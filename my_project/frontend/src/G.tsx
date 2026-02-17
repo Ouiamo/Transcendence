@@ -101,9 +101,10 @@ export function GamePage(userdata: any) {
 }
 interface game {
   data1 : any;
+  currentUser: any;
 }
 
-export function Gamepage_r({data1}: game) {
+export function Gamepage_r({data1, currentUser}: game) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   // const lastWinnerRef = useRef<string | null>(null);
   
@@ -113,33 +114,32 @@ export function Gamepage_r({data1}: game) {
   const [player2Name, setPlayer2Name] = useState("Player 2");
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || !data1) return;
+
     const existingSocket = getSocket();
-    const roomData = data1;
+    if (!existingSocket) {
+      console.error("No socket available for remote game");
+      return;
+    }
+
+    console.log("🎮 Gamepage_r initializing with gameData:", data1);
     
-    console.log("Gamepage_r initializing with socket:", !!existingSocket);
-    console.log("Room data available:>>>>>>>>>>>>>>>>>>>>>>>>>", !!roomData);
-    
-      initGame_remot(
-        canvasRef.current, 
-        existingSocket as any, 
-        roomData ? JSON.parse(roomData) : undefined
-      );
-      const interval = setInterval(() => {
+    initGame_remot(canvasRef.current, existingSocket as any, data1, currentUser);
+
+    const interval = setInterval(() => {
       const data = getRemoteGameState();
-      
       setPlayer1Score(data.score1);
       setPlayer2Score(data.score2);
       setPlayer1Name(data.player1Username);
       setPlayer2Name(data.player2Username);
-      
     }, 100);
-      return () => {
+
+    return () => {
       clearInterval(interval);
-      cleanupGame(); // Cleanup game on unmount
+      cleanupGame();
       console.log("Game Cleaned Up");
     };
-  }, []);
+  }, [data1]);
 
   return (
      <div className="flex flex-col items-center justify-start w-full h-full bg-[#0b0618] pt-[5vh] ">

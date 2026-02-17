@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { API_URL } from "./Api.tsx";
 import { useNavigate } from 'react-router-dom';
 import './style.css';
@@ -17,7 +17,7 @@ import PrivacyPolicy from './PrivacyPolicy';
 import TermsOfService from './TermsOfService';
 import Setting from './Setting.tsx';
 import Leaderboard from './leaderboard.tsx';
-import { connectSocket, disconnectSocket, clearUserDataFromStorage, getSocket } from './socketService.tsx';
+import { connectSocket, disconnectSocket, onPrivateGameInvite } from './socketService.tsx';
 
 
 // type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
@@ -28,12 +28,9 @@ function App(){
   
       const setActiveSafe = (key: typeof active) => {
           setActive(key);
-          localStorage.setItem('sidebar-active', key);
       };
-  // const [currentPage, setCurrentPage] = useState<page>('HOME');
   const [loading, setLoading] = useState(true);
   const[user_data, setdatauser] = useState<any>(null);
-  const [privateGameActive, setPrivateGameActive] = useState(false);
 
   const obj_login = (data : any | any)=>{
     if(data){
@@ -42,97 +39,29 @@ function App(){
    else
        setdatauser(null);
   }
-//rja3t had luseEffect bash  yb9a yban lia fal friend front bali online or offline 📢📢📢📢
- useEffect(() => {
-    if(user_data)
-    {
-      console.log("MY INFOOOOO ",user_data); 
-      // Only connect socket for valid logged-in user
+
+  
+  useEffect(() => {
+    if(user_data) {
+      console.log("MY INFOOOOO ", user_data); 
       connectSocket(user_data.id, user_data.username);
+      onPrivateGameInvite((data) => {
+        console.log("🎮 CALLBACK: navigating to /remoteGame with gameData:", data);
+        navigate('/remoteGame', { state: { gameData: data } });
+      });
     } else {
-      // If no user data, ensure socket is disconnected
       disconnectSocket();
     }
   }, [user_data]);
 
-  // useEffect(() => {
-  //   const handlePrivateGameStart = () => {
-  //     console.log("🎮 Private game event received, forcing re-render");
-  //     setPrivateGameActive(true);
-  //     // setCurrentPage('GAME_R');
-  //     navigate('/remoteGame');
-  //   };
-
-    // حالة اللعبة (خزنها في State فقط)
-const [gameData, setGameData] = useState<{roomID: string, opponent: any} | null>(null);
-
-useEffect(() => {
-  const socket = getSocket();
-  if (!socket) return;
-
-  // استقبال حدث بداية اللعبة من السيرفر
-  socket.on("private_game_start", (data) => {
-    setGameData(data); // كنحطو البيانات في الـ State
-    navigate('/remoteGame'); // كنمشيو لصفحة اللعبة
-  });
-
-  // استقبال حدث نهاية اللعبة
-  socket.on("disconnect", () => {
-    setGameData(null); // كنمسحو البيانات من الـ State
-    navigate('/dashboard'); 
-  });
-
-  return () => {
-    socket.off("private_game_started");
-    socket.off("game_finished");
-  };
-}, [navigate]);
-    // const handleGameEnded = () => {
-    //   console.log("🏆 Game ended, returning to friends page");
-    //   setPrivateGameActive(false);
-    //   localStorage.removeItem('private_game_room');
-    //   localStorage.removeItem('private_game_data');
-    //   // setCurrentPage('GAME_R'); // This will show Friendlist since privateGameActive is now false
-    //    navigate('/remoteGame');
-    // };
-
-    // window.addEventListener('private_game_start', handlePrivateGameStart);
-    // window.addEventListener('game_ended', handleGameEnded);
-    
-    // Also check localStorage on mount
-    const checkPrivateGame = () => {
-      const privateRoom = localStorage.getItem('private_game_room');
-      if (privateRoom) {
-        console.log("🎮 Found existing private game on mount:", privateRoom);
-        setPrivateGameActive(true);
-      }
-    };
-    checkPrivateGame();
-    
-  //   return () => {
-  //     window.removeEventListener('private_game_start', handlePrivateGameStart);
-  //     window.removeEventListener('game_ended', handleGameEnded);
-  //   };
-  // }, []);
-
-  // Handle navigation away from game
   useEffect(() => {
-    const handlePageChange = () => {
-      const privateRoom = localStorage.getItem('private_game_room');
-      if (privateRoom && !navigate('/remoteGame')) {
-        console.log("⚠️ User navigating away from game, notifying server...");
-        const socket = getSocket();
-        if (socket) {
-          socket.emit("player_leaving_game", { roomID: privateRoom });
-        }
-       // localStorage.removeItem('private_game_room');
-       // localStorage.removeItem('private_game_data');
-        setPrivateGameActive(false);
-      }
+    const handleGameEnded = (e: any) => {
+      console.log("🏆 game_ended event received", e.detail);
+      navigate('/remoteGame', { replace: true }); 
     };
-    
-    handlePageChange();
-  }, []);
+    window.addEventListener('game_ended', handleGameEnded);
+    return () => window.removeEventListener('game_ended', handleGameEnded);
+  }, [navigate]);
 
 useEffect(() => {
   console.log("items is ^^^^^^^^^^^^^ jitttt ");
@@ -150,15 +79,11 @@ useEffect(() => {
         console.log("data.user.twofa is ", data.user.twofa_enabled)
       } 
       else {
-        // Session is invalid, clear stored data and disconnect socket
         console.log(" yes im not haniiiiiiiiiiii ");
-        // clearUserDataFromStorage();
         disconnectSocket();
       }
     } catch (err) {
-      // Error occurred, clear stored data and disconnect socket
-      clearUserDataFromStorage();
-      disconnectSocket();;
+      disconnectSocket();
       navigate('/home');
     }
     finally
@@ -191,6 +116,40 @@ const Layout = ({ children, gotohome, gotoprofil, user, delete_obj, goto, gotoda
     </div>
   );
 };
+
+function RemoteGameRoute({ user, delete_obj, setActiveSafe }: any) {
+  const location = useLocation();
+  const nav = useNavigate();
+  const gameData = location.state?.gameData;
+  useEffect(() => {
+    if (gameData) {
+      window.history.replaceState({}, '');
+    }
+  }, [gameData]);
+
+  return (
+    <Layout
+      gotohome={() => nav('/home')}
+      gotoprofil={() => nav('/profil')}
+      user={user}
+      delete_obj={delete_obj}
+      listfriends={() => nav('/remoteGame')}
+      goto={() => nav('/localGame')}
+      gotoia={() => nav('/iaGame')}
+      gotodashbord={() => nav('/dashboard')}
+      gotofriends={() => nav('/friends')}
+      gotosetting={() => nav('/setting')}
+      gotoleaderboard={() => nav('/leaderboard')}
+      setActiveSafe={setActiveSafe}
+    >
+      {gameData ? (
+        <Gamepage_r data1={gameData} currentUser={user} />
+      ) : (
+        <Friendlist />
+      )}
+    </Layout>
+  );
+}
 
 if(loading) return <div>Loading...</div>
 return (
@@ -355,31 +314,11 @@ return (
   path="remoteGame"
   element={
     user_data ? (
-      <Layout 
-        gotohome={() => navigate('/home')} 
-        gotoprofil={() => navigate('/profil')} 
-        user={user_data} 
-        delete_obj={obj_login}  
-       listfriends={()=>navigate('remoteGame')}  
-      goto={()=>navigate('localGame')} 
-      gotoia={()=>navigate('iaeGame')} 
-        gotodashbord={() => navigate('/dashboard')}  
-        gotofriends={() => navigate('/friends')} 
-        gotosetting={() => navigate('/setting')} 
-        gotoleaderboard={() => navigate('/leaderboard')} 
+      <RemoteGameRoute
+        user={user_data}
+        delete_obj={obj_login}
         setActiveSafe={setActiveSafe}
-      >
-       {privateGameActive && localStorage.getItem('private_game_room') ? (
-      <Gamepage_r data1={gameData}/>
-      ) : (
-            <Friendlist onGameStart={() => {
-              console.log("🎮 Game start callback triggered");
-              setPrivateGameActive(true);
-              navigate('/remoteGame');
-            }} />
-          )} 
-
-      </Layout>
+      />
     ) : (
       <div className="text-white p-10">Loading...</div>
     )

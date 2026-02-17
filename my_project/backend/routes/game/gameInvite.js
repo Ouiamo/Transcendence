@@ -111,7 +111,7 @@ fastify.get('/api/game/invitations', async (request, reply) => {
       sender_id: inv.sender_id,
       sender_username: inv.sender_username,
       avatarUrl: inv.provider === 'local' 
-        ? `/api/avatar/file/${inv.avatar_url}`
+        ? `https://localhost:3010/api/avatar/file/${inv.avatar_url}`
         : inv.avatar_url,
       created_at: inv.created_at
     }));
@@ -162,14 +162,13 @@ fastify.post('/api/game/accept', async (request, reply) => {
       ['accepted', invitationId]
     );
 
-    // Generate a unique room ID for this game
+    
     const roomId = `game_${invitation.sender_id}_${invitation.receiver_id}_${Date.now()}`;
 
-    // Get the Socket.IO server instance from fastify
+
     const io = fastify.server.io || fastify.io;
     if (io) {
-      // Emit to both players to start the private game
-      io.emit('private_game_start', {
+      const gameEventData = {
         roomId: roomId,
         player1: {
           id: invitation.sender_id,
@@ -179,7 +178,22 @@ fastify.post('/api/game/accept', async (request, reply) => {
           id: invitation.receiver_id,
           username: receiver?.username
         }
-      });
+      };
+
+     
+      let emittedToPlayers = false;
+      for (const [, sock] of io.sockets.sockets) {
+        if (sock.userId === invitation.sender_id || sock.userId === invitation.receiver_id) {
+          sock.emit('private_game_start', gameEventData);
+          emittedToPlayers = true;
+        }
+      }
+      
+     
+      if (!emittedToPlayers) {
+        console.log(" Couldn't find player sockets, broadcasting to all");
+        io.emit('private_game_start', gameEventData);
+      }
     }
 
     return reply.send({

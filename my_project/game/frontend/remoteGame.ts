@@ -1,4 +1,4 @@
-import { io, Socket } from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 
 let socket: Socket | null = null;
@@ -9,7 +9,7 @@ const boardWidth: number = 900;
 const boardHeight: number = 450; 
 let contex : CanvasRenderingContext2D | null = null;
 
-// let gameMode: '1v1' | 'vAI' | 'local' | null = null;
+
 
 const paddleWidth: number = 15; 
 const paddleHeight: number = 80;
@@ -97,56 +97,56 @@ const keys: {[key:string] : boolean}={
 // }
 
 
-function connectServer() {
-    const serverUrl = `https://localhost:3010`;
+// function connectServer() {
+//     const serverUrl = `https://localhost:3010`;
 
-    socket = io(serverUrl);
+//     socket = io(serverUrl);
 
-    socket?.emit("hello", "Hi server!");
+//     socket?.emit("hello", "Hi server!");
 
-    // if (contex) {
-    //     drawWaitingForPlayer(contex, boardWidth, boardHeight);
-    // }
+//     // if (contex) {
+//     //     drawWaitingForPlayer(contex, boardWidth, boardHeight);
+//     // }
 
-    //  socket.emit("user_connected", { 
-    //     userId: currentUser.id, 
-    //     username: currentUser.username 
-    // });
+//     //  socket.emit("user_connected", { 
+//     //     userId: currentUser.id, 
+//     //     username: currentUser.username 
+//     // });
         
-    socket?.emit("findGame");
-    socket.on("gameStart", (data: { roomID: string, role: string }) => {        
-        gameState.roomID = data.roomID;
-        gameState.role = data.role;
-        gameState.inGame = true; 
-        startGameLoop();
-    });
+//     socket?.emit("findGame");
+//     socket.on("gameStart", (data: { roomID: string, role: string }) => {        
+//         gameState.roomID = data.roomID;
+//         gameState.role = data.role;
+//         gameState.inGame = true; 
+//         startGameLoop();
+//     });
 
-    socket.on("gameUpdate", (data: any) => {
-        // Update ball position from server
-        gameState.ballX = data.ballX;
-        gameState.ballY = data.ballY;
+//     socket.on("gameUpdate", (data: any) => {
+//         // Update ball position from server
+//         gameState.ballX = data.ballX;
+//         gameState.ballY = data.ballY;
         
-        // Only update opponent paddle, not own paddle (for smoother local control)
-        if (gameState.role === "player1") {
-            gameState.player2_Y = data.player2_Y; // Only update opponent
-        } else if (gameState.role === "player2") {
-            gameState.player1_Y = data.player1_Y; // Only update opponent
-        }
+//         // Only update opponent paddle, not own paddle (for smoother local control)
+//         if (gameState.role === "player1") {
+//             gameState.player2_Y = data.player2_Y; // Only update opponent
+//         } else if (gameState.role === "player2") {
+//             gameState.player1_Y = data.player1_Y; // Only update opponent
+//         }
         
-        gameState.score1 = data.score1;
-        gameState.score2 = data.score2;
-        gameState.gameEnd = data.gameEnd;
-        gameState.winner = data.winner;
-    });
+//         gameState.score1 = data.score1;
+//         gameState.score2 = data.score2;
+//         gameState.gameEnd = data.gameEnd;
+//         gameState.winner = data.winner;
+//     });
 
-    // socket.on("user_stats_update", (data) => {
-    //       console.log(`${data.username} is now ${data.status}`);
-    //     });
+//     // socket.on("user_stats_update", (data) => {
+//     //       console.log(`${data.username} is now ${data.status}`);
+//     //     });
     
-}
-export function getSocket() {
-  return socket;
-}
+// }
+// export function getSocket() {
+//   return socket;
+// }
 
 export function getRemoteGameState() {
   return {
@@ -163,12 +163,18 @@ export function getRemoteGameState() {
 export function cleanupGame() {
     console.log("Cleaning up remote game...");
     
-    // Notify server if we're leaving an active game
+
     if (gameState.inGame && socket && gameState.roomID) {
-        console.log("⚠️ Notifying server of game cleanup");
+        console.log("Notifying server of game cleanup");
         socket.emit("player_leaving_game", { roomID: gameState.roomID });
     }
 
+
+    socket?.off("gameStart");
+    socket?.off("gameUpdate");
+    socket?.off("player_disconnected");
+
+    // Reset all game state
     gameState.inGame = false;
     gameState.gameEnd = false;
     gameState.winner = 0;
@@ -179,40 +185,60 @@ export function cleanupGame() {
     gameState.isCleaningUp = false;
     gameState.player1Username = "Player 1";
     gameState.player2Username = "Player 2";
-    
+    gameState.ballX = boardWidth / 2;
+    gameState.ballY = boardHeight / 2;
+    gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
+    gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
 
     document.removeEventListener("keydown", handleKeyDown);
     document.removeEventListener("keyup", handleKeyUp);
     
-   
     if (contex) {
         contex.clearRect(0, 0, boardWidth, boardHeight);
     }
+    
 }
 
-function setupPrivateGame(gameData: any) {
-    console.log("🎮 Setting up private game with data:", gameData);
-    
+function setupPrivateGame(gameData: any, currentUser: any) {
+    console.log(" Setting up private game with data:", gameData);
+    console.log(" Current user:", currentUser?.username, "id:", currentUser?.id);
 
     if (gameData.player1 && gameData.player2) {
         gameState.player1Username = gameData.player1.username || "Player 1";
         gameState.player2Username = gameData.player2.username || "Player 2";
-        console.log(`🎮 Players: ${gameState.player1Username} vs ${gameState.player2Username}`);
+        console.log(` Players: ${gameState.player1Username} vs ${gameState.player2Username}`);
     }
-    
-    
+
+
+    if (currentUser?.id == gameData.player1?.id) {
+        gameState.role = "player1";
+    } else {
+        gameState.role = "player2";
+    }
+    console.log(`My role determined from gameData: ${gameState.role} (I am ${currentUser?.username})`);
+
+
     socket?.on("gameStart", (data: { roomID: string, role: string }) => {        
-        console.log("🎮 Private game starting:", data);
+        console.log(" gameStart received:", data);
+
+        if (gameState.inGame) {
+            console.log("Already in game, ignoring duplicate gameStart");
+            return;
+        }
+
         gameState.roomID = data.roomID;
-        gameState.role = data.role;
+        if (data.role !== gameState.role) {
+            console.warn(`Server role (${data.role}) differs from determined role (${gameState.role}), using server role`);
+            gameState.role = data.role;
+        }
         gameState.inGame = true; 
+        console.log(` I am ${gameState.role} in room ${data.roomID}`);
         startGameLoop();
     });
 
     socket?.on("gameUpdate", (data: any) => {
         gameState.ballX = data.ballX;
         gameState.ballY = data.ballY;
-        
         
         if (gameState.role === "player1") {
             gameState.player2_Y = data.player2_Y; 
@@ -222,65 +248,67 @@ function setupPrivateGame(gameData: any) {
         
         gameState.score1 = data.score1;
         gameState.score2 = data.score2;
-        gameState.gameEnd = data.gameEnd;
-        gameState.winner = data.winner;
-        
-        // Handle game end properly
+
+
         if (data.gameEnd && data.winner && !gameState.isCleaningUp) {
-            console.log(`🏆 Game ended! Winner: Player ${data.winner}`);
-            gameState.isCleaningUp = true;
-            gameState.inGame = false;
-            
-            setTimeout(() => {
-                console.log("🧹 Cleaning up finished game...");
-                localStorage.removeItem('private_game_room');
-                localStorage.removeItem('private_game_data');
+            if (data.score1 >= 11 || data.score2 >= 11) {
+                console.log(` Game ended! Winner: Player ${data.winner} (${data.score1}-${data.score2})`);
+                gameState.gameEnd = true;
+                gameState.winner = data.winner;
+                gameState.isCleaningUp = true;
+                gameState.inGame = false;
                 
-                
-                window.dispatchEvent(new CustomEvent('game_ended', { 
-                    detail: { winner: data.winner } 
-                }));
-            }, 3000);
+                setTimeout(() => {
+                    console.log("Cleaning up finished game...");
+                    window.dispatchEvent(new CustomEvent('game_ended', { 
+                        detail: { winner: data.winner } 
+                    }));
+                }, 3000);
+            }
         }
     });
     
-    // Handle opponent disconnect
+  
     socket?.on("player_disconnected", (data: any) => {
-        console.log("⚠️ Opponent disconnected:", data.message);
+        console.log("Opponent disconnected:", data.message);
         
         if (!gameState.isCleaningUp) {
             gameState.isCleaningUp = true;
             gameState.inGame = false;
             gameState.gameEnd = true;
             
-            // Show message to user
-            alert("Opponent disconnected. You win!");
-            
             setTimeout(() => {
-                console.log("🧹 Cleaning up after opponent disconnect...");
-                localStorage.removeItem('private_game_room');
-                localStorage.removeItem('private_game_data');
-                
-                // Trigger event to navigate back
+                console.log("Cleaning up after opponent disconnect...");
                 window.dispatchEvent(new CustomEvent('game_ended', { 
                     detail: { winner: gameState.role === "player1" ? 1 : 2 } 
                 }));
-            }, 1000);
+            }, 2000);
         }
     });
-    
-    // Join the private game room
-    const roomId = localStorage.getItem('private_game_room');
-    if (roomId && socket) {
-        console.log("🎮 Joining private game room:", roomId);
-    }
+
+    console.log(" Emitting join_private_game for room:", gameData.roomId);
+    socket?.emit("join_private_game", {
+        roomId: gameData.roomId,
+        playerId: currentUser.id,
+        playerUsername: currentUser.username,
+    });
 }
 
-export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socket, roomData?: any) {
+export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket, gameData: any, currentUser: any) {
    board = canvas;
-   console.log("🎮 Initializing remote game...");
-   console.log("🎮 Room data:", roomData);
-   console.log("🎮 Existing socket:", !!existingSocket);
+   console.log("Initializing remote game...");
+   console.log(" Game data:", gameData);
+   console.log(" Current user:", currentUser);
+   console.log(" Socket available:", !!existingSocket);
+
+   if (!existingSocket) {
+       console.error(" No socket provided to initGame_remot!");
+       return;
+   }
+   if (!gameData) {
+       console.error(" No gameData provided to initGame_remot!");
+       return;
+   }
    
    gameState.inGame = false;
    gameState.gameEnd = false;
@@ -290,40 +318,41 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket?: Socke
    gameState.roomID = "";
    gameState.role = "";
    gameState.isCleaningUp = false;
-   gameState.player1Username = "player1";
-   gameState.player2Username = "player2";
+   gameState.player1Username = "Player 1";
+   gameState.player2Username = "Player 2";
+   gameState.ballX = boardWidth / 2;
+   gameState.ballY = boardHeight / 2;
+   gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
+   gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
    
    board.width = 900;
    board.height = 450;
    contex = board.getContext("2d");
 
-   
+   // Setup keyboard
    document.removeEventListener("keydown", handleKeyDown);
    document.removeEventListener("keyup", handleKeyUp);
    document.addEventListener("keydown", handleKeyDown);
    document.addEventListener("keyup", handleKeyUp);
-
+   
+   
    const handleBeforeUnload = () => {
        if (gameState.inGame && socket && gameState.roomID) {
-           console.log("⚠️ Player leaving game (refresh/close)");
+           console.log(" Player leaving game (refresh/close)");
            socket.emit("player_leaving_game", { roomID: gameState.roomID });
        }
    };
    window.addEventListener("beforeunload", handleBeforeUnload);
 
-  
-   const privateRoom = localStorage.getItem('private_game_room');
-   const privateGameData = localStorage.getItem('private_game_data');
    
-   if (privateRoom && privateGameData && existingSocket) {
-       console.log("🎮 Setting up private game with existing socket");
-       socket = existingSocket;
-       const gameData = JSON.parse(privateGameData);
-       setupPrivateGame(gameData);
-   } else {
-       console.log("🎮 Setting up regular matchmaking");
-       connectServer();
-   }
+   socket = existingSocket;
+   
+  
+   socket.off("gameStart");
+   socket.off("gameUpdate");
+   socket.off("player_disconnected");
+
+   setupPrivateGame(gameData, currentUser);
 };
 
 function handleKeyDown(event: KeyboardEvent) {
@@ -345,33 +374,33 @@ function movePlayer() {
     let myPaddleY = gameState.role === "player1" ? gameState.player1_Y : gameState.player2_Y;
     let moved = false;
 
+    
+    let upPressed = false;
+    let downPressed = false;
+
     if (gameState.role === "player1") {
-        if ((keys['w'] || keys['W']) && myPaddleY > 0) {
-            myPaddleY -= paddleSpeed;
-            moved = true;
-        } else if ((keys['s'] || keys['S']) && myPaddleY < boardHeight - paddleHeight) {
-            myPaddleY += paddleSpeed;
-            moved = true;
-        }
-        
-        if (moved) {
-            gameState.player1_Y = myPaddleY;
-        }
+        upPressed = keys['w'] || keys['W'];
+        downPressed = keys['s'] || keys['S'];
     } else if (gameState.role === "player2") {
-        if (keys['ArrowUp'] && myPaddleY > 0) {
-            myPaddleY -= paddleSpeed;
-            moved = true;
-        } else if (keys['ArrowDown'] && myPaddleY < boardHeight - paddleHeight) {
-            myPaddleY += paddleSpeed;
-            moved = true;
-        }
-        
-        if (moved) {
+        upPressed = keys['ArrowUp'];
+        downPressed = keys['ArrowDown'];
+    }
+
+    if (upPressed && myPaddleY > 0) {
+        myPaddleY -= paddleSpeed;
+        moved = true;
+    } else if (downPressed && myPaddleY < boardHeight - paddleHeight) {
+        myPaddleY += paddleSpeed;
+        moved = true;
+    }
+
+    if (moved) {
+        if (gameState.role === "player1") {
+            gameState.player1_Y = myPaddleY;
+        } else {
             gameState.player2_Y = myPaddleY;
         }
-    }
-    
-    if (moved) {
+
         socket.emit("paddleMove", {
             roomID: gameState.roomID,
             role: gameState.role,
@@ -392,8 +421,7 @@ function startGameLoop()
 function drawWinner()
 {
     if (!contex || gameEnd === false) return;
-    
-    // Get winner username instead of player number
+
     let winnerName: string;
     if (winner === 1) {
         winnerName = gameState.player1Username + ' WINS!';
@@ -406,14 +434,14 @@ function drawWinner()
     contex.fillStyle = "rgba(0, 0, 0, 0.85)";
     contex.fillRect(0, 0, boardWidth, boardHeight);
 
-    // Main winner text
+
     contex.fillStyle = "white";
     contex.font = "bold 60px Arial"; 
     contex.textAlign = "center"; 
     contex.textBaseline = "middle";
     contex.fillText(winnerName, boardWidth/2, boardHeight/2 - 50);
     
-    // Show final score
+   
     contex.fillStyle = "white";
     contex.font = "40px Arial";
     contex.fillText(`${gameState.score1} - ${gameState.score2}`, boardWidth / 2, boardHeight / 2 + 30);
@@ -430,9 +458,7 @@ function draw() {
     drawRect(player2_X, gameState.player2_Y, paddleWidth, paddleHeight, playerColor);
     drawNet();
     drawBall(gameState.ballX, gameState.ballY, ballRadius, ballColor);
-    // drawScore(score.x_l, score.y, gameState.score1, score.color);
-    // drawScore(score.x_r, score.y, gameState.score2, score.color);
-    // drawUsernames(); // Add username labels
+   
     movePlayer();
     drawWinner();
     if (gameEnd === false)

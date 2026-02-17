@@ -10,6 +10,7 @@ services:
       - ./backend/.env
     volumes:
       - ./backend/certs:/app/certs:ro
+      - ./backend/data:/app/data
     networks:
       - webnet
 

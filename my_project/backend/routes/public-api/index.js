@@ -142,18 +142,18 @@ module.exports = async function(fastify, options) {
     });
   });
 
-    fastify.get('/', async (request, reply) => {
-    const apiKey = request.headers['x-api-key'];
+    fastify.get('/api', async (request, reply) => {
+      const apiKey = request.headers['x-api-key'];
       if (!isValidApiKey(apiKey)) {
         return reply.code(401).send({ error: 'Need API key' });
       }
-    return {
-      app: 'Pong Transcendence',
-      version: '1.0',
-      status: 'online',
-      documentation: {
-        available_public_api : '/api/public/stats, /api/public/users, /api/public/contact, /api/public/feedback, /api/public/request'
-      }
-    };
-  });
+      return {
+        app: 'Pong Transcendence',
+        version: '1.0',
+        status: 'online',
+        documentation: {
+          available_public_api: '/api/public/stats, /api/public/users, /api/public/contact, /api/public/feedback, /api/public/request'
+        }
+      };
+    });
 };

@@ -2,7 +2,11 @@ const sqlite3 = require('sqlite3').verbose();
 require('dotenv').config();
 const backendUrl = process.env.BACKEND_URL || '';
 
-const db = new sqlite3.Database('pong.db',  (err) => {
+const path = require('path');
+
+const dbPath = path.join(__dirname, '../data/pong.db');
+
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err)
         console.error('DB connection error:', err);
     else

@@ -9,6 +9,7 @@ module.exports = async function(fastify, options) {
         opp_username STRING NOT NULL,
         user_score INTEGER NOT NULL,
         opp_score INTEGER NOT NULL,
+        opp_id INTEGER NOT NULL DEFAULT 0,
         match_type STRING NOT NULL,
         isWin BOOLEAN
         )
@@ -24,14 +25,14 @@ module.exports = async function(fastify, options) {
     try{
         const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
         const userId = payload.id;
-        const {opponent_username, user_score, opp_score, match_type} = request.body;
+        const {opponent_username, user_score, opp_score,  opp_id, match_type} = request.body;
         console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
         if (user_score > opp_score)
           isWin = true;
         await dbRun(
-            'INSERT INTO history (user_id, opp_username, user_score, opp_score, match_type, isWin) VALUES (?, ?, ?, ?, ?, ?)',
-            [userId, opponent_username, user_score, opp_score, match_type, isWin]
+            'INSERT INTO history (user_id, opp_username, user_score, opp_score, opp_id, match_type, isWin) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [userId, opponent_username, user_score, opp_score, opp_id, match_type, isWin]
           );
         return reply.send({
         success: true,

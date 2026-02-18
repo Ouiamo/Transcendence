@@ -24,32 +24,30 @@ db.run(`
     username TEXT UNIQUE NOT NULL,
     firstname TEXT,
     lastname TEXT,
+    avatar_url TEXT DEFAULT 'default.png',
+    twofa_enabled BOOLEAN DEFAULT false,
+    twofa_method TEXT,
+    twofa_secret TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 `);
-   // Check existing columns
-  db.all(`PRAGMA table_info(users);`, (err, columns) => {
-    if (err) throw err;
-    const columnNames = columns.map(c => c.name);
-    if(!columnNames.includes('avatar_url')) {
-      db.run(`ALTER TABLE users ADD COLUMN avatar_url TEXT DEFAULT '${backendUrl}/api/avatar/default.png';`);
-    }
-    if (!columnNames.includes('twofa_enabled')) {
-      db.run(`ALTER TABLE users ADD COLUMN twofa_enabled BOOLEAN DEFAULT false;`);
-    }
-    if (!columnNames.includes('twofa_method')) {
-      db.run(`ALTER TABLE users ADD COLUMN twofa_method TEXT;`);
-    }
-    if (!columnNames.includes('twofa_secret')) {
-      db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT;`);
-    }
-    // if (!columnNames.includes('twofa_email_code')) {
-    //   db.run(`ALTER TABLE users ADD COLUMN twofa_email_code TEXT;`);
-    // }
-    // if (!columnNames.includes('twofa_email_expires')) {
-    //   db.run(`ALTER TABLE users ADD COLUMN twofa_email_expires INTEGER;`);
-    // }
-  });
+
+  // db.all(`PRAGMA table_info(users);`, (err, columns) => {
+  //   if (err) throw err;
+  //   const columnNames = columns.map(c => c.name);
+  //   if(!columnNames.includes('avatar_url')) {
+  //     db.run(`ALTER TABLE users ADD COLUMN avatar_url TEXT DEFAULT 'default.png';`);
+  //   }
+  //   if (!columnNames.includes('twofa_enabled')) {
+  //     db.run(`ALTER TABLE users ADD COLUMN twofa_enabled BOOLEAN DEFAULT false;`);
+  //   }
+  //   if (!columnNames.includes('twofa_method')) {
+  //     db.run(`ALTER TABLE users ADD COLUMN twofa_method TEXT;`);
+  //   }
+  //   if (!columnNames.includes('twofa_secret')) {
+  //     db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT;`);
+  //   }
+  // });
 });
 
 db.serialize(() => {
@@ -64,5 +62,5 @@ db.serialize(() => {
   `);
 });
 
-// Export DB so other files can use it
+
 module.exports = db;

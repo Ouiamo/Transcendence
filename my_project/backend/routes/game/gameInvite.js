@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+// import { API_URL } from "../../frontend/src/Api.tsx";
 
 module.exports = async function(fastify, options) {
   const { dbAll, dbGet, dbRun } = require('../../utils/dbHelpers');
@@ -112,6 +113,7 @@ fastify.get('/api/game/invitations', async (request, reply) => {
       sender_username: inv.sender_username,
       avatarUrl: inv.provider === 'local' 
         ? `https://localhost:3010/api/avatar/file/${inv.avatar_url}`
+        // ? `${API_URL}/api/avatar/file/${inv.avatar_url}`
         : inv.avatar_url,
       created_at: inv.created_at
     }));

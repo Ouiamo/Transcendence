@@ -88,6 +88,6 @@ module.exports = async function (fastify) {
         secure: true,
         path: '/'
       })
-      .redirect(process.env.FRONTEND_URL);
+      .redirect("https://localhost");
   });
 };

@@ -64,6 +64,7 @@ fastify.register(require('@fastify/cors'), {
     const allowed = [
       'https://localhost',
       'https://127.0.0.1',
+      // 'https://10.13.249.15' 
     ];
 
     // Allow requests with no origin (server-to-server, tools)

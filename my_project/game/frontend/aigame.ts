@@ -24,7 +24,7 @@ let aiAnimationFrameId: number | null = null;
 let aiplayer = {
     x :  20,
     y :  aiboardHeight / 2 - aipaddleHeight / 2,
-    color: "#0f3460",
+    color: "#c44cff",
     score : 0,
     step : 1,
 };
@@ -32,7 +32,7 @@ let aiplayer = {
 let realplayer = {
     x :  aiboardWidth - 20 - aipaddleWidth,
     y :  aiboardHeight / 2 - aipaddleHeight / 2,
-    color: "#0f3460",
+    color: "#c44cff",
     score : 0,
     step : 1,
 };
@@ -42,7 +42,7 @@ const ainet = {
     y : 5,
     width: 7,
     height : 25,
-    color: "#16213e",       
+    color: "#c44cff33",       
 };
 
 const aiball = {
@@ -314,8 +314,7 @@ function aidraw(player1:string) {
 function aidrawBoard(x: number, y: number, w:number, h:number)
 {
     if (!aicontex) return;
-    // aicontex.fillStyle = "#490f5eff";
-    aicontex.fillStyle = "#15152bff";
+    aicontex.fillStyle = "#0d0221";
     aicontex.beginPath();
     aicontex.fillRect(x, y, w, h);
 }
@@ -326,7 +325,8 @@ function aidrawRect(x: number, y: number, w:number, h:number, color:string)
     if (!aicontex) return;
     aicontex.fillStyle = color;
     aicontex.beginPath();
-    aicontex.fillRect(x, y, w, h);
+    aicontex.roundRect(x, y, w, h, 6);
+    aicontex.fill();
 }
 
 // draw net 
@@ -340,8 +340,8 @@ function aidrawBall(x: number, y: number, radius: number, color:string)
 {
     if (!aicontex) return;
 
-    aicontex.shadowBlur = 10;
-    aicontex.shadowColor = "#ff3b94";
+    aicontex.shadowBlur = 20;
+    aicontex.shadowColor = "#d86bff";
 
     aicontex.fillStyle = color;
     aicontex.beginPath();
@@ -367,17 +367,19 @@ function aidrawCountDown()
     if(aicountDown)
     {
         if (!aicontex) return;
-        aicontex.fillStyle = "rgba(0, 0, 0, 0.7)";
+        aicontex.fillStyle = "rgba(13, 2, 33, 0.85)";
         aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
+        aicontex.shadowBlur = 20;
+        aicontex.shadowColor = "#c44cff";
         aicontex.fillStyle = "white";
-        aicontex.font = "bold 150px Arial";
+        aicontex.font = "bold 150px Orbitron, Arial";
         aicontex.textAlign = "center"; 
         aicontex.textBaseline = "middle";
         aicontex.fillText(aicountDown.toString(), aiboardWidth/2, aiboardHeight/2);
            
         aicontex.shadowBlur = 15;
-        aicontex.fillStyle = "white";
-        aicontex.font = "30px Arial";
+        aicontex.fillStyle = "#d86bff";
+        aicontex.font = "30px Orbitron, Arial";
         aicontex.fillText("GET READY", aiboardWidth / 2, aiboardHeight / 2 - 100);
        
         aicontex.shadowBlur = 0;
@@ -385,11 +387,11 @@ function aidrawCountDown()
     if(aigameGO)
     {
         if (!aicontex) return;
-        aicontex.fillStyle = "rgba(0, 0, 0, 0.7)";
+        aicontex.fillStyle = "rgba(13, 2, 33, 0.85)";
         aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
         aicontex.shadowBlur = 40;
-        aicontex.shadowColor = "#8f37f3ff";
-        aicontex.font = "bold 180px Arial";
+        aicontex.shadowColor = "#c44cff";
+        aicontex.font = "bold 180px Orbitron, Arial";
         aicontex.fillStyle = "white";
         aicontex.textAlign = "center";
         aicontex.textBaseline = "middle";
@@ -430,18 +432,19 @@ function aidrawCountDown()
 function aidrawStart()
 {
     if (!aicontex) return;
-    aicontex.fillStyle = "rgba(0, 0, 0, 1)";
+    aicontex.fillStyle = "#0d0221";
     aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
-    aicontex.shadowBlur = 20;
-    aicontex.shadowColor = "#9e58eeff";
+    aicontex.shadowBlur = 25;
+    aicontex.shadowColor = "#c44cff";
     aicontex.fillStyle = "white";
-    aicontex.font = "40px Arial";
+    aicontex.font = "40px Orbitron, Arial";
     aicontex.textAlign = "center";
     aicontex.textBaseline = "middle";
     aicontex.fillText("Press SPACE to Start ", aiboardWidth / 2, aiboardHeight / 2);
 
-    aicontex.font = "20px Arial";
-    aicontex.fillStyle = "white";
+    aicontex.font = "20px Orbitron, Arial";
+    aicontex.fillStyle = "#8F929E";
+    aicontex.shadowBlur = 0;
     aicontex.fillText("YOU : ↑/↓", aiboardWidth / 2, aiboardHeight / 2 + 50);
     
     aicontex.shadowBlur = 0;

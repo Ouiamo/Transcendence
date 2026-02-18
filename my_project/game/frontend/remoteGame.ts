@@ -29,7 +29,7 @@ const ballColor: string = "white";
 const ballRadius : number = 15;
 // const ballStepX :number= 5;
 // const ballStepY :number = 5;
-const  playerColor: string ="#829cbdff";
+const  playerColor: string ="#c44cff";
 let gameEnd: boolean = false;
 
 // const score={
@@ -44,7 +44,7 @@ const net = {
     y : 5,
     width: 7,
     height : 25,
-    color: "#16213e",       
+    color: "#c44cff33",       
 };
 
 const gameState={
@@ -431,20 +431,23 @@ function drawWinner()
         winnerName = 'GAME OVER!';
     }
     
-    contex.fillStyle = "rgba(0, 0, 0, 0.85)";
+    contex.fillStyle = "rgba(13, 2, 33, 0.9)";
     contex.fillRect(0, 0, boardWidth, boardHeight);
 
-
+    contex.shadowBlur = 25;
+    contex.shadowColor = "#c44cff";
     contex.fillStyle = "white";
-    contex.font = "bold 60px Arial"; 
+    contex.font = "bold 60px Orbitron, Arial"; 
     contex.textAlign = "center"; 
     contex.textBaseline = "middle";
     contex.fillText(winnerName, boardWidth/2, boardHeight/2 - 50);
     
-   
-    contex.fillStyle = "white";
-    contex.font = "40px Arial";
+    contex.shadowBlur = 15;
+    contex.shadowColor = "#d86bff";
+    contex.fillStyle = "#d86bff";
+    contex.font = "40px Orbitron, Arial";
     contex.fillText(`${gameState.score1} - ${gameState.score2}`, boardWidth / 2, boardHeight / 2 + 30);
+    contex.shadowBlur = 0;
 }
 
 function draw() {
@@ -468,8 +471,7 @@ function draw() {
 function drawBoard(x: number, y: number, w:number, h:number)
 {
     if (!contex) return;
-    // contex.fillStyle = "#490f5eff";
-    contex.fillStyle = "#15152bff";
+    contex.fillStyle = "#0d0221";
     contex.beginPath();
     contex.fillRect(x, y, w, h);
 }
@@ -479,7 +481,8 @@ function drawRect(x: number, y: number, w:number, h:number, color:string)
     if (!contex) return;
     contex.fillStyle = color;
     contex.beginPath();
-    contex.fillRect(x, y, w, h);
+    contex.roundRect(x, y, w, h, 6);
+    contex.fill();
 }
 
 

@@ -24,14 +24,14 @@ let animationFrameId: number | null = null;
 let player1 = {
     x :  20,
     y :  boardHeight / 2 - paddleHeight / 2,
-    color: "#0f3460",
+    color: "#c44cff",
     score : 0,
     step : 1,
 };
 let player2 = {
     x :  boardWidth - 20 - paddleWidth,
     y :  boardHeight / 2 - paddleHeight / 2,
-    color: "#0f3460",
+    color: "#c44cff",
     score : 0,
     step : 1,
 
@@ -42,7 +42,7 @@ const net = {
     y : 5,
     width: 7,
     height : 25,
-    color: "#16213e",       
+    color: "#c44cff33",       
 };
 
 const ball = {
@@ -323,8 +323,7 @@ function  resetBall()
 function drawBoard(x: number, y: number, w:number, h:number)
 {
     if (!contex) return;
-    // contex.fillStyle = "#490f5eff";
-    contex.fillStyle = "#15152bff";
+    contex.fillStyle = "#0d0221";
     contex.beginPath();
     contex.fillRect(x, y, w, h);
 }
@@ -336,7 +335,8 @@ function drawRect(x: number, y: number, w:number, h:number, color:string)
     if (!contex) return;
     contex.fillStyle = color;
     contex.beginPath();
-    contex.fillRect(x, y, w, h);
+    contex.roundRect(x, y, w, h, 6);
+    contex.fill();
 }
 
 // draw net 
@@ -350,8 +350,8 @@ function drawBall(x: number, y: number, radius: number, color:string)
 {
     if (!contex) return;
 
-    contex.shadowBlur = 10;
-    contex.shadowColor = "#ff3b94";
+    contex.shadowBlur = 20;
+    contex.shadowColor = "#d86bff";
 
     contex.fillStyle = color;
     contex.beginPath();
@@ -378,17 +378,19 @@ function drawCountDown()
     if(countDown)
     {
         if (!contex) return;
-        contex.fillStyle = "rgba(0, 0, 0, 0.7)";
+        contex.fillStyle = "rgba(13, 2, 33, 0.85)";
         contex.fillRect(0, 0, boardWidth, boardHeight);
+        contex.shadowBlur = 20;
+        contex.shadowColor = "#c44cff";
         contex.fillStyle = "white";
-        contex.font = "bold 150px Arial";
+        contex.font = "bold 150px Orbitron, Arial";
         contex.textAlign = "center"; 
         contex.textBaseline = "middle";
         contex.fillText(countDown.toString(), boardWidth/2, boardHeight/2);
            
         contex.shadowBlur = 15;
-        contex.fillStyle = "white";
-        contex.font = "30px Arial";
+        contex.fillStyle = "#d86bff";
+        contex.font = "30px Orbitron, Arial";
         contex.fillText("GET READY", boardWidth / 2, boardHeight / 2 - 100);
        
         contex.shadowBlur = 0;
@@ -399,8 +401,8 @@ function drawCountDown()
         contex.fillStyle = "rgba(0, 0, 0, 0.7)";
         contex.fillRect(0, 0, boardWidth, boardHeight);
         contex.shadowBlur = 40;
-        contex.shadowColor = "#8f37f3ff";
-        contex.font = "bold 180px Arial";
+        contex.shadowColor = "#c44cff";
+        contex.font = "bold 180px Orbitron, Arial";
         contex.fillStyle = "white";
         contex.textAlign = "center";
         contex.textBaseline = "middle";
@@ -414,25 +416,26 @@ function drawWinner()
 {
     
     if (!contex || !winner) return;
-    contex.fillStyle = "rgba(0, 0, 0, 0.85)";
+    contex.fillStyle = "rgba(13, 2, 33, 0.9)";
     contex.fillRect(0, 0, boardWidth, boardHeight);
 
-    contex.shadowBlur = 20;
-    contex.shadowColor = "#0244bdff";
+    contex.shadowBlur = 25;
+    contex.shadowColor = "#c44cff";
     contex.fillStyle = "white";
-    contex.font = "bold 70px Arial";
+    contex.font = "bold 70px Orbitron, Arial";
     contex.textAlign = "center"; 
     contex.textBaseline = "middle";
     contex.fillText(`${winner} WINS!`, boardWidth/2, boardHeight/2 - 50);
         
     contex.shadowBlur = 15;
-    contex.fillStyle = "white";
-    contex.font = "40px Arial";
+    contex.shadowColor = "#d86bff";
+    contex.fillStyle = "#d86bff";
+    contex.font = "40px Orbitron, Arial";
     contex.fillText(`${player1.score} - ${player2.score}`, boardWidth / 2, boardHeight / 2 + 30);
 
     contex.shadowBlur = 10;
-    contex.fillStyle = "white";
-    contex.font = "25px Arial";
+    contex.fillStyle = "#8F929E";
+    contex.font = "25px Orbitron, Arial";
     contex.fillText("Press SPACE to play again", boardWidth / 2, boardHeight / 2 + 100);
     
     contex.shadowBlur = 0;
@@ -441,18 +444,19 @@ function drawWinner()
 function drawStart()
 {
     if (!contex) return;
-    contex.fillStyle = "rgba(0, 0, 0, 1)";
+    contex.fillStyle = "#0d0221";
     contex.fillRect(0, 0, boardWidth, boardHeight);
-    contex.shadowBlur = 20;
-    contex.shadowColor = "#9e58eeff";
+    contex.shadowBlur = 25;
+    contex.shadowColor = "#c44cff";
     contex.fillStyle = "white";
-    contex.font = "40px Arial";
+    contex.font = "40px Orbitron, Arial";
     contex.textAlign = "center";
     contex.textBaseline = "middle";
     contex.fillText("Press SPACE to Start ", boardWidth / 2, boardHeight / 2);
 
-    contex.font = "20px Arial";
-    contex.fillStyle = "white";
+    contex.font = "20px Orbitron, Arial";
+    contex.fillStyle = "#8F929E";
+    contex.shadowBlur = 0;
     contex.fillText("Player 1: W/S | Player 2: ↑/↓", boardWidth / 2, boardHeight / 2 + 50);
     
     contex.shadowBlur = 0;

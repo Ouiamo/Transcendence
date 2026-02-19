@@ -266,7 +266,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
       alert("❌ Verification failed");
     }
   };
-(console.log("avatr li fe setting howa ::: ", user.avatarUrl));
+(console.log("avatr li fe setting howa ::: ", user?.avatarUrl));
   return (
     <div className="w-full wh-full flex flex-col">
       

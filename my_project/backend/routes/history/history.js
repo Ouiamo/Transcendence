@@ -17,14 +17,14 @@ module.exports = async function(fastify, options) {
     console.error('Error creating history table:', err);
   })
 
-  fastify.post('/api/history/new_score', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if(!token){
-        return reply.code(401).send({error: 'Please login first'});
-    }
+  fastify.post('/api/history/new_score', { preHandler: fastify.authenticate }, async (request, reply) => {
+    // const token = request.cookies.access_token;
+    // if(!token){
+    //     return reply.code(401).send({error: 'Please login first'});
+    // }
     try{
-        const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
-        const userId = payload.id;
+        // const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+        const userId = request.user.id;
         const {opponent_username, user_score, opp_score, opp_id, match_type} = request.body;
         console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
@@ -45,16 +45,16 @@ module.exports = async function(fastify, options) {
     }
   });
 
-   fastify.get('/api/history/get_history', async (request, reply) => {
-      const token = request.cookies.access_token;
-      if (!token) {
-          return reply.code(401).send({ error: 'Please login first' });
-      }
+   fastify.get('/api/history/get_history', { preHandler: fastify.authenticate }, async (request, reply) => {
+      // const token = request.cookies.access_token;
+      // if (!token) {
+      //     return reply.code(401).send({ error: 'Please login first' });
+      // }
   
       try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
-          const userId = payload.id;
-          const history = await dbAll(
+        // const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+        const userId = request.user.id;
+        const history = await dbAll(
           'SELECT * FROM history WHERE user_id = ?',
           [userId]
       );
@@ -67,15 +67,15 @@ module.exports = async function(fastify, options) {
       }
   });
 
-  fastify.get('/api/history/is_win', async (request, reply) => {
-      const token = request.cookies.access_token;
-      if (!token) {
-          return reply.code(401).send({ error: 'Please login first' });
-      }
+  fastify.get('/api/history/is_win', { preHandler: fastify.authenticate }, async (request, reply) => {
+      // const token = request.cookies.access_token;
+      // if (!token) {
+      //     return reply.code(401).send({ error: 'Please login first' });
+      // }
   
       try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
-          const userId = payload.id;
+          // const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+          const userId = request.user.id;
           const history = await dbAll(
           'SELECT isWin FROM history WHERE user_id = ?',
           [userId]

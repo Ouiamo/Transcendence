@@ -12,7 +12,6 @@ module.exports = async function (fastify) {
         return reply.code(401).send({ error: 'User not found' });
 
       const method = request.body.mthd;
-      console.log('Requested 2FA method:--------------->>>>>>', method);
       if (!['authenticator'].includes(method))
         return reply.code(400).send({ error: 'Invalid 2FA method' });
 
@@ -24,8 +23,8 @@ module.exports = async function (fastify) {
 
       const qrCode = await QRCode.toDataURL(secret.otpauth_url, {
         color: {
-          dark: '#d27ff0',   // neon purple pixels
-          light: '#00000000'   // dark background
+          dark: '#d27ff0', 
+          light: '#00000000'
         }
       });
       return reply.send({ qrCode, secret: secret.base32,

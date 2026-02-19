@@ -170,13 +170,13 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
             <div className="flex flex-col ">
 
             <p className=" text-[#ffff]/60 mb-[4px] ">
-              {user.firstname}
+              {user?.firstname}
             </p>
               <p className=" text-[#ffff]/60 mb-[4px] ">
-              {user.lastname}
+              {user?.lastname}
             </p>
 
-            <p className="text-[#ffff]/60">{user.email}</p>
+            <p className="text-[#ffff]/60">{user?.email}</p>
 
           
             </div>

@@ -47,14 +47,14 @@ module.exports = async function (fastify, options) {
     });
   }
 
-  fastify.post('/api/stats/game_results', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
+  fastify.post('/api/stats/game_results', { preHandler: fastify.authenticate }, async (request, reply) => {
+    // const token = request.cookies.access_token;
+    // if (!token) {
+    //   return reply.code(401).send({ error: 'Please login first' });
+    // }
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
+      // const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = request.user.id;
       const { winner, opponent_username } = request.body;
       console.log("usrIDddddd ", userId, " ooooooo ", winner);
       const user = await dbGet('SELECT username FROM users WHERE id = ?', [userId]);
@@ -89,15 +89,15 @@ module.exports = async function (fastify, options) {
 
 
 
-  fastify.get('/api/stats', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
+  fastify.get('/api/stats', { preHandler: fastify.authenticate }, async (request, reply) => {
+    // const token = request.cookies.access_token;
+    // if (!token) {
+    //   return reply.code(401).send({ error: 'Please login first' });
+    // }
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
-      const userId = payload.id;
+      // const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
+      const userId = request.user.id;
       const stats = await dbGet(
         'SELECT * FROM stats WHERE user_id = ?',
         [userId]

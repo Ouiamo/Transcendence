@@ -51,7 +51,7 @@ module.exports = async function(fastify, options) {
       }
   
       try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
+          const payload = jwt.verify(token, process.env.JWT_SECRET);
           const userId = payload.id;
           const history = await dbAll(
           'SELECT * FROM history WHERE user_id = ?',

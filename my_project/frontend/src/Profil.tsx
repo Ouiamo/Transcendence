@@ -86,21 +86,21 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(err => console.error(err));
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/history/get_history`, { credentials: "include" })
       .then(res => res.json())
       .then(data => setHistory(data))
       .catch(err => console.error(err));
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/stats/user_ranking`, { credentials: "include" })
       .then(res => res.json())
       .then(data => setRank(data))
       .catch(err => console.error(err));
-  }, []);
+  }, [user?.id]);
 
   function AchievementCard({ title, desc, done }: any) {
     if (title === "First Victory" && stats?.wins && stats.wins > 0)

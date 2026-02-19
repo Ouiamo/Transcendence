@@ -1,3 +1,4 @@
+
 //board
 let aiboard: HTMLCanvasElement;
 
@@ -249,7 +250,7 @@ function aimoveBall(player: string)
             }
         }
 
-        // hndle scores
+      
 
         if(aiball.x - aiball.radius <= 0)
         {

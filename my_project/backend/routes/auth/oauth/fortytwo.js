@@ -52,7 +52,7 @@ module.exports = async function (fastify) {
     );
 
     if (!user) {
-      await dbRun(
+      const result = await dbRun(
         `INSERT INTO users
          (provider, provider_id, username, email, avatar_url, firstname, lastname, password_hash) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -67,6 +67,10 @@ module.exports = async function (fastify) {
           'OAUTH_USER'
         ]
       );
+      await dbRun(`
+        INSERT INTO stats (user_id, opp_username, opp_id, wins, loss, total_matches, win_rate, points)
+        VALUES (?, "none", 0, 0, 0, 0, 0, 0)
+      `, [result.lastID]); 
 
       user = await dbGet(
         'SELECT * FROM users WHERE provider = ? AND provider_id = ?',

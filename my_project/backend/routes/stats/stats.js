@@ -37,7 +37,7 @@ module.exports = async function (fastify, options) {
 
   if (statsCount.count === 0) {
     await dbRun(`
-    INSERT INTO stats (user_id, opp_username, opp_id, wins, loss, total_matches, win_rate, points)
+    INSERT INTO stats (user_id, opp_username, opp_id, wins, loss, win_rate, points, total_matches)
     SELECT id, "none", 0, 0, 0, 0, 0, 0
     FROM users
   `).then(() => {

@@ -1,3 +1,4 @@
+
 //board
 let aiboard: HTMLCanvasElement;
 

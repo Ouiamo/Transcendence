@@ -25,7 +25,7 @@ module.exports = async function(fastify, options) {
     try{
         const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
         const userId = payload.id;
-        const {opponent_username, user_score, opp_score,  opp_id, match_type} = request.body;
+        const {opponent_username, user_score, opp_score, opp_id, match_type} = request.body;
         console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
         if (user_score > opp_score)

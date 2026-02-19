@@ -30,10 +30,11 @@ export function GamePage(userdata: any) {
         const opponent_username = "LOCAL_GUEST";
         const user_score = data.playerscore;
         const opp_score = data.Guestscore;
+        const opp_id = -1;
         const match_type = "LOCAL";
 
         gameResults({ winner, opponent_username });
-        gamescore({ opponent_username, user_score, opp_score, match_type });
+        gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
       }
       else if (data.winner === null && lastWinnerRef.current !== null) {
         lastWinnerRef.current = null;
@@ -215,10 +216,11 @@ export function Gamepage_i(userdata: any) {
         const opponent_username = "AI";
         const user_score = data.playerscore;
         const opp_score = data.aiscore;
+        const opp_id = -1;
         const match_type = "AI";
         gameResults({ winner, opponent_username });
-        console.log("hadxiiiii li 3ndi f front ::::: ", opponent_username, user_score, opp_score, match_type);
-        gamescore({ opponent_username, user_score, opp_score, match_type });
+        console.log("hadxiiiii li 3ndi f front ::::: ", opponent_username, user_score, opp_score, opp_id, match_type);
+        gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
       }
       else if (data.aiwinner === null && lastWinnerRef.current !== null) {
         lastWinnerRef.current = null;
@@ -290,9 +292,10 @@ export async function gamescore(data: {
   opponent_username: string;
   user_score: number;
   opp_score: number;
+  opp_id: number;
   match_type: string;
 }) {
-  console.log("game score g front:: ", data.opponent_username, data.user_score, data.opp_score, data.match_type);
+  console.log("game score g front:: ", data.opponent_username, data.user_score, data.opp_score, data.opp_id, data.match_type);
   const response = await fetch(`${API_URL}/api/history/new_score`, {
     method: 'POST',
     credentials: 'include',

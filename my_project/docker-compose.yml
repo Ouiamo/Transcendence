@@ -11,6 +11,8 @@ services:
     volumes:
       - ./backend/certs:/app/certs:ro
       - ./backend/data:/app/data
+    depends_on:
+      - ai
     networks:
       - webnet
 
@@ -25,6 +27,13 @@ services:
       - ./frontend/certs:/etc/nginx/certs:ro
     depends_on:
       - backend
+    networks:
+      - webnet
+    
+  ai:
+    build:
+      context: ./game/ai
+      dockerfile: Dockerfile
     networks:
       - webnet
 

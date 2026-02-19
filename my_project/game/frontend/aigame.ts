@@ -16,15 +16,25 @@ let aigameGO : boolean = false;
 
 const aimaxScore : number = 11;
 
-// Animation frame ID for cleanup
 let aiAnimationFrameId: number | null = null;
+
+import { io } from "socket.io-client";
+const aiSocket = io("");
+
+let currentAIAction: "up" | "down" | "stay" = "stay";
+let lastPredictionTime = 0;
+const predictionInterval = 30;
+
+aiSocket.on("aiAction", (prediction: { action: "up" | "down" | "stay" }) => {
+    currentAIAction = prediction.action;
+});
 
 
 
 let aiplayer = {
     x :  20,
     y :  aiboardHeight / 2 - aipaddleHeight / 2,
-    color: "#c44cff",
+    color: "#0f3460",
     score : 0,
     step : 1,
 };
@@ -32,7 +42,7 @@ let aiplayer = {
 let realplayer = {
     x :  aiboardWidth - 20 - aipaddleWidth,
     y :  aiboardHeight / 2 - aipaddleHeight / 2,
-    color: "#c44cff",
+    color: "#0f3460",
     score : 0,
     step : 1,
 };
@@ -42,7 +52,7 @@ const ainet = {
     y : 5,
     width: 7,
     height : 25,
-    color: "#c44cff33",       
+    color: "#16213e",       
 };
 
 const aiball = {
@@ -102,7 +112,6 @@ export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
     document.addEventListener("keyup", aihandleKeyUp);
     
     return () => {
-        // Cancel the animation frame
         if (aiAnimationFrameId !== null) {
             cancelAnimationFrame(aiAnimationFrameId);
             aiAnimationFrameId = null;
@@ -110,7 +119,7 @@ export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
         
         document.removeEventListener("keydown", aihandleKeyDown);
         document.removeEventListener("keyup", aihandleKeyUp);
-        
+        aiSocket.disconnect();
         console.log("AI Game Cleaned Up");
     };
 };
@@ -165,23 +174,40 @@ function aihandleKeyUp(event: KeyboardEvent)
    
 }
 
-function aimovePlayer()//this will move the ai aipaddle
+function aimovePlayer()
 {
     if(aigameStart)
     {
-        
-        if(aiball.x <= aiboardWidth / 4 && aiball.y <= aiboardHeight /2 && aiplayer.y > 0 )
+        const currentTime = Date.now();
+        if (currentTime - lastPredictionTime > predictionInterval) {
+            requestAIPrediction();
+            lastPredictionTime = currentTime;
+        }
+
+        if(currentAIAction === "up" && aiplayer.y > 0)
             aiplayer.y -= aiplayer.step * aipaddleSpeed;
-        else if(aiball.x <= aiboardWidth / 4 && aiball.y >= aiboardHeight /2 && aiplayer.y < aiboardHeight - aipaddleHeight)
+        else if(currentAIAction === "down" && aiplayer.y < aiboardHeight - aipaddleHeight)
             aiplayer.y += aiplayer.step * aipaddleSpeed;
-        
+
         if(aikeys['ArrowUp'] && realplayer.y > 0)
             realplayer.y -= realplayer.step * aipaddleSpeed;
         else if(aikeys['ArrowDown'] && realplayer.y < aiboardHeight - aipaddleHeight)
             realplayer.y +=  realplayer.step * aipaddleSpeed;
-
-        //hna 5asni nzid l moves dyal ai player
     }
+}
+
+function requestAIPrediction() {
+    aiSocket.emit("requestPrediction", {
+        ball_x: aiball.x,
+        ball_y: aiball.y,
+        ball_step_x: aiball.stepX,
+        ball_step_y: aiball.stepY,
+        paddle_y: aiplayer.y,
+        paddle_height: aipaddleHeight,
+        board_width: aiboardWidth,
+        board_height: aiboardHeight,
+        opponent_y: realplayer.y
+    });
 }
 
 function aimoveBall(player: string)
@@ -314,7 +340,8 @@ function aidraw(player1:string) {
 function aidrawBoard(x: number, y: number, w:number, h:number)
 {
     if (!aicontex) return;
-    aicontex.fillStyle = "#0d0221";
+    // aicontex.fillStyle = "#490f5eff";
+    aicontex.fillStyle = "#15152bff";
     aicontex.beginPath();
     aicontex.fillRect(x, y, w, h);
 }
@@ -325,8 +352,7 @@ function aidrawRect(x: number, y: number, w:number, h:number, color:string)
     if (!aicontex) return;
     aicontex.fillStyle = color;
     aicontex.beginPath();
-    aicontex.roundRect(x, y, w, h, 6);
-    aicontex.fill();
+    aicontex.fillRect(x, y, w, h);
 }
 
 // draw net 
@@ -340,8 +366,8 @@ function aidrawBall(x: number, y: number, radius: number, color:string)
 {
     if (!aicontex) return;
 
-    aicontex.shadowBlur = 20;
-    aicontex.shadowColor = "#d86bff";
+    aicontex.shadowBlur = 10;
+    aicontex.shadowColor = "#ff3b94";
 
     aicontex.fillStyle = color;
     aicontex.beginPath();
@@ -367,19 +393,17 @@ function aidrawCountDown()
     if(aicountDown)
     {
         if (!aicontex) return;
-        aicontex.fillStyle = "rgba(13, 2, 33, 0.85)";
+        aicontex.fillStyle = "rgba(0, 0, 0, 0.7)";
         aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
-        aicontex.shadowBlur = 20;
-        aicontex.shadowColor = "#c44cff";
         aicontex.fillStyle = "white";
-        aicontex.font = "bold 150px Orbitron, Arial";
+        aicontex.font = "bold 150px Arial";
         aicontex.textAlign = "center"; 
         aicontex.textBaseline = "middle";
         aicontex.fillText(aicountDown.toString(), aiboardWidth/2, aiboardHeight/2);
            
         aicontex.shadowBlur = 15;
-        aicontex.fillStyle = "#d86bff";
-        aicontex.font = "30px Orbitron, Arial";
+        aicontex.fillStyle = "white";
+        aicontex.font = "30px Arial";
         aicontex.fillText("GET READY", aiboardWidth / 2, aiboardHeight / 2 - 100);
        
         aicontex.shadowBlur = 0;
@@ -387,11 +411,11 @@ function aidrawCountDown()
     if(aigameGO)
     {
         if (!aicontex) return;
-        aicontex.fillStyle = "rgba(13, 2, 33, 0.85)";
+        aicontex.fillStyle = "rgba(0, 0, 0, 0.7)";
         aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
         aicontex.shadowBlur = 40;
-        aicontex.shadowColor = "#c44cff";
-        aicontex.font = "bold 180px Orbitron, Arial";
+        aicontex.shadowColor = "#8f37f3ff";
+        aicontex.font = "bold 180px Arial";
         aicontex.fillStyle = "white";
         aicontex.textAlign = "center";
         aicontex.textBaseline = "middle";
@@ -432,19 +456,18 @@ function aidrawCountDown()
 function aidrawStart()
 {
     if (!aicontex) return;
-    aicontex.fillStyle = "#0d0221";
+    aicontex.fillStyle = "rgba(0, 0, 0, 1)";
     aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
-    aicontex.shadowBlur = 25;
-    aicontex.shadowColor = "#c44cff";
+    aicontex.shadowBlur = 20;
+    aicontex.shadowColor = "#9e58eeff";
     aicontex.fillStyle = "white";
-    aicontex.font = "40px Orbitron, Arial";
+    aicontex.font = "40px Arial";
     aicontex.textAlign = "center";
     aicontex.textBaseline = "middle";
     aicontex.fillText("Press SPACE to Start ", aiboardWidth / 2, aiboardHeight / 2);
 
-    aicontex.font = "20px Orbitron, Arial";
-    aicontex.fillStyle = "#8F929E";
-    aicontex.shadowBlur = 0;
+    aicontex.font = "20px Arial";
+    aicontex.fillStyle = "white";
     aicontex.fillText("YOU : ↑/↓", aiboardWidth / 2, aiboardHeight / 2 + 50);
     
     aicontex.shadowBlur = 0;

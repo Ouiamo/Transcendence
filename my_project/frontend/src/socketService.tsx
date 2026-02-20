@@ -39,8 +39,10 @@ export const connectSocket = (userId: number, username: string) => {
   const serverUrl = `${API_URL}`;
   socket = io(serverUrl, { 
     reconnection: true, 
-    reconnectionAttempts: 5, 
-    reconnectionDelay: 500,
+    reconnectionAttempts: Infinity, 
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    transports: ['websocket', 'polling'],
     forceNew: false 
   });
 

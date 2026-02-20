@@ -1,3 +1,4 @@
+
 import { Socket } from "socket.io-client";
 
 
@@ -29,7 +30,7 @@ const ballColor: string = "white";
 const ballRadius : number = 15;
 // const ballStepX :number= 5;
 // const ballStepY :number = 5;
-const  playerColor: string ="#c44cff";
+const  playerColor: string ="#829cbdff";
 let gameEnd: boolean = false;
 
 // const score={
@@ -78,6 +79,8 @@ const keys: {[key:string] : boolean}={
     'ArrowUp' : false,
     'ArrowDown' : false,
 }
+
+let winnerName: string;
 
 // function drawWaitingForPlayer(
 //     context: CanvasRenderingContext2D,
@@ -147,6 +150,9 @@ const keys: {[key:string] : boolean}={
 // export function getSocket() {
 //   return socket;
 // }
+let opp_id :number;
+// let user_score: number;
+// let opp_score: number;
 
 export function getRemoteGameState() {
   return {
@@ -154,9 +160,10 @@ export function getRemoteGameState() {
     player2Username: gameState.player2Username,
     score1: gameState.score1,
     score2: gameState.score2,
+    opp_id: opp_id,
     inGame: gameState.inGame,
     gameEnd: gameState.gameEnd,
-    winner: gameState.winner
+    winner: winnerName
   };
 }
 
@@ -298,7 +305,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    board = canvas;
    console.log("Initializing remote game...");
    console.log(" Game data:", gameData);
-   console.log(" Current user:", currentUser);
+   console.log(" Current user ::::::::::::::::::::::::::::::::", currentUser);
    console.log(" Socket available:", !!existingSocket);
 
    if (!existingSocket) {
@@ -325,11 +332,27 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
    gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
    
+    if (gameData.player1.id === currentUser.id)
+    {
+        gameState.player1Username = gameData.player1.username;
+        gameState.player2Username = gameData.player2.username;
+        opp_id = gameData.player2.id;
+        
+    }
+    else
+    {
+        gameState.player1Username = gameData.player2.username;
+        gameState.player2Username = gameData.player1.username;
+        opp_id = gameData.player1.id;
+        
+    }
+      
+   
    board.width = 900;
    board.height = 450;
    contex = board.getContext("2d");
 
-   // Setup keyboard
+
    document.removeEventListener("keydown", handleKeyDown);
    document.removeEventListener("keyup", handleKeyUp);
    document.addEventListener("keydown", handleKeyDown);
@@ -422,7 +445,7 @@ function drawWinner()
 {
     if (!contex || gameEnd === false) return;
 
-    let winnerName: string;
+    
     if (winner === 1) {
         winnerName = gameState.player1Username + ' WINS!';
     } else if (winner === 2) {
@@ -496,8 +519,8 @@ function drawBall(x: number, y: number, radius: number, color:string)
 {
     if (!contex) return;
 
-    contex.shadowBlur = 10;
-    contex.shadowColor = "#ff3b94";
+    contex.shadowBlur = 20;
+    contex.shadowColor = "#d86bff";
 
     contex.fillStyle = color;
     contex.beginPath();

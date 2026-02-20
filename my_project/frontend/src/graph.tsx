@@ -148,8 +148,8 @@ function StatsCharts() {
     let total = 0;
     const points = [0];
 
+    console.log("results hnaa is ", history);
     history.forEach((result:any) => {
-      console.log("results hnaa is ", result);
       if (result.isWin === 1 || result.isWin === true) total += POINTS_PER_MATCH;
       else if (result.isWin === 0 || result.isWin === false) total -= POINTS_PER_MATCH;
       points.push(total);

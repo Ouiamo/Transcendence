@@ -47,9 +47,31 @@ module.exports = async function(fastify, options) {
         const history = await dbAll(
           'SELECT * FROM history WHERE user_id = ?',
           [userId]
-      );
+        );
 
-      return reply.send(history);
+        const newHistory = await Promise.all(
+          history.map(async (row) => {
+            let opp_avatar = null;
+            if (row.opp_id && row.opp_id !== 0) {
+              const opponent = await dbGet(
+                'SELECT avatar_url, provider FROM users WHERE id = ?',
+                [row.opp_id]
+              );
+              if (opponent) {
+                if (opponent.avatar_url) {
+                  opp_avatar = opponent.provider === 'local'
+                    ? `/api/avatar/file/${opponent.avatar_url}`
+                    : opponent.avatar_url;
+                } else {
+                  opp_avatar = `/api/avatar/file/default-avatar.png`;
+                }
+              }
+            }
+            return { ...row, opp_avatar };
+          })
+        );
+
+        return reply.send(newHistory);
       }
       catch(err){
         console.error('get history error:', err);

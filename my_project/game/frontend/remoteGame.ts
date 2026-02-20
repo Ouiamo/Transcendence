@@ -148,16 +148,20 @@ const keys: {[key:string] : boolean}={
 // export function getSocket() {
 //   return socket;
 // }
+let winnerName: string;
+let opponent_id: number;
 
 export function getRemoteGameState() {
+
   return {
     player1Username: gameState.player1Username,
     player2Username: gameState.player2Username,
     score1: gameState.score1,
     score2: gameState.score2,
+    opp_id: opponent_id,
     inGame: gameState.inGame,
     gameEnd: gameState.gameEnd,
-    winner: gameState.winner
+    winner: winnerName
   };
 }
 
@@ -175,7 +179,7 @@ export function cleanupGame() {
     socket?.off("gameUpdate");
     socket?.off("player_disconnected");
 
-    // Reset all game state
+
     gameState.inGame = false;
     gameState.gameEnd = false;
     gameState.winner = 0;
@@ -191,6 +195,8 @@ export function cleanupGame() {
     gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
     gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
 
+    winnerName = "";
+
     document.removeEventListener("keydown", handleKeyDown);
     document.removeEventListener("keyup", handleKeyUp);
     
@@ -204,12 +210,11 @@ function setupPrivateGame(gameData: any, currentUser: any) {
     console.log(" Setting up private game with data:", gameData);
     console.log(" Current user:", currentUser?.username, "id:", currentUser?.id);
 
-    if (gameData.player1 && gameData.player2) {
-        gameState.player1Username = gameData.player1.username || "Player 1";
-        gameState.player2Username = gameData.player2.username || "Player 2";
-        console.log(` Players: ${gameState.player1Username} vs ${gameState.player2Username}`);
-    }
-
+    // if (gameData.player1 && gameData.player2) {
+    //     gameState.player1Username = gameData.player1.username || "Player 1";
+    //     gameState.player2Username = gameData.player2.username || "Player 2";
+    //     console.log(` Players: ${gameState.player1Username} vs ${gameState.player2Username}`);
+    // }
 
     if (currentUser?.id == gameData.player1?.id) {
         gameState.role = "player1";
@@ -258,7 +263,15 @@ function setupPrivateGame(gameData: any, currentUser: any) {
                 gameState.winner = data.winner;
                 gameState.isCleaningUp = true;
                 gameState.inGame = false;
-                
+
+                if (data.winner === 1) {
+                    winnerName = gameState.player1Username + ' WINS!';
+                } else if (data.winner === 2) {
+                    winnerName = gameState.player2Username + ' WINS!';
+                } else {
+                    winnerName = 'GAME OVER!';
+                }
+
                 setTimeout(() => {
                     console.log("Cleaning up finished game...");
                     window.dispatchEvent(new CustomEvent('game_ended', { 
@@ -310,6 +323,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
        console.error(" No gameData provided to initGame_remot!");
        return;
    }
+
    
    gameState.inGame = false;
    gameState.gameEnd = false;
@@ -326,11 +340,22 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
    gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
    
+
+   gameState.player1Username = gameData.player1.username;
+   gameState.player2Username = gameData.player2.username;
+
+   if (currentUser.id === gameData.player1.id) {
+        console.log("here 1 ");
+        opponent_id = gameData.player2.id;
+   } else {
+        console.log("here 2");
+        opponent_id = gameData.player1.id;
+   }
+
    board.width = 900;
    board.height = 450;
    contex = board.getContext("2d");
 
-   // Setup keyboard
    document.removeEventListener("keydown", handleKeyDown);
    document.removeEventListener("keyup", handleKeyUp);
    document.addEventListener("keydown", handleKeyDown);
@@ -423,7 +448,6 @@ function drawWinner()
 {
     if (!contex || gameEnd === false) return;
 
-    let winnerName: string;
     if (winner === 1) {
         winnerName = gameState.player1Username + ' WINS!';
     } else if (winner === 2) {

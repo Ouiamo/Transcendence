@@ -107,7 +107,7 @@ interface game {
 
 export function Gamepage_r({data1, currentUser}: game) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // const lastWinnerRef = useRef<string | null>(null);
+  const lastWinnerRef = useRef<string | null>(null);
   
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
@@ -123,7 +123,7 @@ export function Gamepage_r({data1, currentUser}: game) {
       return;
     }
 
-    console.log("🎮 Gamepage_r initializing with gameData:", data1);
+    console.log("Gamepage_r initializing with gameData:", data1);
     
     initGame_remot(canvasRef.current, existingSocket as any, data1, currentUser);
 
@@ -133,6 +133,27 @@ export function Gamepage_r({data1, currentUser}: game) {
       setPlayer2Score(data.score2);
       setPlayer1Name(data.player1Username);
       setPlayer2Name(data.player2Username);
+      if (data.winner !== null && data.winner !== lastWinnerRef.current) {
+        lastWinnerRef.current = data.winner;
+
+        const winner = data.winner;
+        
+        const isPlayer1 = data1?.player1?.id === currentUser?.id;
+        const opponent_username = isPlayer1 ? data.player2Username : data.player1Username;
+        const user_score = isPlayer1 ? data.score1 : data.score2;
+        const opp_score = isPlayer1 ? data.score2 : data.score1;
+        const opp_id = data.opp_id;
+        const match_type = "REMOTE";
+        console.log("opp id isss ", opp_id);
+        console.log("opp username isss ", opponent_username);
+        console.log("opp score isss ", user_score);
+        console.log("user score isss ", opp_score);
+        gameResults({ winner, opponent_username });
+        gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
+      }
+      else if (data.winner === null && lastWinnerRef.current !== null) {
+        lastWinnerRef.current = null;
+      }
     }, 100);
 
     return () => {

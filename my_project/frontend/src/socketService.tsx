@@ -113,6 +113,7 @@ export const connectSocket = (userId: number, username: string) => {
 
 export const disconnectSocket = () => {
   if (socket) {
+    socket.io.opts.reconnection = false;
     socket.disconnect();
     socket = null;
   }

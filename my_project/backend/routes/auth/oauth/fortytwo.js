@@ -87,10 +87,10 @@ module.exports = async function (fastify) {
 
     reply.setCookie('access_token', token, {
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'lax',
         secure: true,
         path: '/',
         maxAge: 60 * 60 * 10
-      }).redirect(process.env.FRONTEND_URL);
+      }).redirect((process.env.FRONTEND_URL || 'https://localhost') + '/dashboard');
   });
 };

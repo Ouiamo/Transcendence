@@ -37,7 +37,7 @@ module.exports = async function (fastify) {
       reply.clearCookie('access_token', {
         path: '/',
         secure: true,
-        sameSite: 'none'
+        sameSite: 'lax'
       });
 
       return reply.send({

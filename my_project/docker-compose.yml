@@ -11,6 +11,7 @@ services:
     volumes:
       - ./backend/certs:/app/certs:ro
       - ./backend/data:/app/data
+      - ./backend/avatar/file:/app/avatar/file
     depends_on:
       - ai
     networks:

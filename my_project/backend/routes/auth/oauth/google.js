@@ -89,11 +89,11 @@ module.exports = async function (fastify) {
 
     reply.setCookie('access_token', token, {
       httpOnly: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       secure: true,
       path: '/',
       maxAge: 60 * 60 * 10
     })
-      .redirect("https://localhost");
+      .redirect("https://localhost/dashboard");
   });
 };

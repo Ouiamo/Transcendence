@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 module.exports = async function(fastify, options) {
   const { dbRun } = require('../../utils/dbHelpers');
-  const avatarFolder = path.join(__dirname, '../../avatars');
+  const avatarFolder = path.join(__dirname, '../../avatar/file');
   
   if (!fs.existsSync(avatarFolder)) {
     fs.mkdirSync(avatarFolder, { recursive: true });

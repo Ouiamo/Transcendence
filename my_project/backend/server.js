@@ -35,7 +35,8 @@ fastify.register(require('@fastify/cors'), {
     const allowed = [
       'https://localhost',
       'https://127.0.0.1',
-      // 'https:// 10.46.80.37' 
+      // 'https:// 10.46.80.37'
+      // 'https://10.13.249.15'
     ];
 
     if (!origin) return cb(null, true);

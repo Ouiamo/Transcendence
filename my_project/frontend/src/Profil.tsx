@@ -337,7 +337,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
             src={
               match.match_type === 'AI'
                 ? `${API_URL}/api/avatar/file/ia.png`
-                : match.match_type === 'local'
+                : match.match_type === 'LOCAL'
                 ? `${API_URL}/api/avatar/file/guest.png`
                 : match.opp_avatar
             }

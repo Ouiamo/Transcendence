@@ -23,6 +23,9 @@ import { connectSocket, disconnectSocket, onPrivateGameInvite } from './socketSe
 // type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
 function App(){
   const navigate = useNavigate();
+  //-----
+  const location = useLocation();
+  //-----
   type side = 'dashboard' | 'game' | 'leaderboard' | 'settings' | 'profile' | 'friends';
   const [active, setActive] = useState<side>('dashboard');
   
@@ -62,9 +65,14 @@ function App(){
     window.addEventListener('game_ended', handleGameEnded);
     return () => window.removeEventListener('game_ended', handleGameEnded);
   }, [navigate]);
-
+//-----
 useEffect(() => {
-  console.log("items is ^^^^^^^^^^^^^ jitttt ");
+  const publicRoutes = ['/', '/home', '/login', '/signup', '/privacy', '/terms'];
+  if (publicRoutes.includes(location.pathname)) {
+    setLoading(false);
+    return;
+  }
+  //----
   const checkSession = async () => {
     try {
       const res = await fetch(`${API_URL}/api/profile`, {

@@ -1,6 +1,5 @@
 import { io } from "socket.io-client";
 import type { Socket } from "socket.io-client";
-import { API_URL } from "./Api.tsx";
 
 let socket: Socket | null = null;
 export const OnlineUsers = new Map<number, string>();
@@ -36,14 +35,15 @@ export const connectSocket = (userId: number, username: string) => {
   }
   saveUserDataToStorage(userId, username);
 
-  const serverUrl = `${API_URL}`;
+  const serverUrl = window.location.origin;
   socket = io(serverUrl, { 
     reconnection: true, 
     reconnectionAttempts: Infinity, 
     reconnectionDelay: 1000,
     reconnectionDelayMax: 5000,
     transports: ['websocket', 'polling'],
-    forceNew: false 
+    forceNew: false,
+    path: '/socket.io/'
   });
 
   socket.on("connect", () => {

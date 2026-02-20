@@ -33,7 +33,7 @@ module.exports = async function (fastify) {
   reply.setCookie('access_token', token, {
     httpOnly: true,
     secure: true,
-    sameSite: 'none',
+    sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 10
   });
@@ -53,7 +53,7 @@ module.exports = async function (fastify) {
     reply.setCookie('access_token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 10
     });

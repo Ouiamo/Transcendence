@@ -23,21 +23,7 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
 
 
  fastify.patch('/api/profile', { preHandler: fastify.authenticate }, async(request, reply) => {
-  //  const token = request.cookies.access_token;
-  
-  // if (!token) {
-  //   return reply.code(401).send({ error: 'Not authenticated' });
-  // }
-  
-  //  let payload;
-  //   try{
-  //     payload = jwt.verify(token, process.env.JWT_SECRET);
-  //   }
-  //   catch (err) 
-  //   {
-  //     console.error("JWT Verification Error:", err.message);
-  //     return reply.code(401).send({ error: 'Invalid or expired token' });
-  //   }
+
   try {
     const { firstname, lastname, username, email, avatar_url , currentPassword, newPassword, confirmPassword} = request.body;
 
@@ -115,13 +101,6 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
      let finalAvatarUrl = null;
      if (updatedUser.avatar_url) {
       finalAvatarUrl = `${updatedUser.avatar_url}`;
-      //console.log("finalAvatarUrl------>", finalAvatarUrl);
-    //   await dbRun(
-    //    `UPDATE users SET avatar_url = ? WHERE id = ?`,
-    //    [finalAvatarUrl, updatedUser.id]
-    //  );
-      //console.log("finalAvatarUrl11111111------>", updatedUser.avatar_url);
-
     }
   
     return reply.send({

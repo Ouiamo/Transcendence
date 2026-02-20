@@ -11,14 +11,8 @@ module.exports = async function(fastify, options) {
   }
 
   fastify.post('/api/avatar', { preHandler: fastify.authenticate }, async (request, reply) => {
-    // const token = request.cookies.access_token;
     
-    // if (!token) {
-    //   return reply.code(401).send({ error: 'Please login first' });
-    // }
-
     try {
-      // const payload = jwt.verify(token, process.env.JWT_SECRET);
       const userId = request.user.id;
 
       const data = await request.file();

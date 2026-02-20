@@ -14,7 +14,13 @@ module.exports = async function (fastify) {
   try {
       const user = await dbGet('SELECT * FROM users WHERE email = ?',[email]);
 
-  if (!user || !(await bcrypt.compare(password, user.password_hash)))
+  if (!user)
+    return reply.code(401).send({ error: 'Invalid credentials' });
+
+  if (user.provider !== 'local')
+    return reply.code(401).send({ error: 'This account uses ' + user.provider + ' login. Please sign in with ' + user.provider + '.' });
+
+  if (!(await bcrypt.compare(password, user.password_hash)))
     return reply.code(401).send({ error: 'Invalid credentials' });
 
   if (user.twofa_enabled) {
@@ -28,7 +34,8 @@ module.exports = async function (fastify) {
     httpOnly: true,
     secure: true,
     sameSite: 'none',
-    path: '/'
+    path: '/',
+    maxAge: 60 * 60 * 10
   });
 
   return reply.send({
@@ -48,7 +55,7 @@ module.exports = async function (fastify) {
       secure: true,
       sameSite: 'none',
       path: '/',
-      maxAge: 60 * 60
+      maxAge: 60 * 60 * 10
     });
 
     return reply.send({

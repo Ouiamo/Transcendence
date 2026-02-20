@@ -82,14 +82,15 @@ module.exports = async function (fastify) {
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '10h' }
     );
 
     reply.setCookie('access_token', token, {
         httpOnly: true,
         sameSite: 'none',
         secure: true,
-        path: '/'
+        path: '/',
+        maxAge: 60 * 60 * 10
       }).redirect(process.env.FRONTEND_URL);
   });
 };

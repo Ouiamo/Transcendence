@@ -4,13 +4,7 @@ const { dbAll } = require('../../utils/dbHelpers');
 
 fastify.get('/api/ranking', { preHandler: fastify.authenticate }, async (request, reply) => {
 
-    // const token = request.cookies.access_token;
-    // if (!token) {
-    //     return reply.code(401).send({ error: 'Please login first' });
-    // }
-
     try {
-        // const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });//hadi t expirat mnin dert bzaf dyal requests dakchi 3lach zedt dik ignoreExpiration
         const stats = await dbAll(`
             SELECT s.user_id, u.username, u.avatar_url, u.provider, s.points, s.wins, s.loss, s.win_rate
             FROM stats s

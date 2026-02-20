@@ -21,7 +21,13 @@ function SmallStatCard({ icon, value, label }: any) {
   );
 }
 
-
+function UserSticker({ name }: { name: string }) {
+  return (
+    <span className="ml-1 px-2 py-[1px] bg-[#c44cff]/20 text-[#c44cff] text-xs font-bold rounded-full">
+      {name}
+    </span>
+  );
+}
 
 interface ProfilInterface {
   user: any;
@@ -52,6 +58,15 @@ interface History {
 
 function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
   localStorage.setItem('page', 'PROFIL');
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-400">
+        Loading profile...
+      </div>
+    );
+  }
+
   console.log("user fitst name last name ", user.firstname, user.lastname, user)
   console.log("data user in profile avatar is ", user.avatarUrl);
   const logout = async () => {
@@ -171,9 +186,11 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
 
             <p className=" text-[#ffff]/60 mb-[4px] ">
               {user?.firstname}
+              <UserSticker name="Player" />
             </p>
               <p className=" text-[#ffff]/60 mb-[4px] ">
               {user?.lastname}
+              <UserSticker name="Gamer" />
             </p>
 
             <p className="text-[#ffff]/60">{user?.email}</p>

@@ -1,4 +1,5 @@
 const { Server: SocketIOServer } = require('socket.io');
+const { io: ioClient } = require('socket.io-client');
 
 const waitingPlayers = [];
 const gameRooms = new Map();
@@ -22,7 +23,11 @@ module.exports = async function (fastify) {
 
   fastify.server.io = gameSocket;
 
-
+  const pythonAIClient = ioClient("http://ai:5000", {
+    reconnection: true,
+    reconnectionDelay: 1000,
+    reconnectionAttempts: 10
+  });
 
   gameSocket.on("connection", (socket) => {
     console.log("New client connected:", socket.id);
@@ -42,7 +47,6 @@ module.exports = async function (fastify) {
         pendingOfflineUsers.delete(userId);
       }
 
-      // Store in onlineUsers map
       const wasOnline = onlineUsers.has(userId);
       onlineUsers.set(userId, socket.id);
       
@@ -125,7 +129,13 @@ module.exports = async function (fastify) {
       }
     });
 
-    
+    socket.on("requestPrediction", (gameState) => {
+      pythonAIClient.emit("predict", gameState);
+      pythonAIClient.once("prediction", (prediction) => {
+        socket.emit("aiAction", prediction);
+      });
+    });
+
     socket.on("join_private_game", (data) => {
       const { roomId, playerId, playerUsername } = data;
       console.log(` Player ${playerUsername} (${playerId}) joining private game room: ${roomId}`);

@@ -6,14 +6,8 @@ const path = require('path');
 module.exports = async function (fastify) {
 
   fastify.delete('/api/profile', { preHandler: fastify.authenticate }, async (request, reply) => {
-    // const token = request.cookies.access_token;
-    
-    // if (!token) {
-    //   return reply.code(401).send({ error: 'Not authenticated' });
-    // }
 
     try {
-      // const payload = jwt.verify(token, process.env.JWT_SECRET);
       const userId = request.user.id;
       const user = await dbGet('SELECT avatar_url, provider FROM users WHERE id = ?', [userId]);
       

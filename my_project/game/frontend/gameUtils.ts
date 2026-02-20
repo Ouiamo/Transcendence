@@ -17,7 +17,7 @@ export function drawBoard(
     w: number, 
     h: number
 ) {
-    context.fillStyle = "#15152bff";
+    context.fillStyle = "#0d0221";
     context.beginPath();
     context.fillRect(x, y, w, h);
 }

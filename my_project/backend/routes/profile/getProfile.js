@@ -19,19 +19,7 @@ module.exports = async function (fastify) {
 });
 
 fastify.get('/api/profile', { preHandler: fastify.authenticate }, async (request, reply) => {
-  // const token = request.cookies.access_token;
-  // if (!token)
-  //   return reply.code(401).send({ error: 'Not authenticated' });
-  
-  // try {
-    // const payload = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // const user = await dbGet(
-    //     'SELECT id, username, email, avatar_url, provider , firstname, lastname, twofa_enabled FROM users WHERE id = ?',
-    //     [payload.id]
-    //   );
-      const user = request.user; // Set by the auth plugin
-
+      const user = request.user; 
       let avatarUrl = `/api/avatar/file/default-avatar.png`;
 
       if (user.avatar_url) {
@@ -55,9 +43,6 @@ fastify.get('/api/profile', { preHandler: fastify.authenticate }, async (request
         lastname : user.lastname,
       }
     });
-  // } catch(err) {
-  //   return reply.code(401).send({ error: 'Invalid or expired token' });
-  // }
 });
 
 

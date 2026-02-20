@@ -398,7 +398,7 @@ function drawCountDown()
     if(gameGO)
     {
         if (!contex) return;
-        contex.fillStyle = "rgba(0, 0, 0, 0.7)";
+        contex.fillStyle = "rgba(13, 2, 33, 0.85)";
         contex.fillRect(0, 0, boardWidth, boardHeight);
         contex.shadowBlur = 40;
         contex.shadowColor = "#c44cff";
@@ -461,3 +461,4 @@ function drawStart()
     
     contex.shadowBlur = 0;
 }
+

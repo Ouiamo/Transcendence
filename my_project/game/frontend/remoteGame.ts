@@ -30,7 +30,7 @@ const ballColor: string = "white";
 const ballRadius : number = 15;
 // const ballStepX :number= 5;
 // const ballStepY :number = 5;
-const  playerColor: string ="#c44cff";
+const  playerColor: string ="#829cbdff";
 let gameEnd: boolean = false;
 
 // const score={
@@ -497,8 +497,8 @@ function drawBall(x: number, y: number, radius: number, color:string)
 {
     if (!contex) return;
 
-    contex.shadowBlur = 10;
-    contex.shadowColor = "#ff3b94";
+    contex.shadowBlur = 20;
+    contex.shadowColor = "#d86bff";
 
     contex.fillStyle = color;
     contex.beginPath();

@@ -175,9 +175,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
         setSelectedFile(null);
         // setPreviewUrl(null);
       } else {
-        alert(result.error || 'Update failed.');
          alert(result.message || result.error || 'Update failed.');
-//       }
       }
     }
     catch (err) {

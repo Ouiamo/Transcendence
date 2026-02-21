@@ -396,13 +396,13 @@ function Friends() {
                                         <div className="flex gap-[10px]">
                                             <button
                                                 onClick={() => accept_invitation(f.request_id)}
-                                                className="w-[80px] h-[35px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#098000] font-bold text-[13px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] hover:scale-[1.05] active:scale-[0.95]"
+                                                className="border-none outline-none w-[80px] h-[35px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#098000] font-bold text-[13px] uppercase transition-all duration-300 hover:shadow-[0_0_15px_rgba(0,255,136,0.6)] hover:scale-[1.05] active:scale-[0.95]"
                                             >
                                                 Accept
                                             </button>
                                             <button
                                                 onClick={() => handleRemoveFriend(f.user_id)}
-                                                className="w-[80px] h-[35px] rounded-full border-[2px] bg-gradient-to-r from-[#da043a]/60 to-[#da043a]/60 text-[#ac0000] uppercase transition-all duration-300 hover:bg-[#ff4444] hover:text-white hover:shadow-[0_0_15px_rgba(255,68,68,0.5)] hover:scale-[1.05] active:scale-[0.95]"
+                                                className="border-none outline-none w-[80px] h-[35px] rounded-full border-[2px] bg-gradient-to-r from-[#da043a]/60 to-[#da043a]/60 text-[#ac0000] uppercase transition-all duration-300 hover:bg-[#ff4444] hover:text-white hover:shadow-[0_0_15px_rgba(255,68,68,0.5)] hover:scale-[1.05] active:scale-[0.95]"
                                             >
                                                 Decline
                                             </button>

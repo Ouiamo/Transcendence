@@ -17,14 +17,10 @@ module.exports = async function(fastify, options) {
     console.error('Error creating history table:', err);
   })
 
-  fastify.post('/api/history/new_score', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if(!token){
-        return reply.code(401).send({error: 'Please login first'});
-    }
+  fastify.post('/api/history/new_score', { preHandler: fastify.authenticate }, async (request, reply) => {
+   
     try{
-        const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
-        const userId = payload.id;
+        const userId = request.user.id;
         const {opponent_username, user_score, opp_score, opp_id, match_type} = request.body;
         console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
@@ -45,21 +41,37 @@ module.exports = async function(fastify, options) {
     }
   });
 
-   fastify.get('/api/history/get_history', async (request, reply) => {
-      const token = request.cookies.access_token;
-      if (!token) {
-          return reply.code(401).send({ error: 'Please login first' });
-      }
-  
+   fastify.get('/api/history/get_history', { preHandler: fastify.authenticate }, async (request, reply) => {
       try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET);
-          const userId = payload.id;
-          const history = await dbAll(
+        const userId = request.user.id;
+        const history = await dbAll(
           'SELECT * FROM history WHERE user_id = ?',
           [userId]
-      );
+        );
 
-      return reply.send(history);
+        const newHistory = await Promise.all(
+          history.map(async (row) => {
+            let opp_avatar = null;
+            if (row.opp_id && row.opp_id !== 0) {
+              const opponent = await dbGet(
+                'SELECT avatar_url, provider FROM users WHERE id = ?',
+                [row.opp_id]
+              );
+              if (opponent) {
+                if (opponent.avatar_url) {
+                  opp_avatar = opponent.provider === 'local'
+                    ? `/api/avatar/file/${opponent.avatar_url}`
+                    : opponent.avatar_url;
+                } else {
+                  opp_avatar = `/api/avatar/file/default-avatar.png`;
+                }
+              }
+            }
+            return { ...row, opp_avatar };
+          })
+        );
+
+        return reply.send(newHistory);
       }
       catch(err){
         console.error('get history error:', err);
@@ -67,15 +79,10 @@ module.exports = async function(fastify, options) {
       }
   });
 
-  fastify.get('/api/history/is_win', async (request, reply) => {
-      const token = request.cookies.access_token;
-      if (!token) {
-          return reply.code(401).send({ error: 'Please login first' });
-      }
-  
+  fastify.get('/api/history/is_win', { preHandler: fastify.authenticate }, async (request, reply) => {
+     
       try {
-          const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
-          const userId = payload.id;
+          const userId = request.user.id;
           const history = await dbAll(
           'SELECT isWin FROM history WHERE user_id = ?',
           [userId]

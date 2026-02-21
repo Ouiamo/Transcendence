@@ -22,30 +22,15 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
 });
 
 
- fastify.patch('/api/profile', async(request, reply) => {
-   const token = request.cookies.access_token;
-  
-  if (!token) {
-    return reply.code(401).send({ error: 'Not authenticated' });
-  }
-  
-   let payload;
-    try{
-      payload = jwt.verify(token, process.env.JWT_SECRET);
-    }
-    catch (err) 
-    {
-      console.error("JWT Verification Error:", err.message);
-      return reply.code(401).send({ error: 'Invalid or expired token' });
-    }
-  
+ fastify.patch('/api/profile', { preHandler: fastify.authenticate }, async(request, reply) => {
+
   try {
     const { firstname, lastname, username, email, avatar_url , currentPassword, newPassword, confirmPassword} = request.body;
 
     if (username || email) {
       const existingUser = await dbGet(
         `SELECT id FROM users WHERE (email = ? OR username = ?) AND id != ?`,
-        [email || '', username || '', payload.id]
+        [email || '', username || '', request.user.id]
       );
       if (existingUser) {
         return reply.code(400).send({ error: 'Email or username already in use' });
@@ -64,7 +49,7 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
       if(!currentPassword || !newPassword || !confirmPassword) {
         return reply.code(400).send({ error: 'All password fields are required' });
       }
-      const user = await dbGet(`SELECT password_hash FROM users WHERE id = ?`, [payload.id]);
+      const user = await dbGet(`SELECT password_hash FROM users WHERE id = ?`, [request.user.id]);
       const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
       if (!isMatch) {
         return reply.code(400).send({ error: 'Current password is incorrect' });
@@ -82,11 +67,11 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
       const base64Data = avatar_url.replace(/^data:image\/\w+;base64,/, "");
       const buffer = Buffer.from(base64Data, 'base64');
      
-      let fileName = `avatar-${payload.id}-${Date.now()}.png`;
+      let fileName = `avatar-${request.user.id}-${Date.now()}.png`;
       const uploadPath = path.join(__dirname, '../../avatar/file', fileName);
     
       fs.writeFileSync(uploadPath, buffer);
-      const user = await dbGet(`SELECT provider FROM users WHERE id = ?`, [payload.id]);
+      const user = await dbGet(`SELECT provider FROM users WHERE id = ?`, [request.user.id]);
       fields.push('avatar_url = ?');
       if(user.provider !== 'local') {
         // return reply.code(400).send({ error: 'Avatar can only be updated for local accounts' });
@@ -103,7 +88,7 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
       return reply.code(400).send({ error: 'No fields to update' });
     }
 
-    values.push(payload.id);
+    values.push(request.user.id);
     await dbRun(
       `UPDATE users SET ${fields.join(', ')} WHERE id = ?`,
       values
@@ -111,18 +96,11 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
     
     const updatedUser = await dbGet(
       `SELECT id, firstname, lastname, username, email, avatar_url FROM users WHERE id = ?`,
-      [payload.id]
+      [request.user.id]
     );
      let finalAvatarUrl = null;
      if (updatedUser.avatar_url) {
       finalAvatarUrl = `${updatedUser.avatar_url}`;
-      //console.log("finalAvatarUrl------>", finalAvatarUrl);
-    //   await dbRun(
-    //    `UPDATE users SET avatar_url = ? WHERE id = ?`,
-    //    [finalAvatarUrl, updatedUser.id]
-    //  );
-      //console.log("finalAvatarUrl11111111------>", updatedUser.avatar_url);
-
     }
   
     return reply.send({

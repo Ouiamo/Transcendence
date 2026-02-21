@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
   ArcElement,
+  Filler,
 } from 'chart.js';
 import type { ChartOptions } from 'chart.js';
 import { API_URL } from "./Api.tsx";
@@ -23,7 +24,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
+  Filler
 );
 
 interface Stats {
@@ -82,7 +84,7 @@ function StatsCharts() {
   }
 
   if (!stats) {
-    return <div className="text-center p-4">errooooooooooooooooor</div>;
+    return <div className="text-center p-4"></div>;
   }
 
   const donutData = {

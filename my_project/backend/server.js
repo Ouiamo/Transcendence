@@ -28,17 +28,17 @@ fastify.register(require('@fastify/jwt'), {
   }
 });
 
-// fastify.register(require('./plugins/auth'));
+
 
 fastify.register(require('@fastify/cors'), {
   origin: (origin, cb) => {
     const allowed = [
       'https://localhost',
       'https://127.0.0.1',
-      // 'https://10.13.249.15' 
+      // 'https:// 10.46.80.37'
+      // 'https://10.13.249.15'
     ];
 
-    // Allow requests with no origin (server-to-server, tools)
     if (!origin) return cb(null, true);
 
     if (allowed.includes(origin)) {
@@ -51,6 +51,7 @@ fastify.register(require('@fastify/cors'), {
 });
 
 fastify.register(require('fastify-multipart'));
+fastify.register(require('./plugins/auth'));
 
 fastify.register(require('./routes/auth/root'));
 fastify.register(require('./routes/auth/signup'));
@@ -82,7 +83,6 @@ fastify.register(require('./routes/stats/ranking'));
 fastify.register(require('./routes/stats/user_ranking'));
 fastify.register(require('./routes/history/history'));
 fastify.register(require('./routes/public-api/index'));
-
 
 fastify.listen({ port: 3010, host: '0.0.0.0' }, (err) => {
   if (err) {

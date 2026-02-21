@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-// import { API_URL } from "../../frontend/src/Api.tsx";
 
 module.exports = async function(fastify, options) {
   const { dbAll, dbGet, dbRun } = require('../../utils/dbHelpers');
@@ -17,15 +16,10 @@ await dbRun(`
   console.error('Error creating game_invitations table:', err);
 });
 
-fastify.post('/api/game/invitation', async (request, reply) => {
-  const token = request.cookies.access_token;
-  if (!token) {
-    return reply.code(401).send({ error: 'Please login first' });
-  }
+fastify.post('/api/game/invitation', { preHandler: fastify.authenticate }, async (request, reply) => {
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const senderId = payload.id;
+    const senderId = request.user.id;
     const { friendUsername } = request.body;
 
     if (!friendUsername) {
@@ -83,15 +77,10 @@ fastify.post('/api/game/invitation', async (request, reply) => {
 });
 
 // Get game invitations
-fastify.get('/api/game/invitations', async (request, reply) => {
-  const token = request.cookies.access_token;
-  if (!token) {
-    return reply.code(401).send({ error: 'Please login first' });
-  }
+fastify.get('/api/game/invitations', { preHandler: fastify.authenticate }, async (request, reply) => {
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const myId = payload.id;
+    const myId = request.user.id;
 
     const invitations = await dbAll(`
       SELECT 
@@ -112,8 +101,8 @@ fastify.get('/api/game/invitations', async (request, reply) => {
       sender_id: inv.sender_id,
       sender_username: inv.sender_username,
       avatarUrl: inv.provider === 'local' 
-        ? `https://localhost:3010/api/avatar/file/${inv.avatar_url}`
-        // ? `${API_URL}/api/avatar/file/${inv.avatar_url}`
+        // ? `https://localhost:3010/api/avatar/file/${inv.avatar_url}`
+        ? `/api/avatar/file/${inv.avatar_url}`
         : inv.avatar_url,
       created_at: inv.created_at
     }));
@@ -130,15 +119,10 @@ fastify.get('/api/game/invitations', async (request, reply) => {
 });
 
 // Accept game invitation
-fastify.post('/api/game/accept', async (request, reply) => {
-  const token = request.cookies.access_token;
-  if (!token) {
-    return reply.code(401).send({ error: 'Please login first' });
-  }
+fastify.post('/api/game/accept', { preHandler: fastify.authenticate }, async (request, reply) => {
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = payload.id;
+    const userId = request.user.id;
     const { invitationId } = request.body;
 
     if (!invitationId) {
@@ -211,15 +195,10 @@ fastify.post('/api/game/accept', async (request, reply) => {
   }
 });
 
-fastify.delete('/api/game/invitation/:id', async (request, reply) => {
-  const token = request.cookies.access_token;
-  if (!token) {
-    return reply.code(401).send({ error: 'Please login first' });
-  }
+fastify.delete('/api/game/invitation/:id', { preHandler: fastify.authenticate }, async (request, reply) => {
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = payload.id;
+    const userId = request.user.id;
     const invitationId = request.params.id;
 
     await dbRun(

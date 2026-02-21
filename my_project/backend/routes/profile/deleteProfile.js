@@ -5,16 +5,10 @@ const path = require('path');
 
 module.exports = async function (fastify) {
 
-  fastify.delete('/api/profile', async (request, reply) => {
-    const token = request.cookies.access_token;
-    
-    if (!token) {
-      return reply.code(401).send({ error: 'Not authenticated' });
-    }
+  fastify.delete('/api/profile', { preHandler: fastify.authenticate }, async (request, reply) => {
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
+      const userId = request.user.id;
       const user = await dbGet('SELECT avatar_url, provider FROM users WHERE id = ?', [userId]);
       
       if (!user) {
@@ -43,7 +37,7 @@ module.exports = async function (fastify) {
       reply.clearCookie('access_token', {
         path: '/',
         secure: true,
-        sameSite: 'none'
+        sameSite: 'lax'
       });
 
       return reply.send({
@@ -53,7 +47,7 @@ module.exports = async function (fastify) {
 
     } catch (err) {
       console.error('Delete account error:', err);
-      return reply.code(401).send({ error: 'Invalid or expired token' });
+      return reply.code(500).send({ error: 'Server error' });
     }
   });
 

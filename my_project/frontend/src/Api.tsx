@@ -44,7 +44,7 @@ export async function profil( {
         const response = await fetch(`${API_URL}/api/profile`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-           
+            credentials: 'include',
         });
         
         return await response.json();

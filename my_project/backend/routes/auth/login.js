@@ -14,17 +14,15 @@ module.exports = async function (fastify) {
   try {
       const user = await dbGet('SELECT * FROM users WHERE email = ?',[email]);
 
-  if (!user || !(await bcrypt.compare(password, user.password_hash)))
+  if (!user)
     return reply.code(401).send({ error: 'Invalid credentials' });
 
-  // if(user.twofa_enabled)
-  // {
-  //   console.log("hani %%%%%%%%%%%%%%%");
-  //   return reply.send({
-  //     requires2FA: true,
-  //     method: user.twofa_method
-  //   });
-  // }
+  if (user.provider !== 'local')
+    return reply.code(401).send({ error: 'This account uses ' + user.provider + ' login. Please sign in with ' + user.provider + '.' });
+
+  if (!(await bcrypt.compare(password, user.password_hash)))
+    return reply.code(401).send({ error: 'Invalid credentials' });
+
   if (user.twofa_enabled) {
   const token = jwt.sign(
     { id: user.id, twofa: true },
@@ -35,8 +33,9 @@ module.exports = async function (fastify) {
   reply.setCookie('access_token', token, {
     httpOnly: true,
     secure: true,
-    sameSite: 'none',
-    path: '/'
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 10
   });
 
   return reply.send({
@@ -54,9 +53,9 @@ module.exports = async function (fastify) {
     reply.setCookie('access_token', token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60
+      maxAge: 60 * 60 * 10
     });
 
     return reply.send({

@@ -1,17 +1,11 @@
 module.exports = async function (fastify) {
 const jwt = require('jsonwebtoken');
+const { dbAll } = require('../../utils/dbHelpers');
 
-fastify.get('/api/stats/user_ranking', async (request, reply) => {
-  const { dbAll } = require('../../utils/dbHelpers');
-
-    const token = request.cookies.access_token;
-    if (!token) {
-        return reply.code(401).send({ error: 'Please login first' });
-    }
-
+fastify.get('/api/stats/user_ranking', { preHandler: fastify.authenticate }, async (request, reply) => {
+    
     try {
-        const payload = jwt.verify(token, process.env.JWT_SECRET, { ignoreExpiration: true });
-        const myId = payload.id;
+        const myId = request.user.id;
         const stats = await dbAll(`
             SELECT s.user_id, u.username, u.avatar_url, s.points, s.wins, s.loss, s.win_rate
             FROM stats s

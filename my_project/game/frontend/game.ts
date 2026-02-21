@@ -1,4 +1,3 @@
-//board
 let board: HTMLCanvasElement;
 
 const boardWidth: number = 900;
@@ -349,7 +348,7 @@ function drawBoard(x: number, y: number, w:number, h:number)
     contex.beginPath();
     contex.fillRect(x, y, w, h);
 }
- // draw paddle
+
 
 
 function drawRect(x: number, y: number, w:number, h:number, color:string)
@@ -361,7 +360,7 @@ function drawRect(x: number, y: number, w:number, h:number, color:string)
     contex.fill();
 }
 
-// draw net 
+
 function drawNet(){
     for(let i: number = 0; i <= boardHeight; i += 35)
         drawRect(net.x, net.y + i, net.width, net.height, net.color);
@@ -483,3 +482,4 @@ function drawStart()
     
     contex.shadowBlur = 0;
 }
+

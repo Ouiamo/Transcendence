@@ -245,6 +245,8 @@ function Friends() {
                                                 className="w-[45px] h-[45px] rounded-full object-cover border-[2px] border-[#ff44ff]"
                                                 src={user.avatar_url || '/default-avatar.png'}
                                                 alt={user.username}
+                                                referrerPolicy="no-referrer"
+                                                crossOrigin="anonymous"
                                             />
                                             <div>
                                                 <p className="font-bold text-white">{user.username}</p>

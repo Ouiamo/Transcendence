@@ -4,22 +4,16 @@ const jwt = require('jsonwebtoken');
 
 module.exports = async function(fastify, options) {
   const { dbRun } = require('../../utils/dbHelpers');
-  const avatarFolder = path.join(__dirname, '../../avatars');
+  const avatarFolder = path.join(__dirname, '../../avatar/file');
   
   if (!fs.existsSync(avatarFolder)) {
     fs.mkdirSync(avatarFolder, { recursive: true });
   }
 
-  fastify.post('/api/avatar', async (request, reply) => {
-    const token = request.cookies.access_token;
+  fastify.post('/api/avatar', { preHandler: fastify.authenticate }, async (request, reply) => {
     
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
-
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
+      const userId = request.user.id;
 
       const data = await request.file();
       if (!data) {

@@ -21,7 +21,13 @@ function SmallStatCard({ icon, value, label }: any) {
   );
 }
 
-
+function UserSticker({ name }: { name: string }) {
+  return (
+    <span className="ml-1 px-2 py-[1px] bg-[#c44cff]/20 text-[#c44cff] text-xs font-bold rounded-full">
+      {name}
+    </span>
+  );
+}
 
 interface ProfilInterface {
   user: any;
@@ -46,12 +52,22 @@ interface History {
   opp_score: number;
   match_type: string;
   isWin: boolean;
+  opp_avatar: string;
 }
 
 
 
 function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
   localStorage.setItem('page', 'PROFIL');
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-400">
+        Loading profile...
+      </div>
+    );
+  }
+
   console.log("user fitst name last name ", user.firstname, user.lastname, user)
   console.log("data user in profile avatar is ", user.avatarUrl);
   const logout = async () => {
@@ -170,13 +186,15 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
             <div className="flex flex-col ">
 
             <p className=" text-[#ffff]/60 mb-[4px] ">
-              {user.firstname}
+              {user?.firstname}
+              <UserSticker name="Player" />
             </p>
               <p className=" text-[#ffff]/60 mb-[4px] ">
-              {user.lastname}
+              {user?.lastname}
+              <UserSticker name="Gamer" />
             </p>
 
-            <p className="text-[#ffff]/60">{user.email}</p>
+            <p className="text-[#ffff]/60">{user?.email}</p>
 
           
             </div>
@@ -271,7 +289,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
       key={index}
       className="flex items-center justify-between border border-[#c44cff]/50 p-2 sm:p-4 rounded-[12px] group w-full gap-2"
     >
-      {/* 1. YOU (Left Side) */}
+
       <div className="flex items-center gap-[7px] flex-1 min-w-0 p-[5px]">
         <div className={`flex-shrink-0 w-[35px] h-[35px] sm:w-[50px] sm:h-[50px] rounded-full border-2 p-[2px] ${match.isWin ? 'border-[#00ff88]' : 'border-[#ff4444]'}`}>
           <img
@@ -292,7 +310,7 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
         </div>
       </div>
 
-      {/* 2. SCORE (Center) */}
+     
       <div className="flex flex-col items-center justify-center shrink-0 px-">
         <div className="text-sm sm:text-2xl font-black text-white flex items-center gap-[2px]">
           <span className={match.isWin ? 'text-[#00ff88]' : 'text-white'}>{match.user_score}</span>
@@ -302,21 +320,27 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
         <p className="text-[8px] sm:text-[10px] text-gray-500 uppercase font-bold">VS</p>
       </div>
 
-      {/* 3. OPPONENT (Right Side) */}
+    
       <div className="flex items-center gap-[7px] flex-1 min-w-0 justify-end p-[5px]">
         <div className="flex flex-col min-w-0 items-end overflow-hidden">
           <h4 className="text-white font-bold text-[10px] sm:text-sm uppercase truncate text-right w-full">
             {match.opp_username}
           </h4>
-          <div className={`px-1 sm:px-2 py-[1px] rounded-lg font-black text-[8px] sm:text-[10px] ${
+          {/* <div className={`px-1 sm:px-2 py-[1px] rounded-lg font-black text-[8px] sm:text-[10px] ${
             match.isWin ? 'bg-[#ff4444]/10 text-[#ff4444]' : 'bg-[#00ff88]/10 text-[#00ff88]'
           }`}>
             {match.isWin ? 'DEFEAT' : 'VICTORY'}
-          </div>
+          </div> */}
         </div>
         <div className="flex-shrink-0 w-[35px] h-[35px] sm:w-[50px] sm:h-[50px] rounded-full border-[2px] p-[2px] border-[#c44cff]">
           <img
-            src={match.opp_username === 'AI' ? `${API_URL}/api/avatar/file/ia.png` : `${API_URL}/api/avatar/file/guest.png`}
+            src={
+              match.match_type === 'AI'
+                ? `${API_URL}/api/avatar/file/ia.png`
+                : match.match_type === 'LOCAL'
+                ? `${API_URL}/api/avatar/file/guest.png`
+                : match.opp_avatar
+            }
             alt="opponent"
             className="w-full h-full rounded-full object-cover bg-[#1a1033]"
           />

@@ -17,15 +17,9 @@ module.exports = async function(fastify, options) {
   });
 
   //invitation
-  fastify.post('/api/friends/invitation', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
-
+  fastify.post('/api/friends/invitation', { preHandler: fastify.authenticate }, async (request, reply) => {
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
+       const userId = request.user.id;
       const { friendUsername } = request.body;
 
       if (!friendUsername) {
@@ -75,15 +69,10 @@ module.exports = async function(fastify, options) {
   });
 
   // Accept
-  fastify.post('/api/friends/accept', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
-
+  fastify.post('/api/friends/accept', { preHandler: fastify.authenticate }, async (request, reply) => {
+   
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
+       const userId = request.user.id;
       const { requestId } = request.body;
 
       if (!requestId) {
@@ -117,15 +106,10 @@ module.exports = async function(fastify, options) {
   });
 
   //requests
-  fastify.get('/api/friends/requests', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
+  fastify.get('/api/friends/requests', { preHandler: fastify.authenticate }, async (request, reply) => {
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const myId = payload.id;
+       const myId = request.user.id;
 
       const incoming = await dbAll(`
           SELECT 
@@ -168,15 +152,10 @@ module.exports = async function(fastify, options) {
   });
 
   // Remove
-  fastify.delete('/api/friends/remove', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
+  fastify.delete('/api/friends/remove', { preHandler: fastify.authenticate }, async (request, reply) => {
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = payload.id;
+      const userId = request.user.id;
       const { friendId } = request.body;
 
       if (!friendId) {
@@ -202,15 +181,10 @@ module.exports = async function(fastify, options) {
   });
 
   //friends list
-  fastify.get('/api/friends', async (request, reply) => {
-    const token = request.cookies.access_token;
-    if (!token) {
-      return reply.code(401).send({ error: 'Please login first' });
-    }
+  fastify.get('/api/friends', { preHandler: fastify.authenticate }, async (request, reply) => {
 
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      const myId = payload.id;
+      const myId = request.user.id;
 
       const friendships1 = await dbAll(`
         SELECT friend_id 
@@ -267,19 +241,9 @@ module.exports = async function(fastify, options) {
   });
 
 // Search
-  fastify.get('/api/users/search/:query', async (request, reply) => {
-    const token = request.cookies.access_token;
-    let userId = null;
-
-    if (token) {
-        try {
-            const payload = jwt.verify(token, process.env.JWT_SECRET);
-            userId = payload.id;
-        } catch (err) {
-            console.log('❌ Token verification failed:', err.message);
-        }
-    }
-
+  fastify.get('/api/users/search/:query',  { preHandler: fastify.authenticate }, async (request, reply) => {
+  
+    let userId = request.user ? request.user.id : null;
     try {
         const { query } = request.params;
         let sql = `

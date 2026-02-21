@@ -72,12 +72,12 @@ localStorage.setItem('page', 'LOGIN');
                 }
             }
             else {
-                alert("❌ Invalid credentials");
+                alert("❌ " + (result.error || "Invalid credentials"));
                 return;
             }
         }
         catch (erro) {
-            alert("🚨 Server erroreeeeeeeeeeeee");
+            alert("🚨 Server error");
         }
 
     }

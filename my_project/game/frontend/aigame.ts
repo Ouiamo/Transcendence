@@ -434,12 +434,12 @@ function aidrawWinner()
     aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
 
     aicontex.shadowBlur = 20;
-    aicontex.shadowColor = "#0244bdff";
+    aicontex.shadowColor = "rgb(222, 64, 249)";
     aicontex.fillStyle = "white";
     aicontex.font = "bold 70px Arial";
     aicontex.textAlign = "center"; 
     aicontex.textBaseline = "middle";
-    aicontex.fillText(`${aiwinner} WON!`, aiboardWidth/2, aiboardHeight/2 - 50);
+    aicontex.fillText(`${aiwinner} WiN!`, aiboardWidth/2, aiboardHeight/2 - 50);
         
     aicontex.shadowBlur = 15;
     aicontex.fillStyle = "white";

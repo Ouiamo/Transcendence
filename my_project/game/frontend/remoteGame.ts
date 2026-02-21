@@ -65,7 +65,6 @@ const gameState={
     gameEnd: false,
     winner: 0,
     
-    // Add player usernames
     player1Username: "Player 1",
     player2Username: "Player 2",
 }
@@ -79,6 +78,8 @@ const keys: {[key:string] : boolean}={
     'ArrowUp' : false,
     'ArrowDown' : false,
 }
+
+// let winnerName: string;
 
 // function drawWaitingForPlayer(
 //     context: CanvasRenderingContext2D,
@@ -148,7 +149,7 @@ const keys: {[key:string] : boolean}={
 // export function getSocket() {
 //   return socket;
 // }
-let winnerName: string;
+let winnerName: string | null = null;
 let opponent_id: number;
 
 export function getRemoteGameState() {
@@ -195,7 +196,7 @@ export function cleanupGame() {
     gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
     gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
 
-    winnerName = "";
+    winnerName = null;
 
     document.removeEventListener("keydown", handleKeyDown);
     document.removeEventListener("keyup", handleKeyUp);
@@ -221,8 +222,6 @@ function setupPrivateGame(gameData: any, currentUser: any) {
     } else {
         gameState.role = "player2";
     }
-    console.log(`My role determined from gameData: ${gameState.role} (I am ${currentUser?.username})`);
-
 
     socket?.on("gameStart", (data: { roomID: string, role: string }) => {        
         console.log(" gameStart received:", data);
@@ -312,7 +311,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    board = canvas;
    console.log("Initializing remote game...");
    console.log(" Game data:", gameData);
-   console.log(" Current user:", currentUser);
+   console.log(" Current user ::::::::::::::::::::::::::::::::", currentUser);
    console.log(" Socket available:", !!existingSocket);
 
    if (!existingSocket) {
@@ -339,6 +338,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    gameState.ballY = boardHeight / 2;
    gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
    gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
+   winnerName = null;
    
 
    gameState.player1Username = gameData.player1.username;

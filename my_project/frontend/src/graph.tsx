@@ -84,7 +84,7 @@ function StatsCharts() {
   }
 
   if (!stats) {
-    return <div className="text-center p-4">errooooooooooooooooor</div>;
+    return <div className="text-center p-4"></div>;
   }
 
   const donutData = {

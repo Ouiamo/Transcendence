@@ -18,7 +18,7 @@ export function GamePage(userdata: any) {
     const cleanupGame = initGame(canvasRef.current, userdata.username);
 
     const interval = setInterval(() => {
-      const data = getLocalWinner();
+    const data = getLocalWinner();
       
       setPlayer1Score(data.playerscore);
       setPlayer2Score(data.Guestscore);
@@ -133,7 +133,7 @@ export function Gamepage_r({data1, currentUser}: game) {
       setPlayer2Score(data.score2);
       setPlayer1Name(data.player1Username);
       setPlayer2Name(data.player2Username);
-      if (data.winner !== null && data.winner !== lastWinnerRef.current) {
+      if (data.winner && data.winner !== lastWinnerRef.current) {
         lastWinnerRef.current = data.winner;
 
         const winner = data.winner;
@@ -148,10 +148,13 @@ export function Gamepage_r({data1, currentUser}: game) {
         console.log("opp username isss ", opponent_username);
         console.log("opp score isss ", user_score);
         console.log("user score isss ", opp_score);
+        if (user_score === 0 && opp_score === 0) {
+          return;
+        }
         gameResults({ winner, opponent_username });
         gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
       }
-      else if (data.winner === null && lastWinnerRef.current !== null) {
+      else if (!data.winner && lastWinnerRef.current) {
         lastWinnerRef.current = null;
       }
     }, 100);

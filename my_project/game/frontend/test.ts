@@ -1,4 +1,4 @@
-
+//board
 let aiboard: HTMLCanvasElement;
 
 const aiboardWidth: number = 900;
@@ -16,18 +16,8 @@ let aigameGO : boolean = false;
 
 const aimaxScore : number = 11;
 
+// Animation frame ID for cleanup
 let aiAnimationFrameId: number | null = null;
-
-import { io } from "socket.io-client";
-const aiSocket = io("");
-
-let currentAIAction: "up" | "down" | "stay" = "stay";
-let lastPredictionTime = 0;
-const predictionInterval = 30;
-
-aiSocket.on("aiAction", (prediction: { action: "up" | "down" | "stay" }) => {
-    currentAIAction = prediction.action;
-});
 
 
 
@@ -112,6 +102,7 @@ export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
     document.addEventListener("keyup", aihandleKeyUp);
     
     return () => {
+        // Cancel the animation frame
         if (aiAnimationFrameId !== null) {
             cancelAnimationFrame(aiAnimationFrameId);
             aiAnimationFrameId = null;
@@ -119,7 +110,7 @@ export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
         
         document.removeEventListener("keydown", aihandleKeyDown);
         document.removeEventListener("keyup", aihandleKeyUp);
-        aiSocket.disconnect();
+        
         console.log("AI Game Cleaned Up");
     };
 };
@@ -174,40 +165,23 @@ function aihandleKeyUp(event: KeyboardEvent)
    
 }
 
-function aimovePlayer()
+function aimovePlayer()//this will move the ai aipaddle
 {
     if(aigameStart)
     {
-        const currentTime = Date.now();
-        if (currentTime - lastPredictionTime > predictionInterval) {
-            requestAIPrediction();
-            lastPredictionTime = currentTime;
-        }
-
-        if(currentAIAction === "up" && aiplayer.y > 0)
+        
+        if(aiball.x <= aiboardWidth / 4 && aiball.y <= aiboardHeight /2 && aiplayer.y > 0 )
             aiplayer.y -= aiplayer.step * aipaddleSpeed;
-        else if(currentAIAction === "down" && aiplayer.y < aiboardHeight - aipaddleHeight)
+        else if(aiball.x <= aiboardWidth / 4 && aiball.y >= aiboardHeight /2 && aiplayer.y < aiboardHeight - aipaddleHeight)
             aiplayer.y += aiplayer.step * aipaddleSpeed;
-
+        
         if(aikeys['ArrowUp'] && realplayer.y > 0)
             realplayer.y -= realplayer.step * aipaddleSpeed;
         else if(aikeys['ArrowDown'] && realplayer.y < aiboardHeight - aipaddleHeight)
             realplayer.y +=  realplayer.step * aipaddleSpeed;
-    }
-}
 
-function requestAIPrediction() {
-    aiSocket.emit("requestPrediction", {
-        ball_x: aiball.x,
-        ball_y: aiball.y,
-        ball_step_x: aiball.stepX,
-        ball_step_y: aiball.stepY,
-        paddle_y: aiplayer.y,
-        paddle_height: aipaddleHeight,
-        board_width: aiboardWidth,
-        board_height: aiboardHeight,
-        opponent_y: realplayer.y
-    });
+        //hna 5asni nzid l moves dyal ai player
+    }
 }
 
 function aimoveBall(player: string)
@@ -249,7 +223,7 @@ function aimoveBall(player: string)
             }
         }
 
-      
+        // hndle scores
 
         if(aiball.x - aiball.radius <= 0)
         {
@@ -313,8 +287,9 @@ function airesetBall()
 }
 
 
-function aidraw(player1:string)
-{
+function aidraw(player1:string) {
+
+    
     aimovePlayer();
     aimoveBall(player1);
 
@@ -327,7 +302,7 @@ function aidraw(player1:string)
     // aidrawScore(aiscore.x_r, aiscore.y, realplayer.score, aiscore.color, player1);
     aidrawCountDown();
     // if(aiwinner !== null)
-        aidrawWinner();
+    //     aidrawWinner();
     if(!aigameStart && !aigameCountDown && !aiwinner)
     {
         aidrawStart();
@@ -339,7 +314,6 @@ function aidraw(player1:string)
 function aidrawBoard(x: number, y: number, w:number, h:number)
 {
     if (!aicontex) return;
-    // aicontex.fillStyle = "#490f5eff";
     aicontex.fillStyle = "#0d0221";
     aicontex.beginPath();
     aicontex.fillRect(x, y, w, h);
@@ -351,7 +325,8 @@ function aidrawRect(x: number, y: number, w:number, h:number, color:string)
     if (!aicontex) return;
     aicontex.fillStyle = color;
     aicontex.beginPath();
-    aicontex.fillRect(x, y, w, h);
+    aicontex.roundRect(x, y, w, h, 6);
+    aicontex.fill();
 }
 
 // draw net 
@@ -365,7 +340,7 @@ function aidrawBall(x: number, y: number, radius: number, color:string)
 {
     if (!aicontex) return;
 
-    aicontex.shadowBlur = 10;
+    aicontex.shadowBlur = 20;
     aicontex.shadowColor = "#d86bff";
 
     aicontex.fillStyle = color;
@@ -426,33 +401,33 @@ function aidrawCountDown()
     }
 }
 
-function aidrawWinner()
-{
+// function aidrawWinner()
+// {
     
-    if (!aicontex || !aiwinner) return;
-    aicontex.fillStyle = "rgba(0, 0, 0, 0.85)";
-    aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
+//     if (!aicontex || !aiwinner) return;
+//     aicontex.fillStyle = "rgba(0, 0, 0, 0.85)";
+//     aicontex.fillRect(0, 0, aiboardWidth, aiboardHeight);
 
-    aicontex.shadowBlur = 20;
-    aicontex.shadowColor = "#0244bdff";
-    aicontex.fillStyle = "white";
-    aicontex.font = "bold 70px Arial";
-    aicontex.textAlign = "center"; 
-    aicontex.textBaseline = "middle";
-    aicontex.fillText(`${aiwinner} WON!`, aiboardWidth/2, aiboardHeight/2 - 50);
+//     aicontex.shadowBlur = 20;
+//     aicontex.shadowColor = "#0244bdff";
+//     aicontex.fillStyle = "white";
+//     aicontex.font = "bold 70px Arial";
+//     aicontex.textAlign = "center"; 
+//     aicontex.textBaseline = "middle";
+//     aicontex.fillText(`${aiwinner} WON!`, aiboardWidth/2, aiboardHeight/2 - 50);
         
-    aicontex.shadowBlur = 15;
-    aicontex.fillStyle = "white";
-    aicontex.font = "40px Arial";
-    aicontex.fillText(`${aiplayer.score} - ${realplayer.score}`, aiboardWidth / 2, aiboardHeight / 2 + 30);
+//     aicontex.shadowBlur = 15;
+//     aicontex.fillStyle = "white";
+//     aicontex.font = "40px Arial";
+//     aicontex.fillText(`${aiplayer.score} - ${realplayer.score}`, aiboardWidth / 2, aiboardHeight / 2 + 30);
 
-    aicontex.shadowBlur = 10;
-    aicontex.fillStyle = "white";
-    aicontex.font = "25px Arial";
-    aicontex.fillText("Press SPACE to play again", aiboardWidth / 2, aiboardHeight / 2 + 100);
+//     aicontex.shadowBlur = 10;
+//     aicontex.fillStyle = "white";
+//     aicontex.font = "25px Arial";
+//     aicontex.fillText("Press SPACE to play again", aiboardWidth / 2, aiboardHeight / 2 + 100);
     
-    aicontex.shadowBlur = 0;
-}
+//     aicontex.shadowBlur = 0;
+// }
 
 function aidrawStart()
 {

@@ -1,4 +1,3 @@
-//board
 let board: HTMLCanvasElement;
 
 const boardWidth: number = 900;
@@ -79,33 +78,57 @@ export function getLocalWinner() {
 }
 
 export function initGame(canvas: HTMLCanvasElement, player: string) {
+
+   winner = null;
+    countDown = 3;
+    gameStart = false;
+    gameCountDown = false;
+    gameGO = false;
+
+    player1.score = 0;
+    player1.y = boardHeight / 2 - paddleHeight / 2;
+    player1.step = 1;
+
+    player2.score = 0;
+    player2.y = boardHeight / 2 - paddleHeight / 2;
+    player2.step = 1;
+
+    ball.x = boardWidth / 2;
+    ball.y = boardHeight / 2;
+    ball.stepX = 5;
+    ball.stepY = 5;
+
+    keys['w'] = false;
+    keys['s'] = false;
+    keys['W'] = false;
+    keys['S'] = false;
+    keys['ArrowUp'] = false;
+    keys['ArrowDown'] = false;
+
     board = canvas;
     board.width = 900;
     board.height = 450;
     contex = board.getContext("2d");
-    
 
     if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
     }
-    
-    draw(player); 
 
+    draw(player);
 
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("keyup", handleKeyUp);
 
-    
     return () => {
         if (animationFrameId !== null) {
             cancelAnimationFrame(animationFrameId);
             animationFrameId = null;
         }
-        
+
         document.removeEventListener("keydown", handleKeyDown);
         document.removeEventListener("keyup", handleKeyUp);
-      
+
         console.log("Game Listeners Cleaned Up");
     };
 }
@@ -139,8 +162,6 @@ function handleKeyDown(event: KeyboardEvent)
     {
         restartGame();
     }
-
-    
 }
 
 function handleCountDown()
@@ -327,7 +348,7 @@ function drawBoard(x: number, y: number, w:number, h:number)
     contex.beginPath();
     contex.fillRect(x, y, w, h);
 }
- // draw paddle
+
 
 
 function drawRect(x: number, y: number, w:number, h:number, color:string)
@@ -339,7 +360,7 @@ function drawRect(x: number, y: number, w:number, h:number, color:string)
     contex.fill();
 }
 
-// draw net 
+
 function drawNet(){
     for(let i: number = 0; i <= boardHeight; i += 35)
         drawRect(net.x, net.y + i, net.width, net.height, net.color);

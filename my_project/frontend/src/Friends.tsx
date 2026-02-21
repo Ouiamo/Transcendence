@@ -212,7 +212,7 @@ function Friends() {
                         <div className="flex items-center justify-between mb-[25px]">
                             <h2 className="text-[24px] font-[900] text-white">Add New Friend</h2>
                         </div>
-                        <div className="flex  md:flex-row gap-[111px] mb-[25px]">
+                        <div className="flex w-full flex-wrap gap-[111px] mb-[25px]">
                             <div className="relative flex-1">
                                 <input
                                 spellCheck="false"
@@ -221,7 +221,7 @@ function Friends() {
                                     placeholder="Enter username to search..."
                                     value={searchfriend}
                                     onChange={(e) => setsearchFriends(e.target.value)}
-                                    className=" caret-[#ff44ff]  w-full h-[45px] bg-[#1a043a]/70 border-[2px] border-[#ff44ff]/40 rounded-full text-white px-[20px] pl-[45px] outline-none focus:border-[#ff44ff] focus:shadow-[0_0_15px_rgba(255,68,255,0.5)] transition-all duration-300 placeholder-[#ff99ff]/40"
+                                    className=" caret-[#ff44ff]  w-[100%] h-[45px] bg-[#1a043a]/70 border-[2px] border-[#ff44ff]/40 rounded-full text-white px-[20px] pl-[45px] outline-none focus:border-[#ff44ff] focus:shadow-[0_0_15px_rgba(255,68,255,0.5)] transition-all duration-300 placeholder-[#ff99ff]/40"
                                 />
                                 <div className="absolute left-[15px] top-1/2 transform -translate-y-1/2 text-[#ff44ff] text-[18px]">🔍</div>
                             </div>
@@ -245,6 +245,8 @@ function Friends() {
                                                 className="w-[45px] h-[45px] rounded-full object-cover border-[2px] border-[#ff44ff]"
                                                 src={user.avatar_url || '/default-avatar.png'}
                                                 alt={user.username}
+                                                referrerPolicy="no-referrer"
+                                                crossOrigin="anonymous"
                                             />
                                             <div>
                                                 <p className="font-bold text-white">{user.username}</p>

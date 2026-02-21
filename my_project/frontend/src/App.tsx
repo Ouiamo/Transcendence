@@ -67,7 +67,7 @@ function App(){
   }, [navigate]);
 //-----
 useEffect(() => {
-  const publicRoutes = ['/', '/home', '/login', '/signup', '/privacy', '/terms'];
+  const publicRoutes = ['/', '/home', '/signup', '/privacy', '/terms', '/twofa'];
   if (publicRoutes.includes(location.pathname)) {
     setLoading(false);
     return;
@@ -189,10 +189,10 @@ return (
 
     <Route path="/dashboard" element={ 
       user_data ? (< Dashboard gotohome={()=>navigate('/HOME')} gotoprofil={ ()=>navigate('/profil')} user={user_data} delete_obj={obj_login}  listfriends={()=>navigate("/remoteGame")}  goto={()=>navigate("/localGame")} gotoia={()=>navigate("iaGame")} gotodashbord={()=>navigate('/dashboard')}  gotofriends={()=> navigate('/friends')} gotosetting={()=> navigate('/setting')} gotoleaderboard={()=> navigate('/leaderboard')} setActiveSafe={setActiveSafe}/>):
-      (  <div className="text-white p-10">Loading...</div>)}/>
+     (  <Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>)}/>
  <Route 
   path="/leaderboard" 
-  element={
+  element={user_data ?(
     <Layout 
       gotohome={() => navigate('/home')} 
       gotoprofil={() => navigate('/profil')} 
@@ -208,10 +208,10 @@ return (
       setActiveSafe={setActiveSafe}
     >
       <Leaderboard /> 
-    </Layout> 
+    </Layout> ) :(<Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>)
   } 
 />
-<Route  path="/profil" element={
+<Route  path="/profil" element={user_data ? (
     <Layout 
       gotohome={() => navigate('/')} 
       gotoprofil={() => navigate('/profil')} 
@@ -228,9 +228,9 @@ return (
     >
         <Profil user={user_data  } delete_obj={obj_login} gotohome={()=> navigate('/home')} gotosetting={()=> navigate('setting')}/>
       
-    </Layout>
+    </Layout>) : (<Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>)
 } />
-<Route path="friends" element={
+<Route path="friends" element={user_data ? (
     <Layout 
       gotohome={() => navigate('/home')} 
       gotoprofil={() => navigate('/profil')} 
@@ -246,9 +246,9 @@ return (
       setActiveSafe={setActiveSafe}
     >
       <Friends/>
-    </Layout>
+    </Layout>) : (<Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>)
 }/>
-<Route path="setting" element={
+<Route path="setting" element={user_data ? (
     <Layout 
       gotohome={() => navigate('/home')} 
       gotoprofil={() => navigate('/profil')} 
@@ -264,7 +264,7 @@ return (
       setActiveSafe={setActiveSafe}
     >
        <Setting user={user_data} delete_obj={obj_login} gotohome={()=> navigate('home')}/>
-    </Layout>
+    </Layout>): (<Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>)
 }/>
 <Route
   path="localGame"
@@ -287,7 +287,7 @@ return (
         <GamePage username={user_data.username}/>
       </Layout>
     ) : (
-      <div className="text-white p-10">Loading...</div>
+     <Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>
     )
   }
 />
@@ -314,7 +314,7 @@ return (
 
       </Layout>
     ) : (
-      <div className="text-white p-10">Loading...</div>
+      <Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>
     )
   }
 />
@@ -328,7 +328,7 @@ return (
         setActiveSafe={setActiveSafe}
       />
     ) : (
-      <div className="text-white p-10">Loading...</div>
+      <Login gotohome={()=> navigate('/HOME')} gotoDASHBOARD={()=> navigate('/dashboard')} onloginsucces={obj_login} gotosingup={()=>navigate('/SIGNUP')} gotwofa={()=>navigate('twofa')}/>
     )
   }
 />

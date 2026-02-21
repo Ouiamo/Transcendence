@@ -443,15 +443,63 @@ Manages friend relationships and friend request statuses between users.
 
 ## Modules
 
-<!-- TODO: Add modules information -->
 
----
+**Major Modules:**
+- Use a framework for both frontend and backend (React + Fastify)
+- Public API with secured key, rate limiting, documentation, and at least 5 endpoints (GET, POST, PUT, DELETE)
+- Standard user management and authentication (profile update, avatar upload, friends with online status, profile page)
+- Real-time features using WebSockets
+- Complete web-based game (Pong with live matches, clear rules, win/loss conditions)
+- Remote players (two players on separate computers, latency handling, disconnection management, reconnection logic)
+- AI Opponent for games (challenging AI that wins occasionally, human-like behavior, explainable implementation)
+
+
+**Minor Modules:**
+- Remote authentication with OAuth 2.0 (42, Google)
+- Complete 2FA system (authenticator app + email)
+- Game statistics and match history (wins/losses, match history, leaderboard)
+- User activity analytics and insights dashboard
+- Support for additional browsers (Firefox, Safari, Edge - full compatibility, testing, consistent UI/UX)
+- Module of choice: Account deletion with data cleanup and confirmation flow
+
+
 
 ## Individual Contributions
 
-<!-- TODO: Add individual contributions information -->
 
+### wzahir
+- Standard user management (profile update, profile page)
+- Remote authentication with OAuth 2.0 (42, Google)
+- Complete 2FA system (authenticator app + email)
+- Settings page frontend
+- Authentication backend (login/signup, JWT, middleware)
 
+### oaoulad-
+- Public API with secured key, rate limiting, documentation (GET, POST, PUT, DELETE endpoints)
+- Avatar upload system (with default avatar)
+- Friend system (invetation/remove/accept friends, online status..)
+- Frontend friend page
+- Account deletion (module of choice)
+
+### meabdelk
+- Real-time features using WebSockets
+- Complete web-based Pong game (live matches, clear rules, win/loss conditions)
+- Remote players (two players on separate computers, latency handling, disconnection management, reconnection logic)
+- Game invitation system
+- Frontend game interface
+
+### akouraich
+- AI Opponent for games (challenging AI that wins occasionally, human-like behavior)
+- Game statistics and match history (wins/losses, match history, leaderboard)
+- User activity analytics dashboard
+- Statistics frontend with Chart
+- Leaderboard frontend with rankings
+
+### mlabyed
+- Main frontend developer (login, signup, home, dashboard, profile pages)
+- Frontend routing navigation (React Router with protected routes)
+- 2FA frontend integration (setup wizard, verification screens)
+- Support for additional browsers (Firefox, Safari, Edge - testing and fixes)
 ---
 
 *Last updated: February 2026*

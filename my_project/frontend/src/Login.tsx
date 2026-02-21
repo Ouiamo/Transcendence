@@ -65,6 +65,8 @@ localStorage.setItem('page', 'LOGIN');
                         const ress = await await res.json();
                         onloginsucces(ress);
                          gotoDASHBOARD();
+    // onloginsucces(null);
+
                     }
                 }
                 catch (err) {

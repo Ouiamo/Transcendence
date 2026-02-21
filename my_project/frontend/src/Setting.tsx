@@ -82,6 +82,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
           setQrCode(null);
           setShowVerification(false);
           setVerificationCode(['', '', '', '', '', '']);
+          delete_obj({ user: { ...user, twofa_enabled: false } });
           alert("2FA disabled");
         }
       } catch (err) {
@@ -196,6 +197,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
         if (mthd === "authenticator") {
           setQrCode(data.qrCode)
           setShowVerification(true);
+          
           console.log("ana hnaaaaaaaaaaaaaaa ", data.qrCode);
         }
       }
@@ -252,6 +254,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
 
       if (res.ok && data.success) {
         setTwoFactor(true);
+        delete_obj({ user: { ...user, twofa_enabled: true } });
         setShowVerification(false);
         setQrCode(null);
         setVerificationCode(['', '', '', '', '', '']);

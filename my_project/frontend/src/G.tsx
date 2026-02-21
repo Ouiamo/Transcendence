@@ -164,7 +164,7 @@ export function Gamepage_r({data1, currentUser}: game) {
   }, [data1]);
 
   return (
-     <div className="flex flex-col items-center justify-start w-full h-full bg-[#0b0618] pt-[5vh] ">
+     <div className="flex flex-col items-center justify-start w-full h-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] pt-[5vh] ">
       <div className="flex flex-col items-center text-center mb-[30px]">
         <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter">Remote Game</h1>
         <p className="text-gray-400 text-sm">Play with a friend</p>

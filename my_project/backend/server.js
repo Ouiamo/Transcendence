@@ -33,8 +33,8 @@ fastify.register(require('@fastify/jwt'), {
 fastify.register(require('@fastify/cors'), {
   origin: (origin, cb) => {
     const allowed = [
-      'https://localhost',
-      'https://127.0.0.1',
+      'https://localhost:8443',
+      'https://127.0.0.1:8443',
       // 'https:// 10.46.80.37'
       // 'https://10.13.249.15'
     ];

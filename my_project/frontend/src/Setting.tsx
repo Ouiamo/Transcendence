@@ -465,7 +465,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
     </div>
 
     {/* Security Status Box */}
-    <div className="w-[90%] mt-[10px] mb-[10px] flex  flex-row items-center gap-[3px] rounded-[20px] p-[4px] border border-[#c44cff]/40 shadow-[0_0_10px_rgba(255,68,255,0.5)] bg-[#0b0618]/60 overflow-hidden">
+    <div className="mx-auto  w-[90%] mt-[10px] mb-[10px] flex  flex-row items-center gap-[3px] rounded-[20px] p-[4px] border border-[#c44cff]/40 shadow-[0_0_10px_rgba(255,68,255,0.5)] bg-[#0b0618]/60 overflow-hidden">
         <div className={`w-[40px] h-[40px] rounded-full flex items-center justify-center ml-[10px] mt-[10px]
             shrink-0
             ${twoFactor 

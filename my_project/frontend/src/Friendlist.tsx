@@ -30,11 +30,10 @@ export function Friendlist() {
         });
         if (res.ok) {
           const data = await res.json();
-          console.log("data is ", data);
           setFriends(data.friends);
         }
       } catch (err) {
-        setError("errooooooooor");
+        setError("erroooor");
         console.error('Failed to load friends', err);
       } finally {
         setLoading(false);
@@ -57,16 +56,12 @@ export function Friendlist() {
     }
 
     const onlineStatus = new Map<number, string>();
-
-    console.log(" Checking online status for friends...");
-    console.log(" Current OnlineUsers map:", Array.from(OnlineUsers.entries()));
+    // console.log(" Current OnlineUsers map:", Array.from(OnlineUsers.entries()));
 
     friends.forEach(friend => {
       if (OnlineUsers.has(friend.id)) {
-        console.log(` ${friend.username} (ID: ${friend.id}) is ONLINE`);
         onlineStatus.set(friend.id, 'Online');
       } else {
-        console.log(` ${friend.username} (ID: ${friend.id}) is OFFLINE`);
         onlineStatus.set(friend.id, 'Offline');
       }
     });
@@ -76,7 +71,7 @@ export function Friendlist() {
 
   useEffect(() => {
     onOnlineUsersChange(() => {
-      console.log(" OnlineUsers changed! Updating UI...");
+      // console.log(" OnlineUsers changed! Updating UI...");
       updateOnlineStatus();
     });
   }, [friends]);
@@ -122,7 +117,7 @@ export function Friendlist() {
     }
   };
 
-  const acceptGameInvitation = async (invitationId: number, senderUsername: string) => {
+  const acceptGameInvitation = async (invitationId: number) => {
     try {
       const res = await fetch('/api/game/accept', {
         method: 'POST',
@@ -133,7 +128,6 @@ export function Friendlist() {
 
       if (res.ok) {
         await res.json();
-        console.log(`🎮 Game invitation accepted from ${senderUsername}`);
         setGameInvitations(prev => prev.filter(inv => inv.invitation_id !== invitationId));
       } else {
         const errorData = await res.json();
@@ -313,7 +307,7 @@ export function Friendlist() {
         {/* Right Side: Action Buttons */}
         <div className="flex gap-[12px] shrink-0">
           <button
-            onClick={() => acceptGameInvitation(inv.invitation_id, inv.sender_username)}
+            onClick={() => acceptGameInvitation(inv.invitation_id)}
             className="border-none outline-none w-[75px] h-[32px] rounded-full bg-gradient-to-r from-[#09a043]/60 to-[#09ff00]/60 text-[#0c4d11] font-bold text-[11px] uppercase transition-all duration-300 hover:shadow-[0_0_12px_rgba(0,255,136,0.5)] hover:scale-[1.05] active:scale-[0.95]"
           >
             Accept

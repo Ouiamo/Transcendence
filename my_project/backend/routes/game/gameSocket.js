@@ -2,7 +2,6 @@ const { Server: SocketIOServer } = require('socket.io');
 const { io: ioClient } = require('socket.io-client');
 const { dbGet, dbRun } = require('../../utils/dbHelpers');
 
-const waitingPlayers = [];
 const gameRooms = new Map();
 const gameStates = new Map();
 const onlineUsers = new Map(); 
@@ -31,11 +30,10 @@ module.exports = async function (fastify) {
   });
 
   gameSocket.on("connection", (socket) => {
-    console.log("New client connected:", socket.id);
 
-    socket.on("hello", (msg) => {
-      console.log("!!!!!!!! Received from front:", msg);
-    });
+    // socket.on("hello", (msg) => {
+    //   console.log("!!!!!!!! Received from front:", msg);
+    // });
 
     socket.on("user_connected", (data) => {
       const { userId, username } = data;
@@ -43,7 +41,6 @@ module.exports = async function (fastify) {
       socket.username = username;
 
       if (pendingOfflineUsers.has(userId)) {
-        console.log(`Cancelling offline timeout for ${username} (reconnection)`);
         clearTimeout(pendingOfflineUsers.get(userId));
         pendingOfflineUsers.delete(userId);
       }
@@ -51,12 +48,7 @@ module.exports = async function (fastify) {
       const wasOnline = onlineUsers.has(userId);
       onlineUsers.set(userId, socket.id);
       
-      if (wasOnline) {
-        console.log(` User ${username} (${userId}) RECONNECTED`);
-      } else {
-        console.log(`User ${username} (${userId}) is now ONLINE`);
-      }
-      console.log(`Total online users: ${onlineUsers.size}`);
+  
 
       const onlineUsersList = Array.from(onlineUsers.entries()).map(([uid, sid]) => {
         const userSocket = gameSocket.sockets.sockets.get(sid);
@@ -66,12 +58,8 @@ module.exports = async function (fastify) {
         };
       });
       
-      console.log(` Sending online users list to ${username}:`, onlineUsersList);
       socket.emit("online_users", onlineUsersList);
-
-    
       if (!wasOnline) {
-        console.log(` Broadcasting ${username} is online to all other users`);
         socket.broadcast.emit("user_status_update", {
           userId,
           username,
@@ -81,36 +69,24 @@ module.exports = async function (fastify) {
     });
 
     socket.on("inviting", (data) => {
-      console.log("+++++++ invite msg Received :", data.id, data.username);
       const { idFriend } = data;
 
-      console.log("Invitation from", socket.username, "to friend :", data.username);
 
       gameSocket.to(data.idFriend).emit("invitation_received", {
         fromId: socket.userId,
         fromUsername: socket.username,
       });
-      console.log(" Invitation sent to socket:", data.idFriend);
     });
 
     socket.on("user_logout", (data) => {
       const { userId, username } = data;
-      
-      console.log(` User ${username} (${userId}) explicitly logged out`);
-      
      
       if (pendingOfflineUsers.has(userId)) {
         clearTimeout(pendingOfflineUsers.get(userId));
         pendingOfflineUsers.delete(userId);
       }
-      
-    
       onlineUsers.delete(userId);
       
-      console.log(`User ${username} (${userId}) is now OFFLINE (logout)`);
-      console.log(` Total online users: ${onlineUsers.size}`);
-      
-
       gameSocket.emit("user_status_update", {
         userId,
         username,
@@ -139,9 +115,8 @@ module.exports = async function (fastify) {
 
     socket.on("join_private_game", async (data) => {
       const { roomId, playerId, playerUsername } = data;
-      console.log(` Player ${playerUsername} (${playerId}) joining private game room: ${roomId}`);
+      // console.log(` Player ${playerUsername} (${playerId}) joining private game room: ${roomId}`);
       
-     
       if (socket.gameRoomId) {
         console.log(`Player ${playerUsername} leaving previous room: ${socket.gameRoomId}`);
         socket.leave(socket.gameRoomId);
@@ -152,7 +127,6 @@ module.exports = async function (fastify) {
           if (oldRoom.players.length === 0) {
             gameRooms.delete(socket.gameRoomId);
             gameStates.delete(socket.gameRoomId);
-            console.log(`Cleaned up empty room: ${socket.gameRoomId}`);
           }
         }
       }
@@ -160,17 +134,13 @@ module.exports = async function (fastify) {
       socket.join(roomId);
       socket.gameRoomId = roomId;
       
-      
       if (!gameRooms.has(roomId)) {
         gameRooms.set(roomId, { players: [] });
       }
       
       const room = gameRooms.get(roomId);
-      
-    
       const existingPlayer = room.players.find(p => p.userId === playerId);
       if (existingPlayer) {
-        console.log(`Player ${playerUsername} already in room, updating socket`);
         existingPlayer.socketId = socket.id;
       } else {
         room.players.push({
@@ -179,12 +149,8 @@ module.exports = async function (fastify) {
           username: playerUsername
         });
       }
-      
-      console.log(`Room ${roomId} now has ${room.players.length} players`);
-      
     
       if (room.players.length === 2 && room.players[0].userId !== room.players[1].userId) {
-
         const roomParts = roomId.split('_');
         const senderId = parseInt(roomParts[1]);
         
@@ -199,7 +165,6 @@ module.exports = async function (fastify) {
             [player1Id, player2Id, player2Id, player1Id]
           );
           if (!areFriends) {
-            console.log(`Players ${player1Id} and ${player2Id} are no longer friends. Cancelling game.`);
             room.players.forEach(p => {
               const playerSocket = gameSocket.sockets.sockets.get(p.socketId);
               if (playerSocket) {
@@ -230,9 +195,9 @@ module.exports = async function (fastify) {
         room.players = [player1, player2];
         
 
-        if (gameStates.has(roomId)) {
-          console.log(`Clearing existing game state for room ${roomId}`);
-        }
+        // if (gameStates.has(roomId)) {
+        //   console.log(`Clearing existing game state for room ${roomId}`);
+        // }
         
     
         const player1Socket = gameSocket.sockets.sockets.get(player1.socketId);
@@ -245,9 +210,9 @@ module.exports = async function (fastify) {
         player1Socket?.emit("gameStart", { roomID: roomId, role: "player1" });
         player2Socket?.emit("gameStart", { roomID: roomId, role: "player2" });
         
-        console.log(` Sending gameStart events to both players in room ${roomId}`);
-        console.log(` Player1 (${player1.username}, userId=${player1.userId}): role=player1`);
-        console.log(` Player2 (${player2.username}, userId=${player2.userId}): role=player2`);
+        // console.log(` Sending gameStart events to both players in room ${roomId}`);
+        // console.log(` Player1 (${player1.username}, userId=${player1.userId}): role=player1`);
+        // console.log(` Player2 (${player2.username}, userId=${player2.userId}): role=player2`);
         
         // Initialize fresh game state
         gameStates.set(roomId, {
@@ -264,7 +229,7 @@ module.exports = async function (fastify) {
         });
         
         startGameLoop(roomId, gameSocket);
-        console.log(` Private game started in room ${roomId} between ${player1.username} and ${player2.username}`);
+        // console.log(` Private game started in room ${roomId} between ${player1.username} and ${player2.username}`);
       } else if (room.players.length > 2) {
         console.error(` Room ${roomId} has too many players (${room.players.length}), cleaning up`);
         
@@ -274,7 +239,7 @@ module.exports = async function (fastify) {
 
     socket.on("player_leaving_game", (data) => {
       const { roomID } = data;
-      console.log(` Player intentionally leaving game room: ${roomID}`);
+      // console.log(` Player intentionally leaving game room: ${roomID}`);
       
       const state = gameStates.get(roomID);
       if (state && !state.gameEnd) {
@@ -301,7 +266,7 @@ module.exports = async function (fastify) {
           message: "Opponent left the game"
         });
         
-        console.log(` Game ended in room ${roomID} due to player leaving`);
+        // console.log(` Game ended in room ${roomID} due to player leaving`);
       }
       
      
@@ -312,16 +277,10 @@ module.exports = async function (fastify) {
     });
 
     socket.on("disconnect", () => {
-      console.log(" Game client disconnected:", socket.id);
-     
-      const index = waitingPlayers.indexOf(socket.id);
-      if (index > -1) {
-        waitingPlayers.splice(index, 1);
-      }
-      
+      // console.log(" Game client disconnected:", socket.id);
     
       if (socket.gameRoomId) {
-        console.log(` Cleaning up game room ${socket.gameRoomId} for disconnected player`);
+        // console.log(` Cleaning up game room ${socket.gameRoomId} for disconnected player`);
         const room = gameRooms.get(socket.gameRoomId);
         if (room) {
  
@@ -340,31 +299,31 @@ module.exports = async function (fastify) {
             gameSocket.to(socket.gameRoomId).emit("player_disconnected", {
               message: "Opponent disconnected"
             });
-            console.log(` Player disconnected mid-game in room ${socket.gameRoomId}`);
+            // console.log(` Player disconnected mid-game in room ${socket.gameRoomId}`);
           }
           
           room.players = room.players.filter(p => p.socketId !== socket.id);
           if (room.players.length === 0) {
             gameRooms.delete(socket.gameRoomId);
             gameStates.delete(socket.gameRoomId);
-            console.log(` Deleted empty room: ${socket.gameRoomId}`);
+            // console.log(` Deleted empty room: ${socket.gameRoomId}`);
           }
         }
       }
       
       
       if (socket.userId) {
-        console.log(`User ${socket.username} (${socket.userId}) disconnected, starting grace period...`);
+        // console.log(`User ${socket.username} (${socket.userId}) disconnected, starting grace period...`);
         
        
         const offlineTimeout = setTimeout(() => {
           if (onlineUsers.get(socket.userId) === socket.id) {
             onlineUsers.delete(socket.userId);
-            console.log(` User ${socket.username} (${socket.userId}) is now OFFLINE (grace period expired)`);
-            console.log(` Total online users: ${onlineUsers.size}`);
+            // console.log(` User ${socket.username} (${socket.userId}) is now OFFLINE (grace period expired)`);
+            // console.log(` Total online users: ${onlineUsers.size}`);
 
 
-            console.log(` Broadcasting ${socket.username} is offline to all users`);
+            // console.log(` Broadcasting ${socket.username} is offline to all users`);
             gameSocket.emit("user_status_update", {
               userId: socket.userId,
               username: socket.username,
@@ -470,25 +429,21 @@ module.exports = async function (fastify) {
         state.gameEnd = true;
         state.winner = 1;
         clearInterval(interval);
-        console.log(` Game ended in room ${roomID}: Player 1 wins!`);
         
         
         setTimeout(() => {
           gameRooms.delete(roomID);
           gameStates.delete(roomID);
-          console.log(` Cleaned up finished game room: ${roomID}`);
         }, 5000);
       } else if (state.score2 === MAX_SCORE) {
         state.gameEnd = true;
         state.winner = 2;
         clearInterval(interval);
-        console.log(` Game ended in room ${roomID}: Player 2 wins!`);
         
         
         setTimeout(() => {
           gameRooms.delete(roomID);
           gameStates.delete(roomID);
-          console.log(` Cleaned up finished game room: ${roomID}`);
         }, 5000);
       }
 

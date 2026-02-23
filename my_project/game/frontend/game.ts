@@ -129,7 +129,7 @@ export function initGame(canvas: HTMLCanvasElement, player: string) {
         document.removeEventListener("keydown", handleKeyDown);
         document.removeEventListener("keyup", handleKeyUp);
 
-        console.log("Game Listeners Cleaned Up");
+        // console.log("Game Listeners Cleaned Up");
     };
 }
 

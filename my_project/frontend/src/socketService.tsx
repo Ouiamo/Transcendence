@@ -30,7 +30,6 @@ export const clearUserDataFromStorage = () => {
 
 export const connectSocket = (userId: number, username: string) => {
   if (socket && socket.connected) {
-    console.log("Socket already connected");
     return socket;
   }
   saveUserDataToStorage(userId, username);
@@ -47,61 +46,43 @@ export const connectSocket = (userId: number, username: string) => {
   });
 
   socket.on("connect", () => {
-    console.log(" Connected to server", username);
     socket?.emit("user_connected", { userId, username });
     socket?.emit("hello", "Hi server!");
   });
 
   socket.on("online_users", (users: Array<{ userId: number; username: string }>) => {
-    console.log(" Received online users list:", users);
     OnlineUsers.clear();
     users.forEach(user => {
       OnlineUsers.set(user.userId, user.username);
     });
-    console.log(" OnlineUsers Map after init:", Array.from(OnlineUsers.entries()));
-    
-
     notifyUpdate();
   });
 
   socket.on("user_status_update", (data: { userId: number; username: string; status: string }) => {
-    console.log(`👤 Status update: ${data.username} (${data.userId}) is now ${data.status}`);
     
     if (data.status === "Online") {
       OnlineUsers.set(data.userId, data.username);
-      console.log(`Added ${data.username} to OnlineUsers`);
     } else if (data.status === "Offline") {
       OnlineUsers.delete(data.userId);
-      console.log(` Removed ${data.username} from OnlineUsers`);
     }
-    
-    console.log(" Current OnlineUsers Map:", Array.from(OnlineUsers.entries()));
-    
- 
+    // console.log(" Current OnlineUsers Map:", Array.from(OnlineUsers.entries()));
     notifyUpdate();
   });
 
-  socket.on("disconnect", (reason) => {
-    console.log("⚠️ Disconnected from server:", reason);
+  socket.on("disconnect", (_reason) => {
   });
 
   socket.on("reconnect", () => {
-    console.log(" Reconnected to server");
     socket?.emit("user_connected", { userId, username });
   });
 
   socket.on("private_game_start", (data: { roomId: string; player1: any; player2: any }) => {
-    console.log(" Private game invitation received:", data);
+    // console.log(" Private game invitation received:", data);
     
     if (data.player1.id === userId || data.player2.id === userId) {
-      console.log(" You are invited to a private game!");
-      
-      console.log(" Stored game data:", {
-        roomId: data.roomId,
-        gameData: data
-      });
+      // console.log(" You are invited to a private game!");
 
-      console.log("🎮 Triggering callback navigation...");
+      // console.log("Triggering callback navigation...");
       if (privateGameCallback) {
         privateGameCallback(data);
       }
@@ -124,7 +105,7 @@ export const disconnectSocket = () => {
 
 export const logoutUser = (userId: number, username: string) => {
   if (socket && socket.connected) {
-    console.log(` Sending logout event for ${username} (${userId})`);
+    // console.log(` Sending logout event for ${username} (${userId})`);
     socket.emit("user_logout", { userId, username });
   }
   disconnectSocket();

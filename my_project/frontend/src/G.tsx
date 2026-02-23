@@ -45,7 +45,6 @@ export function GamePage(userdata: any) {
       clearInterval(interval);
       if (typeof cleanupGame === 'function')
         cleanupGame();
-      console.log("Game Cleaned Up");
     };
   }, [userdata.username]);
 
@@ -122,8 +121,6 @@ export function Gamepage_r({data1, currentUser}: game) {
       console.error("No socket available for remote game");
       return;
     }
-
-    console.log("Gamepage_r initializing with gameData:", data1);
     
     initGame_remot(canvasRef.current, existingSocket as any, data1, currentUser);
 
@@ -176,7 +173,6 @@ export function Gamepage_r({data1, currentUser}: game) {
     return () => {
       clearInterval(interval);
       cleanupGame();
-      console.log("Game Cleaned Up");
     };
   }, [data1]);
 

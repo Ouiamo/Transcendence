@@ -194,7 +194,6 @@ fastify.post('/api/game/accept', { preHandler: fastify.authenticate }, async (re
       
      
       if (!emittedToPlayers) {
-        console.log(" Couldn't find player sockets, broadcasting to all");
         io.emit('private_game_start', gameEventData);
       }
     }

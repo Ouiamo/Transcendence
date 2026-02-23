@@ -140,19 +140,33 @@ export function Gamepage_r({data1, currentUser}: game) {
         
         const isPlayer1 = data1?.player1?.id === currentUser?.id;
         const opponent_username = isPlayer1 ? data.player2Username : data.player1Username;
-        const user_score = isPlayer1 ? data.score1 : data.score2;
-        const opp_score = isPlayer1 ? data.score2 : data.score1;
         const opp_id = data.opp_id;
         const match_type = "REMOTE";
+
+        let user_score: number;
+        let opp_score: number;
+
+        if (data.forfeit) {
+          user_score = 11;
+          opp_score = 0;
+        } else {
+          user_score = isPlayer1 ? data.score1 : data.score2;
+          opp_score = isPlayer1 ? data.score2 : data.score1;
+        }
+
         console.log("opp id isss ", opp_id);
         console.log("opp username isss ", opponent_username);
-        console.log("opp score isss ", user_score);
-        console.log("user score isss ", opp_score);
-        if (user_score === 0 && opp_score === 0) {
+        console.log("user score isss ", user_score);
+        console.log("opp score isss ", opp_score);
+        console.log("forfeit isss ", data.forfeit);
+        if (user_score === 0 && opp_score === 0 && !data.forfeit) {
           return;
         }
         gameResults({ winner, opponent_username });
-        gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
+   
+        if (!data.forfeit) {
+          gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
+        }
       }
       else if (!data.winner && lastWinnerRef.current) {
         lastWinnerRef.current = null;

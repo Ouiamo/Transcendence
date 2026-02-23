@@ -151,6 +151,7 @@ const keys: {[key:string] : boolean}={
 // }
 let winnerName: string | null = null;
 let opponent_id: number;
+let forfeit: boolean = false;
 
 export function getRemoteGameState() {
 
@@ -162,7 +163,8 @@ export function getRemoteGameState() {
     opp_id: opponent_id,
     inGame: gameState.inGame,
     gameEnd: gameState.gameEnd,
-    winner: winnerName
+    winner: winnerName,
+    forfeit: forfeit,
   };
 }
 
@@ -197,6 +199,7 @@ export function cleanupGame() {
     gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
 
     winnerName = null;
+    forfeit = false;
 
     document.removeEventListener("keydown", handleKeyDown);
     document.removeEventListener("keyup", handleKeyUp);
@@ -264,9 +267,9 @@ function setupPrivateGame(gameData: any, currentUser: any) {
                 gameState.inGame = false;
 
                 if (data.winner === 1) {
-                    winnerName = gameState.player1Username + ' WINS!';
+                    winnerName = gameState.player1Username ;
                 } else if (data.winner === 2) {
-                    winnerName = gameState.player2Username + ' WINS!';
+                    winnerName = gameState.player2Username ;
                 } else {
                     winnerName = 'GAME OVER!';
                 }
@@ -289,6 +292,7 @@ function setupPrivateGame(gameData: any, currentUser: any) {
             gameState.isCleaningUp = true;
             gameState.inGame = false;
             gameState.gameEnd = true;
+            forfeit = true;
             
             setTimeout(() => {
                 console.log("Cleaning up after opponent disconnect...");
@@ -347,6 +351,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
    gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
    winnerName = null;
+   forfeit = false;
    
 
    gameState.player1Username = gameData.player1.username;
@@ -457,9 +462,9 @@ function drawWinner()
     if (!contex || gameEnd === false) return;
 
     if (winner === 1) {
-        winnerName = gameState.player1Username + ' WINS!';
+        winnerName = gameState.player1Username ;
     } else if (winner === 2) {
-        winnerName = gameState.player2Username + ' WINS!';
+        winnerName = gameState.player2Username ;
     } else {
         winnerName = 'GAME OVER!';
     }

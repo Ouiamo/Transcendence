@@ -1,6 +1,6 @@
 const { Server: SocketIOServer } = require('socket.io');
 const { io: ioClient } = require('socket.io-client');
-const { dbGet } = require('../../utils/dbHelpers');
+const { dbGet, dbRun } = require('../../utils/dbHelpers');
 
 const waitingPlayers = [];
 const gameRooms = new Map();
@@ -281,13 +281,17 @@ module.exports = async function (fastify) {
       
         state.gameEnd = true;
         
-        // Determine winner based on who left
         const room = gameRooms.get(roomID);
         if (room && room.players) {
           const leavingPlayer = room.players.find(p => p.socketId === socket.id);
         
           if (leavingPlayer) {
             state.winner = room.players[0].socketId === socket.id ? 2 : 1;
+          }
+
+          if (!room.forfeitRecorded) {
+            room.forfeitRecorded = true;
+            recordForfeitScores(room, socket.id);
           }
         }
         
@@ -320,12 +324,18 @@ module.exports = async function (fastify) {
         console.log(` Cleaning up game room ${socket.gameRoomId} for disconnected player`);
         const room = gameRooms.get(socket.gameRoomId);
         if (room) {
-          // Check if game is still active
+ 
           const state = gameStates.get(socket.gameRoomId);
           if (state && !state.gameEnd) {
            
             state.gameEnd = true;
             state.winner = -1; 
+         
+            // Record forfeit scores in DB for both players (only once)
+            if (!room.forfeitRecorded) {
+              room.forfeitRecorded = true;
+              recordForfeitScores(room, socket.id);
+            }
             gameSocket.to(socket.gameRoomId).emit("gameUpdate", state);
             gameSocket.to(socket.gameRoomId).emit("player_disconnected", {
               message: "Opponent disconnected"
@@ -371,6 +381,31 @@ module.exports = async function (fastify) {
       }
     });
   });
+
+  async function recordForfeitScores(room, leavingSocketId) {
+    if (!room || !room.players || room.players.length < 2) return;
+
+    const leavingPlayer = room.players.find(p => p.socketId === leavingSocketId);
+    const remainingPlayer = room.players.find(p => p.socketId !== leavingSocketId);
+
+    if (!leavingPlayer || !remainingPlayer) return;
+
+    try {
+
+      await dbRun(
+        'INSERT INTO history (user_id, opp_username, user_score, opp_score, opp_id, match_type, isWin) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [remainingPlayer.userId, leavingPlayer.username, 11, 0, leavingPlayer.userId, 'REMOTE', true]
+      );
+   
+      await dbRun(
+        'INSERT INTO history (user_id, opp_username, user_score, opp_score, opp_id, match_type, isWin) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [leavingPlayer.userId, remainingPlayer.username, 0, 11, remainingPlayer.userId, 'REMOTE', false]
+      );
+      console.log(` Forfeit scores recorded: ${remainingPlayer.username} wins 11-0 over ${leavingPlayer.username}`);
+    } catch (err) {
+      console.error(' Error recording forfeit scores:', err);
+    }
+  }
 
   function startGameLoop(roomID, io) {
     const interval = setInterval(() => {
@@ -419,7 +454,7 @@ module.exports = async function (fastify) {
         }
       }
 
-      // Scoring
+    
       if (state.ballX - ballRadius <= 0) {
         state.score2++;
         resetBall(state);

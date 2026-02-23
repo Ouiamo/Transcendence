@@ -153,7 +153,6 @@ module.exports = async function(fastify, options) {
 
   // Remove
   fastify.delete('/api/friends/remove', { preHandler: fastify.authenticate }, async (request, reply) => {
-
     try {
       const userId = request.user.id;
       const { friendId } = request.body;
@@ -164,21 +163,21 @@ module.exports = async function(fastify, options) {
 
       await dbRun(
         `DELETE FROM friends 
-         WHERE (user_id = ? AND friend_id = ?) 
+        WHERE (user_id = ? AND friend_id = ?) 
             OR (user_id = ? AND friend_id = ?)`,
         [userId, friendId, friendId, userId]
       );
-
+      
       await dbRun(
-        `DELETE FROM game_invitations
-         WHERE (sender_id = ? AND receiver_id = ?) 
+        `DELETE FROM game_invitations 
+        WHERE (sender_id = ? AND receiver_id = ?) 
             OR (sender_id = ? AND receiver_id = ?)`,
         [userId, friendId, friendId, userId]
       );
 
       return reply.send({
         success: true,
-        message: 'Friend removed'
+        message: 'Friend removed and game invitations deleted'
       });
 
     } catch (err) {

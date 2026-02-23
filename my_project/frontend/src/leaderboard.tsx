@@ -16,7 +16,7 @@ export function Leaderboard() {
     const [users, setRanking] = useState<User[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    console.log("users in leaderboard ------------", users);
+
     useEffect(() => {
         const fetchRanking = async () => {
             try {
@@ -26,7 +26,6 @@ export function Leaderboard() {
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    console.log("data is ", data);
                     setRanking(data);
                 }
             } catch (err) {

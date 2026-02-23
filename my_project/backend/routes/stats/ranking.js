@@ -15,7 +15,6 @@ fastify.get('/api/ranking', { preHandler: fastify.authenticate }, async (request
             if (element.provider === "local")
                 element.avatar_url = "/api/avatar/file/" + element.avatar_url;
         });
-        console.log("haaaa elements ",stats);
     return reply.send(stats);
     }
     catch(err){

@@ -129,7 +129,7 @@ export function initGame(canvas: HTMLCanvasElement, player: string) {
         document.removeEventListener("keydown", handleKeyDown);
         document.removeEventListener("keyup", handleKeyUp);
 
-        console.log("Game Listeners Cleaned Up");
+        // console.log("Game Listeners Cleaned Up");
     };
 }
 
@@ -222,8 +222,14 @@ function moveBall(player:string)
         ball.x += ball.stepX;
         ball.y += ball.stepY;
 
-        if(ball.y + ball.radius > boardHeight || ball.y - ball.radius < 0)
-            ball.stepY = - ball.stepY;
+        // Wall bounce: clamp position so ball never gets stuck past the boundary
+        if(ball.y - ball.radius < 0) {
+            ball.y = ball.radius;
+            ball.stepY = Math.abs(ball.stepY);
+        } else if(ball.y + ball.radius > boardHeight) {
+            ball.y = boardHeight - ball.radius;
+            ball.stepY = -Math.abs(ball.stepY);
+        }
             
         if(ball.stepX < 0)
         {
@@ -233,9 +239,10 @@ function moveBall(player:string)
            ball.y - ball.radius <= player1.y + paddleHeight)
             {
                 ball.stepX = Math.abs(ball.stepX);
-                ball.x = ball.radius + player1.x + paddleWidth;
+                // Push ball out of paddle to prevent re-triggering collision
+                ball.x = player1.x + paddleWidth + ball.radius + 1;
                 let hitPos = (ball.y - player1.y) / paddleHeight;
-                ball.stepY = (hitPos - 0.5) * 10;
+                ball.stepY = Math.max(-8, Math.min(8, (hitPos - 0.5) * 10));
             }
         }
         
@@ -247,9 +254,10 @@ function moveBall(player:string)
            ball.y - ball.radius <= player2.y + paddleHeight)
             {
                 ball.stepX = -Math.abs(ball.stepX);
-                ball.x = player2.x - ball.radius;
+                // Push ball out of paddle to prevent re-triggering collision
+                ball.x = player2.x - ball.radius - 1;
                 let hitPos = (ball.y - player2.y) / paddleHeight;
-                ball.stepY = (hitPos - 0.5) * 10;
+                ball.stepY = Math.max(-8, Math.min(8, (hitPos - 0.5) * 10));
             }
         }
 

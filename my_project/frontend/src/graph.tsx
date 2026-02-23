@@ -66,7 +66,7 @@ function StatsCharts() {
         
         if (History_res.ok) {
           const data = await History_res.json();
-          console.log("history isssssss :: ", data);
+      
           setHistory(data);
         }
       } catch (err) {
@@ -150,18 +150,18 @@ function StatsCharts() {
     let total = 0;
     const points = [0];
 
-    console.log("results hnaa is ", history);
+
     history.forEach((result:any) => {
       if (result.isWin === 1 || result.isWin === true) total += POINTS_PER_MATCH;
       else if (result.isWin === 0 || result.isWin === false) total -= POINTS_PER_MATCH;
       points.push(total);
-      console.log("points hnaa is ", points);
+
     });
     return points;
   }
   
   const pointsData = calculatePoints(history);
-  console.log("points data is :::" ,pointsData);
+
 
   const labels = pointsData.map((_, index) => index); 
 

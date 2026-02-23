@@ -151,6 +151,7 @@ const keys: {[key:string] : boolean}={
 // }
 let winnerName: string | null = null;
 let opponent_id: number;
+let forfeit: boolean = false;
 
 export function getRemoteGameState() {
 
@@ -162,16 +163,15 @@ export function getRemoteGameState() {
     opp_id: opponent_id,
     inGame: gameState.inGame,
     gameEnd: gameState.gameEnd,
-    winner: winnerName
+    winner: winnerName,
+    forfeit: forfeit,
   };
 }
 
 export function cleanupGame() {
-    console.log("Cleaning up remote game...");
-    
 
     if (gameState.inGame && socket && gameState.roomID) {
-        console.log("Notifying server of game cleanup");
+        // console.log("Notifying server of game cleanup");
         socket.emit("player_leaving_game", { roomID: gameState.roomID });
     }
 
@@ -197,6 +197,7 @@ export function cleanupGame() {
     gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
 
     winnerName = null;
+    forfeit = false;
 
     document.removeEventListener("keydown", handleKeyDown);
     document.removeEventListener("keyup", handleKeyUp);
@@ -208,8 +209,6 @@ export function cleanupGame() {
 }
 
 function setupPrivateGame(gameData: any, currentUser: any) {
-    console.log(" Setting up private game with data:", gameData);
-    console.log(" Current user:", currentUser?.username, "id:", currentUser?.id);
 
     // if (gameData.player1 && gameData.player2) {
     //     gameState.player1Username = gameData.player1.username || "Player 1";
@@ -224,10 +223,9 @@ function setupPrivateGame(gameData: any, currentUser: any) {
     }
 
     socket?.on("gameStart", (data: { roomID: string, role: string }) => {        
-        console.log(" gameStart received:", data);
 
         if (gameState.inGame) {
-            console.log("Already in game, ignoring duplicate gameStart");
+            // console.log("Already in game, ignoring duplicate gameStart");
             return;
         }
 
@@ -237,7 +235,7 @@ function setupPrivateGame(gameData: any, currentUser: any) {
             gameState.role = data.role;
         }
         gameState.inGame = true; 
-        console.log(` I am ${gameState.role} in room ${data.roomID}`);
+        // console.log(` I am ${gameState.role} in room ${data.roomID}`);
         startGameLoop();
     });
 
@@ -271,7 +269,7 @@ function setupPrivateGame(gameData: any, currentUser: any) {
                 }
 
                 setTimeout(() => {
-                    console.log("Cleaning up finished game...");
+                    // console.log("Cleaning up finished game...");
                     window.dispatchEvent(new CustomEvent('game_ended', { 
                         detail: { winner: data.winner } 
                     }));
@@ -288,9 +286,9 @@ function setupPrivateGame(gameData: any, currentUser: any) {
             gameState.isCleaningUp = true;
             gameState.inGame = false;
             gameState.gameEnd = true;
+            forfeit = true;
             
             setTimeout(() => {
-                console.log("Cleaning up after opponent disconnect...");
                 window.dispatchEvent(new CustomEvent('game_ended', { 
                     detail: { winner: gameState.role === "player1" ? 1 : 2 } 
                 }));
@@ -298,7 +296,13 @@ function setupPrivateGame(gameData: any, currentUser: any) {
         }
     });
 
-    console.log(" Emitting join_private_game for room:", gameData.roomId);
+    socket?.on("game_cancelled", (data: any) => {
+        alert(data.error || "Game has been cancelled.");
+        window.dispatchEvent(new CustomEvent('game_ended', { 
+            detail: { winner: 0, cancelled: true } 
+        }));
+    });
+
     socket?.emit("join_private_game", {
         roomId: gameData.roomId,
         playerId: currentUser.id,
@@ -308,10 +312,6 @@ function setupPrivateGame(gameData: any, currentUser: any) {
 
 export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket, gameData: any, currentUser: any) {
    board = canvas;
-   console.log("Initializing remote game...");
-   console.log(" Game data:", gameData);
-   console.log(" Current user ::::::::::::::::::::::::::::::::", currentUser);
-   console.log(" Socket available:", !!existingSocket);
 
    if (!existingSocket) {
        console.error(" No socket provided to initGame_remot!");
@@ -338,16 +338,15 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    gameState.player1_Y = boardHeight / 2 - paddleHeight / 2;
    gameState.player2_Y = boardHeight / 2 - paddleHeight / 2;
    winnerName = null;
+   forfeit = false;
    
 
    gameState.player1Username = gameData.player1.username;
    gameState.player2Username = gameData.player2.username;
 
    if (currentUser.id === gameData.player1.id) {
-        console.log("here 1 ");
         opponent_id = gameData.player2.id;
    } else {
-        console.log("here 2");
         opponent_id = gameData.player1.id;
    }
 
@@ -363,7 +362,7 @@ export function initGame_remot(canvas: HTMLCanvasElement, existingSocket: Socket
    
    const handleBeforeUnload = () => {
        if (gameState.inGame && socket && gameState.roomID) {
-           console.log(" Player leaving game (refresh/close)");
+        //    console.log(" Player leaving game (refresh/close)");
            socket.emit("player_leaving_game", { roomID: gameState.roomID });
        }
    };

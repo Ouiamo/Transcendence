@@ -142,7 +142,7 @@ module.exports = async function(fastify, options) {
     });
   });
 
-    fastify.get('/api', async (request, reply) => {
+    fastify.get('/api/public', async (request, reply) => {
       const apiKey = request.headers['x-api-key'];
       if (!isValidApiKey(apiKey)) {
         return reply.code(401).send({ error: 'Need API key' });

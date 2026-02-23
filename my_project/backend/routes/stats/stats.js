@@ -56,7 +56,7 @@ module.exports = async function (fastify, options) {
       // const payload = jwt.verify(token, process.env.JWT_SECRET);
       const userId = request.user.id;
       const { winner, opponent_username } = request.body;
-      console.log("winner ", winner, " ooooooo opp is ", opponent_username);
+
       // const user = await dbGet('SELECT username FROM users WHERE id = ?', [userId]);
       if (winner === opponent_username) {
         await dbRun(

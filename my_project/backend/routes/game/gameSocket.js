@@ -1,5 +1,6 @@
 const { Server: SocketIOServer } = require('socket.io');
 const { io: ioClient } = require('socket.io-client');
+const { dbGet } = require('../../utils/dbHelpers');
 
 const waitingPlayers = [];
 const gameRooms = new Map();
@@ -136,7 +137,7 @@ module.exports = async function (fastify) {
       });
     });
 
-    socket.on("join_private_game", (data) => {
+    socket.on("join_private_game", async (data) => {
       const { roomId, playerId, playerUsername } = data;
       console.log(` Player ${playerUsername} (${playerId}) joining private game room: ${roomId}`);
       
@@ -187,6 +188,32 @@ module.exports = async function (fastify) {
         const roomParts = roomId.split('_');
         const senderId = parseInt(roomParts[1]);
         
+        // Verify both players are still friends before starting the game
+        const player1Id = room.players[0].userId;
+        const player2Id = room.players[1].userId;
+        try {
+          const areFriends = await dbGet(
+            `SELECT id FROM friends 
+             WHERE ((user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?))
+             AND status = 'accepted'`,
+            [player1Id, player2Id, player2Id, player1Id]
+          );
+          if (!areFriends) {
+            console.log(`Players ${player1Id} and ${player2Id} are no longer friends. Cancelling game.`);
+            room.players.forEach(p => {
+              const playerSocket = gameSocket.sockets.sockets.get(p.socketId);
+              if (playerSocket) {
+                playerSocket.emit('game_cancelled', { error: 'You are no longer friends. Game cancelled.' });
+                playerSocket.leave(roomId);
+                playerSocket.gameRoomId = undefined;
+              }
+            });
+            gameRooms.delete(roomId);
+            return;
+          }
+        } catch (err) {
+          console.error('Error checking friendship in join_private_game:', err);
+        }
 
         let player1, player2;
         if (room.players[0].userId === senderId) {

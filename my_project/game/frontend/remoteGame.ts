@@ -299,6 +299,14 @@ function setupPrivateGame(gameData: any, currentUser: any) {
         }
     });
 
+    socket?.on("game_cancelled", (data: any) => {
+        console.log("Game cancelled:", data.error);
+        alert(data.error || "Game has been cancelled.");
+        window.dispatchEvent(new CustomEvent('game_ended', { 
+            detail: { winner: 0, cancelled: true } 
+        }));
+    });
+
     console.log(" Emitting join_private_game for room:", gameData.roomId);
     socket?.emit("join_private_game", {
         roomId: gameData.roomId,

@@ -92,6 +92,10 @@ fastify.get('/api/game/invitations', { preHandler: fastify.authenticate }, async
         g.created_at
       FROM game_invitations g
       JOIN users u ON u.id = g.sender_id
+      JOIN friends f ON (
+        (f.user_id = g.sender_id AND f.friend_id = g.receiver_id)
+        OR (f.user_id = g.receiver_id AND f.friend_id = g.sender_id)
+      ) AND f.status = 'accepted'
       WHERE g.receiver_id = ? AND g.status = 'pending'
       ORDER BY g.created_at DESC
     `, [myId]);
@@ -137,6 +141,19 @@ fastify.post('/api/game/accept', { preHandler: fastify.authenticate }, async (re
 
     if (!invitation) {
       return reply.code(404).send({ error: 'Game invitation not found' });
+    }
+
+    // Check if they are still friends before accepting the game
+    const areFriends = await dbGet(
+      `SELECT id FROM friends 
+       WHERE ((user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?))
+       AND status = 'accepted'`,
+      [invitation.sender_id, userId, userId, invitation.sender_id]
+    );
+
+    if (!areFriends) {
+      await dbRun('DELETE FROM game_invitations WHERE id = ?', [invitationId]);
+      return reply.code(400).send({ error: 'You are no longer friends with this player. Game invitation cancelled.' });
     }
 
     // Get both players' info

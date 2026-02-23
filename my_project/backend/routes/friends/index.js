@@ -169,6 +169,13 @@ module.exports = async function(fastify, options) {
         [userId, friendId, friendId, userId]
       );
 
+      await dbRun(
+        `DELETE FROM game_invitations
+         WHERE (sender_id = ? AND receiver_id = ?) 
+            OR (sender_id = ? AND receiver_id = ?)`,
+        [userId, friendId, friendId, userId]
+      );
+
       return reply.send({
         success: true,
         message: 'Friend removed'

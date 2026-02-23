@@ -385,29 +385,33 @@ module.exports = async function (fastify) {
       state.ballX += state.ballStepX;
       state.ballY += state.ballStepY;
 
-    
-      if (state.ballY + ballRadius > boardHeight || state.ballY - ballRadius < 0) {
-        state.ballStepY = -state.ballStepY;
+      // Top/bottom wall bounce with position clamping
+      if (state.ballY - ballRadius < 0) {
+        state.ballY = ballRadius;
+        state.ballStepY = Math.abs(state.ballStepY);
+      } else if (state.ballY + ballRadius > boardHeight) {
+        state.ballY = boardHeight - ballRadius;
+        state.ballStepY = -Math.abs(state.ballStepY);
       }
 
-    
+      // Paddle collision - Player 1 (left)
       const player1_X = 20;
       const paddleWidth = 15;
       if (state.ballStepX < 0) {
         if (state.ballX - ballRadius <= player1_X + paddleWidth &&
-            state.ballX - ballRadius > player1_X &&
+            state.ballX + ballRadius >= player1_X &&
             state.ballY + ballRadius >= state.player1_Y &&
             state.ballY - ballRadius <= state.player1_Y + paddleHeight) {
           state.ballStepX = Math.abs(state.ballStepX);
-          state.ballX = ballRadius + player1_X + paddleWidth;
+          state.ballX = player1_X + paddleWidth + ballRadius;
         }
       }
 
-    
+      // Paddle collision - Player 2 (right)
       const player2_X = boardWidth - 20 - paddleWidth;
       if (state.ballStepX > 0) {
         if (state.ballX + ballRadius >= player2_X &&
-            state.ballX + ballRadius < player2_X + paddleWidth &&
+            state.ballX - ballRadius <= player2_X + paddleWidth &&
             state.ballY + ballRadius >= state.player2_Y &&
             state.ballY - ballRadius <= state.player2_Y + paddleHeight) {
           state.ballStepX = -Math.abs(state.ballStepX);

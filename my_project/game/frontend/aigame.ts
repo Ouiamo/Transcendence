@@ -89,18 +89,37 @@ export function isGameOver() {
 }
 
 export function aiinitGame(canvas: HTMLCanvasElement, player1:string) {
-    // console.log("heeeeeeeeeeeeeeeeere");
-    // aiboard = document.getElementById("board") as HTMLCanvasElement;
-    // aiboard.style.display = "block";
-    // aiboard.height = aiboardHeight;
-    // aiboard.width = aiboardWidth;
-    // aicontex = aiboard.getContext("2d");
     aiboard = canvas;
 
     aiboard.width = 900;
     aiboard.height = 450;
     aicontex = aiboard.getContext("2d");
-    
+
+    // Reset all game state to prevent stale state from previous sessions
+    aigameStart = false;
+    aicountDown = 3;
+    aigameCountDown = false;
+    aigameGO = false;
+    aiwinner = null;
+    currentAIAction = "stay";
+    lastPredictionTime = 0;
+
+    aiplayer.score = 0;
+    aiplayer.y = aiboardHeight / 2 - aipaddleHeight / 2;
+    aiplayer.step = 1;
+
+    realplayer.score = 0;
+    realplayer.y = aiboardHeight / 2 - aipaddleHeight / 2;
+    realplayer.step = 1;
+
+    aiball.x = aiboardWidth / 2;
+    aiball.y = aiboardHeight / 2;
+    aiball.stepX = 5;
+    aiball.stepY = 5;
+
+    aikeys['ArrowUp'] = false;
+    aikeys['ArrowDown'] = false;
+
     // Cancel any existing animation frame before starting a new one
     if (aiAnimationFrameId !== null) {
         cancelAnimationFrame(aiAnimationFrameId);
@@ -218,8 +237,14 @@ function aimoveBall(player: string)
         aiball.x += aiball.stepX;
         aiball.y += aiball.stepY;
 
-        if(aiball.y + aiball.radius > aiboardHeight || aiball.y - aiball.radius < 0)
-            aiball.stepY = - aiball.stepY;
+        // Wall bounce: clamp position so ball never gets stuck past the boundary
+        if(aiball.y - aiball.radius < 0) {
+            aiball.y = aiball.radius;
+            aiball.stepY = Math.abs(aiball.stepY);
+        } else if(aiball.y + aiball.radius > aiboardHeight) {
+            aiball.y = aiboardHeight - aiball.radius;
+            aiball.stepY = -Math.abs(aiball.stepY);
+        }
             
         if(aiball.stepX < 0)
         {
@@ -229,9 +254,10 @@ function aimoveBall(player: string)
            aiball.y - aiball.radius <= aiplayer.y + aipaddleHeight)
             {
                 aiball.stepX = Math.abs(aiball.stepX);
-                aiball.x = aiball.radius + aiplayer.x + aipaddleWidth;
+                // Push ball out of paddle to prevent re-triggering collision
+                aiball.x = aiplayer.x + aipaddleWidth + aiball.radius + 1;
                 let hitPos = (aiball.y - aiplayer.y) / aipaddleHeight;
-                aiball.stepY = (hitPos - 0.5) * 10;
+                aiball.stepY = Math.max(-8, Math.min(8, (hitPos - 0.5) * 10));
             }
         }
         
@@ -243,9 +269,10 @@ function aimoveBall(player: string)
            aiball.y - aiball.radius <= realplayer.y + aipaddleHeight)
             {
                 aiball.stepX = -Math.abs(aiball.stepX);
-                aiball.x = realplayer.x - aiball.radius;
+                // Push ball out of paddle to prevent re-triggering collision
+                aiball.x = realplayer.x - aiball.radius - 1;
                 let hitPos = (aiball.y - realplayer.y) / aipaddleHeight;
-                aiball.stepY = (hitPos - 0.5) * 10;
+                aiball.stepY = Math.max(-8, Math.min(8, (hitPos - 0.5) * 10));
             }
         }
 

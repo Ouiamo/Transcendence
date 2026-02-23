@@ -124,7 +124,7 @@ gameSocket.on("connection", (socket) => {
     });
 
     socket.on("disconnect", () => {
-        console.log("⚠️ Client disconnected:", socket.id);
+        console.log(" Client disconnected:", socket.id);
         waitingPlayers.filter(id => id !== socket.id);
         // console.log("All player IDs after disconnect:", waitingPlayers);
 
@@ -202,5 +202,5 @@ function resetBall(state: any) {
     state.ballStepY = Math.random() < 0.5 ? -5 : 5;
 }
 
-// console.log("🚀 Server running on `${API_URL}`");
+// console.log(" Server running on `${API_URL}`");
 };

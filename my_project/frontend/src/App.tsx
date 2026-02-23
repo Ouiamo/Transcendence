@@ -49,7 +49,7 @@ function App(){
       console.log("MY INFOOOOO ", user_data); 
       connectSocket(user_data.id, user_data.username);
       onPrivateGameInvite((data) => {
-        console.log("🎮 CALLBACK: navigating to /remoteGame with gameData:", data);
+        console.log(" CALLBACK: navigating to /remoteGame with gameData:", data);
         navigate('/remoteGame', { state: { gameData: data } });
       });
     } else {
@@ -59,7 +59,7 @@ function App(){
 
   useEffect(() => {
     const handleGameEnded = (e: any) => {
-      console.log("🏆 game_ended event received", e.detail);
+      console.log(" game_ended event received", e.detail);
       navigate('/remoteGame', { replace: true }); 
     };
     window.addEventListener('game_ended', handleGameEnded);

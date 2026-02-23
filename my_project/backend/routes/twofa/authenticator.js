@@ -25,10 +25,10 @@ module.exports = async function (fastify) {
       });
 
     if (!verified) {
-      console.log("❌ Invalid 2FA code")
+      console.log(" Invalid 2FA code")
       return reply.code(401).send({ success: false, message: 'Invalid 2FA code' });
     }
-    console.log("✅ 2FA code is valid")
+    console.log("2FA code is valid")
     if (!user.twofa_enabled) {
         await dbRun(
           `UPDATE users SET twofa_enabled = 1 WHERE id = ?`,

@@ -15,7 +15,7 @@ import {
 import type { ChartOptions } from 'chart.js';
 import { API_URL } from "./Api.tsx";
 
-// Register Chart.js components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -214,7 +214,7 @@ function StatsCharts() {
     <Doughnut data={donutData} options={donutOptions} />
   </div>
 
-  {/* Line */}
+ 
   <div className="flex-1 max-w-[400px] bg-[#0d0221] rounded-xl p-[4px] border-[2px] border-[#c44cff]/50 flex items-center justify-center">
     <Line data={lineData} options={lineOptions} />
   </div>

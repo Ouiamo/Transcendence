@@ -257,16 +257,15 @@ function setupPrivateGame(gameData: any, currentUser: any) {
 
         if (data.gameEnd && data.winner && !gameState.isCleaningUp) {
             if (data.score1 >= 11 || data.score2 >= 11) {
-                console.log(` Game ended! Winner: Player ${data.winner} (${data.score1}-${data.score2})`);
                 gameState.gameEnd = true;
                 gameState.winner = data.winner;
                 gameState.isCleaningUp = true;
                 gameState.inGame = false;
 
                 if (data.winner === 1) {
-                    winnerName = gameState.player1Username + ' WINS!';
+                    winnerName = gameState.player1Username ;
                 } else if (data.winner === 2) {
-                    winnerName = gameState.player2Username + ' WINS!';
+                    winnerName = gameState.player2Username ;
                 } else {
                     winnerName = 'GAME OVER!';
                 }
@@ -449,9 +448,9 @@ function drawWinner()
     if (!contex || gameEnd === false) return;
 
     if (winner === 1) {
-        winnerName = gameState.player1Username + ' WINS!';
+        winnerName = gameState.player1Username ;
     } else if (winner === 2) {
-        winnerName = gameState.player2Username + ' WINS!';
+        winnerName = gameState.player2Username ;
     } else {
         winnerName = 'GAME OVER!';
     }
@@ -465,7 +464,7 @@ function drawWinner()
     contex.font = "bold 60px Orbitron, Arial"; 
     contex.textAlign = "center"; 
     contex.textBaseline = "middle";
-    contex.fillText(winnerName, boardWidth/2, boardHeight/2 - 50);
+    contex.fillText(winnerName + "WON!", boardWidth/2, boardHeight/2 - 50);
     
     contex.shadowBlur = 15;
     contex.shadowColor = "#d86bff";

@@ -92,7 +92,7 @@ gameSocket.on("connection", (socket) => {
         // startGameLoop(data.roomID);
     });
     socket.on("disconnect", () => {
-        console.log("⚠️ Client disconnected:", socket.id);
+        console.log(" Client disconnected:", socket.id);
         waitingPlayers.filter(id => id !== socket.id);
         // console.log("All player IDs after disconnect:", waitingPlayers);
     });
@@ -157,5 +157,5 @@ function resetBall(state) {
     state.ballStepX = state.score1 > state.score2 ? 5 : -5;
     state.ballStepY = Math.random() < 0.5 ? -5 : 5;
 }
-console.log("🚀 Server running on http://localhost:3001");
+
 //# sourceMappingURL=server.js.map

@@ -65,7 +65,7 @@ export const connectSocket = (userId: number, username: string) => {
   });
 
   socket.on("user_status_update", (data: { userId: number; username: string; status: string }) => {
-    console.log(`👤 Status update: ${data.username} (${data.userId}) is now ${data.status}`);
+    console.log(` Status update: ${data.username} (${data.userId}) is now ${data.status}`);
     
     if (data.status === "Online") {
       OnlineUsers.set(data.userId, data.username);
@@ -82,7 +82,7 @@ export const connectSocket = (userId: number, username: string) => {
   });
 
   socket.on("disconnect", (reason) => {
-    console.log("⚠️ Disconnected from server:", reason);
+    console.log(" Disconnected from server:", reason);
   });
 
   socket.on("reconnect", () => {
@@ -100,8 +100,7 @@ export const connectSocket = (userId: number, username: string) => {
         roomId: data.roomId,
         gameData: data
       });
-
-      console.log("🎮 Triggering callback navigation...");
+      console.log(" Triggering callback navigation...");
       if (privateGameCallback) {
         privateGameCallback(data);
       }

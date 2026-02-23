@@ -209,7 +209,7 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
                 </div>
             </div>
 
-            {/* Form Section - Fully Responsive */}
+
             <div className="flex flex-col items-center w-full max-w-[600px] min-h-[650px] bg-[#c44cff]/20   border-2 border-[#c44cff] rounded-[30px] shadow-[0_0_30px_rgba(255,68,255,0.2)] py-[8px] px-[16px] sm:px-10">
                 <header className="flex flex-col items-center mb-8">
                     <h1 className="glow-text">Sign Up</h1>
@@ -217,7 +217,7 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
                 </header>
 
                 <section className="flex flex-col items-center gap-y-[16px] w-full">
-                    {/* Row 1: First Name & Last Name */}
+           
                     <div className="flex flex-row w-full gap-[4px] px-[2px] mb-[4px] ">
                         <div className="flex-1 flex flex-col items-start p-[10px]">
                             <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">First Name</p>
@@ -243,7 +243,7 @@ function Signup({ gotohome, gotologin, gotoDASHBOARD }: Sinuptest) {
                         </div>
                     </div>
 
-                    {/* Row 2: Username & Email Address */}
+
                     <div className="flex flex-row w-full gap-[4px] px-[2px] mb-[4px]">
                         <div className="flex-1 flex flex-col items-start p-[10px]">
                             <p className="text-[#c44cff] text-[10px] uppercase ml-[4px] mb-[10px] font-bold font-['Orbitron']">Username</p>

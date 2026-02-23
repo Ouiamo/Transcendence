@@ -80,7 +80,7 @@ function Friends() {
         }
 
         setSearchLoading(true);
-        console.log("🔍 Starting search for:", searchText);
+        console.log(" Starting search for:", searchText);
         
         try {
             const response = await fetch(`${API_URL}/api/users/search/${encodeURIComponent(searchText)}`, {
@@ -88,20 +88,20 @@ function Friends() {
                 credentials: 'include',
             });
             
-            console.log("📡 Search response status:", response.status);
+            console.log(" Search response status:", response.status);
             
             if (response.ok) {
                 const result = await response.json();
-                console.log("✅ Search results:", result);
+                console.log(" Search results:", result);
                 setdatafriend(result.users || []);
             } else {
                 const errorText = await response.text();
-                console.error("❌ Search error:", errorText);
+                console.error("Search error:", errorText);
                 setdatafriend([]);
                 alert("Search failed. Please check console.");
             }
         } catch (err) {
-            console.error("❌ Network error in search:", err);
+            console.error("Network error in search:", err);
             setdatafriend([]);
             alert("Network error. Is the backend running?");
         } finally {
@@ -192,7 +192,7 @@ function Friends() {
 
         return (
         <div className=" bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] p-[100px] overflow-auto">
-            {/* Main Header */}
+   
             <div className="flex items-center justify-between w-full mb-[40px]">
                 <div className="flex flex-col">
                     <h1 className="text-[40px] font-[900]  glow-text">
@@ -207,7 +207,7 @@ function Friends() {
             </div>
 
                 <div className="lg:w-3/5 flex flex-col gap-[30px]">
-                    {/* Search Section */}
+          
                     <div className="flex flex-col w-full h-fit bg-[#0d0221]/80 border-[2px] border-[#ff44ff]/30 rounded-[30px] p-[25px] shadow-[0_0_30px_rgba(255,68,255,0.3)]">
                         <div className="flex items-center justify-between mb-[25px]">
                             <h2 className="text-[24px] font-[900] text-white">Add New Friend</h2>
@@ -233,7 +233,7 @@ function Friends() {
                             </button>
                         </div>
 
-                        {/* Search Results */}
+                   
                         <div className="space-y-[10px] max-h-[300px] pr-[10px] custom-scrollbar">
                             {datafriend && datafriend.length > 0 ? (
                                 datafriend.map((user) => (
@@ -291,7 +291,7 @@ function Friends() {
                     </div>
 
             <div className="flex flex-col lg:flex-row w-full gap-[30px]">
-                {/*My Friends List */}
+            
                 <div className="lg:w-2/5">
                     <div className="flex flex-col w-full h-fit bg-[#0d0221]/80 border-[2px] border-[#ff44ff]/30 rounded-[30px] p-[25px] shadow-[0_0_30px_rgba(255,68,255,0.3)]">
                         <div className="flex items-center justify-between mb-[25px]">
@@ -310,7 +310,7 @@ function Friends() {
                                 <p className="text-[12px] text-[#ff99ff]/60 mt-[5px]">Search for players to add as friends</p>
                             </div>
                         ) : (
-                            <div className="space-y-[15px] max-h-[500px] pr-[20px] custom-scrollbar"/**here the side */>
+                            <div className="space-y-[15px] max-h-[500px] pr-[20px] custom-scrollbar">
                                 {friends.map((f) => (
                                     <div 
                                         key={f.id}
@@ -355,7 +355,7 @@ function Friends() {
                     </div>
                 </div>
 
-                    {/* Friend Requests Section */}
+        
                     <div className="flex flex-col w-full h-fit bg-[#0d0221]/80 border-[2px] border-[#ff44ff]/30 rounded-[30px] p-[25px] shadow-[0_0_30px_rgba(255,68,255,0.3)]">
                         <div className="flex items-center justify-between mb-[25px]">
                             <h2 className="text-[24px] font-[900] text-white">Friend Requests</h2>

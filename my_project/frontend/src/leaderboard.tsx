@@ -117,7 +117,7 @@ export function Leaderboard() {
   <div className="min-h-screen w-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] text-white">
     <div className="max-w-6xl mx-auto space-y-6 md:space-y-10">
 
-      {/* HEADER */}
+    
       <div className="text-center space-y-2 md:space-y-[3px]">
         <h1 className=" md:text-6xl font-black tracking-wider uppercase glow-text">
           Leaderboard
@@ -127,7 +127,7 @@ export function Leaderboard() {
         </p>
       </div>
 
-      {/* PODIUM */}
+     
       {users && users.length >= 3 && (
         <div className="relative">
 
@@ -197,13 +197,13 @@ export function Leaderboard() {
         </div>
       )}
 
-      {/* TABLE */}
+   
       <div className="flex p-[20px] w-full ">
       <div className="mt-[40px] md:mt-[10px]  mx-auto  
           bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70
           rounded-2xl border-[2px] border-[#c44cff]/60 overflow-hidden shadow-[0_0_30px_rgba(196,76,255,0.15)]">
 
-        {/* HEADER */}
+      
         <div className="grid grid-cols-4 gap-[4px] md:gap-6 px-[12px] md:px-[10px] py-[13px] md:py-[4px] border-b-[2px] border-[#c44cff]/60 bg-[#0b0618]/60">
           <div className="text-[15px] md:text-xs font-bold text-[#8F929E] tracking-widest">RANK</div>
           <div className="text-[15px] md:text-xs font-bold text-[#8F929E] tracking-widest">PLAYER</div>
@@ -211,7 +211,7 @@ export function Leaderboard() {
           <div className="text-[15px] md:text-xs font-bold text-[#8F929E] tracking-widest text-center">WIN RATE</div>
         </div>
 
-        {/* ROWS */}
+      
         <div className="divide-y-[8px] divide-[#c44cff]/10">
           {users && users.map((player, index) => {
             const rank = index + 1;
@@ -223,7 +223,7 @@ export function Leaderboard() {
                          hover:bg-[#c44cff]/10 transition-colors"
               >
 
-                {/* RANK */}
+               
                 <div className="flex items-center gap-[4px] md:gap-[3px]">
                   {getRankIcon(rank)}
                   <span className="text-sm md:text-base font-semibold text-white">
@@ -231,7 +231,7 @@ export function Leaderboard() {
                   </span>
                 </div>
 
-                {/* PLAYER */}
+              
                 <div className="flex items-center gap-[8px] md:gap-[3px]">
                   <div className="w-[40px] md:w-[40px] h-[40px] md:h-[40px] rounded-full overflow-hidden border border-[#c44cff]/20">
                     <img
@@ -247,14 +247,14 @@ export function Leaderboard() {
                   </span>
                 </div>
 
-                {/* POINTS */}
+              
                 <div className="flex items-center justify-center">
                   <span className="text-sm md:text-base font-bold text-white">
                     {player.points}
                   </span>
                 </div>
 
-                {/* WIN RATE */}
+               
                 <div className="flex items-center justify-center">
                   <span className="text-sm md:text-base font-bold text-white">
                     {player.win_rate}%

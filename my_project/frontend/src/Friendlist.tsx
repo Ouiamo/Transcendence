@@ -133,7 +133,7 @@ export function Friendlist() {
 
       if (res.ok) {
         await res.json();
-        console.log(`🎮 Game invitation accepted from ${senderUsername}`);
+        console.log(` Game invitation accepted from ${senderUsername}`);
         setGameInvitations(prev => prev.filter(inv => inv.invitation_id !== invitationId));
       } else {
         const errorData = await res.json();
@@ -181,7 +181,7 @@ export function Friendlist() {
       maxWidth: '1200px',
       margin: '0 auto',
     }}>
-      {/* Header */}
+  
       <div style={{
         marginBottom: '32px',
       }}>
@@ -208,7 +208,7 @@ export function Friendlist() {
         gridTemplateColumns: '1fr 400px',
         gap: '32px',
       }}>
-        {/* Friends List */}
+
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',
@@ -233,7 +233,7 @@ export function Friendlist() {
                   alignItems: 'center',
                   gap: '16px',
                 }}>
-                  {/* Avatar with status ring */}
+                
                   <div style={{ position: 'relative' }}>
                     <div style={{
                       width: '56px',
@@ -275,7 +275,7 @@ export function Friendlist() {
                     }} />
                   </div>
 
-                  {/* Info */}
+                
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <h3 style={{
                       fontSize: '16px',
@@ -299,7 +299,7 @@ export function Friendlist() {
                     </p>
                   </div>
 
-                  {/* Actions */}
+                 
                   <div style={{
                     display: 'flex',
                     gap: '8px',
@@ -347,7 +347,7 @@ export function Friendlist() {
           )}
         </div>
 
-        {/* Pending Requests Panel */}
+   
         <div>
           <div style={{
             background: 'rgba(30, 41, 59, 0.4)',

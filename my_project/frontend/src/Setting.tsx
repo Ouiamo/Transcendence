@@ -29,7 +29,6 @@ interface intersetting {
 function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
   const logout = async () => {
     try {
-      // First disconnect the socket to immediately mark user offline
       if (user && user.id && user.username) {
         logoutUser(user.id, user.username);
       }
@@ -214,14 +213,14 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
   }
 
   const handleCodeChange = (index: number, value: string) => {
-    if (value.length > 1) return; // Only allow single digit
-    if (!/^\d*$/.test(value)) return; // Only allow numbers
+    if (value.length > 1) return;
+    if (!/^\d*$/.test(value)) return; 
 
     const newCode = [...verificationCode];
     newCode[index] = value;
     setVerificationCode(newCode);
 
-    // Auto-focus next input
+   
     if (value && index < 5) {
       const nextInput = document.getElementById(`code-input-${index + 1}`);
       nextInput?.focus();
@@ -274,7 +273,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
     <div className="w-full wh-full flex flex-col">
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-[16px] w-full max-w-[750px] mx-auto ">
-        {/* Avatar */}
+     
         <div className=" flex flex-col md:flex-row  max-auto max-w-[750px] h-fit gap-[16px] rounded-[12px] shadow-[0_0_10px_rgba(255,68,255,0.5)]
   bg-gradient-to-br from-[#120d1d]/70 via-[#0b0618]/80 to-[#120d1d]/70 border border-[#c44cff]/20 p-[24px]">
           <div className="flex items-center gap-[20px] ">
@@ -363,7 +362,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
             />
           </div>
 
-          {/* 3. Password fields */}
+       
           <div className="flex flex-col gap-[10px] justify-center items-center  sm:px-[40px] w-full mt-[4px]">
             <input
               type="password"
@@ -389,7 +388,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
               />
             </div>
           </div>
-          {/* Save Button */}
+      
           <div className="flex justify-center mt-[4px]">
             <button
               className="w-[150px] h-[30px] rounded-full mt-[10px]
@@ -403,7 +402,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
             </button>
           </div>
         </div>
-       {/* Security Section */}
+    
 <div className="
     flex flex-col 
     w-full 
@@ -415,7 +414,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
     shadow-[0_0_10px_rgba(255,68,255,0.5)]
 ">
 
-    {/* Header */}
+
     <div className="flex items-center gap-[20px] ml-[10px]  ">
         <div className="  w-[40px] h-[40px] rounded-full flex items-center justify-center bg-[#c44cff]/20 text-[#ff77ff] 
             shadow-[0_0_20px_rgba(196,76,255,0.6)] 
@@ -430,7 +429,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
         </div>
     </div>
 
-    {/* 2FA Row */}
+
     <div className="flex flex-wrap items-center justify-between gap-[3px] sm:ml-[55px] ml-[10px] mr-[10px]
     ">
         <div>
@@ -442,7 +441,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
             </p>
         </div>
 
-        {/* Toggle */}
+    
         <button
             onClick={toggle2FA}
             className={`border-none 
@@ -464,7 +463,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
         </button>
     </div>
 
-    {/* Security Status Box */}
+ 
     <div className="w-[90%] mt-[10px] mb-[10px] flex  flex-row items-center gap-[3px] rounded-[20px] p-[4px] border border-[#c44cff]/40 shadow-[0_0_10px_rgba(255,68,255,0.5)] bg-[#0b0618]/60 overflow-hidden">
         <div className={`w-[40px] h-[40px] rounded-full flex items-center justify-center ml-[10px] mt-[10px]
             shrink-0
@@ -488,9 +487,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
         </div>
     </div>
 
-{/* </div> */}
 
-    {/* Verification Section */}
     {showVerification && (
         <div className="flex flex-col items-center gap-[15px] mt-4">
             {qrCode && (
@@ -545,7 +542,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
     )}
 </div>
       </div>
-{/* Danger Zone */}
+
 <div className="mt-[20px]
   w-full max-w-[700px] mx-auto
   rounded-[12px]
@@ -587,7 +584,7 @@ function TwoFASetting({ user, delete_obj, gotohome }: intersetting) {
       if (!confirmDelete) return;
 
       try {
-        console.log("🗑️ Deleting account...");
+        console.log(" Deleting account...");
         
         const response = await fetch(`${API_URL}/api/profile`, {
           method: 'DELETE',

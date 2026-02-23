@@ -296,7 +296,7 @@ module.exports = async function(fastify, options) {
         return { success: true, users: formattedUsers };
         
     } catch (error) {
-        console.error('❌ Search error:', error);
+        console.error(' Search error:', error);
         return reply.code(500).send({ error: 'Database error: ' + error.message });
     }
   });

@@ -19,17 +19,15 @@ interface sideb {
 }
 export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard, gotolocalgame , setActiveSafe}: sideb) {
   
-    const location = useLocation(); // هادي كتعطيك الـ URL الحالي ديما
-
-    // دالة باش نعرفو واش الصفحة الحالية هي هاد الـ Icon
+    const location = useLocation(); 
     const isActive = (path: string) => {
-        // مثلا إلا كان الـ URL هو /profil، غادي نلون الـ Icon ديال الـ profile
+
         return location.pathname.includes(path);
     };
 // const active = localStorage.getItem('sidebar-active');
     const logout = async () => {
         try {
-            // First disconnect the socket to immediately mark user offline
+       
             if (user_ && user_.id && user_.username) {
                 logoutUser(user_.id, user_.username);
             }

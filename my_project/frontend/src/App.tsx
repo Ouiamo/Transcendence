@@ -20,12 +20,9 @@ import Leaderboard from './leaderboard.tsx';
 import { connectSocket, disconnectSocket, onPrivateGameInvite } from './socketService.tsx';
 
 
-// type page = 'HOME'| 'LOGIN' | 'SIGNUP' | 'DASHBOARD'| 'PROFIL' | 'GAME_L' | 'GAME_R' | 'GAME_I' | 'PROFIL'| 'FRIENDS' | 'SETTING' | 'twofa' | 'email' | 'LEADERBOARD' | 'PRIVACY' | 'TERMS';
 function App(){
   const navigate = useNavigate();
-  //-----
   const location = useLocation();
-  //-----
   type side = 'dashboard' | 'game' | 'leaderboard' | 'settings' | 'profile' | 'friends';
   const [active, setActive] = useState<side>('dashboard');
   
@@ -46,7 +43,6 @@ function App(){
   
   useEffect(() => {
     if(user_data) {
-      // console.log("MY INFOOOOO ", user_data); 
       connectSocket(user_data.id, user_data.username);
       onPrivateGameInvite((data) => {
         navigate('/remoteGame', { state: { gameData: data } });
@@ -80,12 +76,9 @@ useEffect(() => {
 
       if (res.ok) {
         const data = await res.json();
-        console.log("data dyl google is ", data);
         setdatauser(data.user);
-        console.log("data.user.twofa is ", data.user.twofa_enabled)
       } 
       else {
-        console.log(" yes im not haniiiiiiiiiiii ");
         disconnectSocket();
       }
     } catch (err) {

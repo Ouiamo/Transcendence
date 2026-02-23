@@ -22,7 +22,7 @@ module.exports = async function(fastify, options) {
     try{
         const userId = request.user.id;
         const {opponent_username, user_score, opp_score, opp_id, match_type} = request.body;
-        console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
+        // console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
         if (user_score > opp_score)
           isWin = true;
@@ -63,7 +63,7 @@ module.exports = async function(fastify, options) {
                     ? `/api/avatar/file/${opponent.avatar_url}`
                     : opponent.avatar_url;
                 } else {
-                  opp_avatar = `/api/avatar/file/default-avatar.png`;
+                  opp_avatar = `/api/avatar/file/default.png`;
                 }
               }
             }

@@ -279,7 +279,7 @@ function setupPrivateGame(gameData: any, currentUser: any) {
     });
     
   
-    socket?.on("player_disconnected", (data: any) => {
+    socket?.on("player_disconnected", () => {
         // console.log("Opponent disconnected:", data.message);
         
         if (!gameState.isCleaningUp) {

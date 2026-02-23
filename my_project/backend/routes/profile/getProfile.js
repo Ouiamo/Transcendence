@@ -6,9 +6,9 @@ const fs = require('fs');
 
 module.exports = async function (fastify) {
 
-  fastify.get('/api/avatar/file/default-avatar.png', 
+  fastify.get('/api/avatar/file/default.png', 
     async (request, reply) => {
-  const filePath = path.join(__dirname,'../../avatar/file/default-avatar.png');
+  const filePath = path.join(__dirname,'../../avatar/file/default.png');
 
   if (!fs.existsSync(filePath)) {
     return reply.code(404).send({ error: 'File not found' });
@@ -20,7 +20,7 @@ module.exports = async function (fastify) {
 
 fastify.get('/api/profile', { preHandler: fastify.authenticate }, async (request, reply) => {
       const user = request.user; 
-      let avatarUrl = `/api/avatar/file/default-avatar.png`;
+      let avatarUrl = `/api/avatar/file/default.png`;
 
       if (user.avatar_url) {
         if (user.provider === 'local') {

@@ -136,7 +136,7 @@ module.exports = async function(fastify, options) {
           request_id: user.request_id,
           user_id: user.user_id,
           username: user.username,
-          avatarUrl: fullAvatarUrl || '/default-avatar.png'
+          avatarUrl: fullAvatarUrl || '/default.png'
         };
       });
 
@@ -229,7 +229,7 @@ module.exports = async function(fastify, options) {
           myFriends.push({
             id: friend.id,
             username: friend.username,
-            avatarUrl: avatarUrl || '/default-avatar.png'
+            avatarUrl: avatarUrl || '/default.png'
           });
         }
       }

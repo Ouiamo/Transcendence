@@ -14,22 +14,17 @@ interface sideb {
     gotofriends: () => void;
     gotosetting: () => void;
     gotoleaderboard: () => void;
-    gotolocalgame : ()=> void;
-    setActiveSafe : (s:any) => void;
+    gotolocalgame: () => void;
+    setActiveSafe: (s: any) => void;
 }
-export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard, gotolocalgame , setActiveSafe}: sideb) {
-  
-    const location = useLocation(); // هادي كتعطيك الـ URL الحالي ديما
+export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil, gotofriends, gotosetting, gotoleaderboard, gotolocalgame, setActiveSafe }: sideb) {
 
-    // دالة باش نعرفو واش الصفحة الحالية هي هاد الـ Icon
+    const location = useLocation();
     const isActive = (path: string) => {
-        // مثلا إلا كان الـ URL هو /profil، غادي نلون الـ Icon ديال الـ profile
         return location.pathname.includes(path);
     };
-// const active = localStorage.getItem('sidebar-active');
     const logout = async () => {
         try {
-            // First disconnect the socket to immediately mark user offline
             if (user_ && user_.id && user_.username) {
                 logoutUser(user_.id, user_.username);
             }
@@ -42,7 +37,6 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
                 alert("logout succes");
                 console.log("logout sucess");
                 delete_obj(null);
-                // gotohome();
                 gotohome();
                 localStorage.removeItem('page');
                 localStorage.removeItem('sidebar-active');
@@ -79,7 +73,7 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
                             Dashboard
                         </span></li>
                     <li onClick={() => { setActiveSafe("game"); gotolocalgame(); }}
-                        className={`${iconBase} ${isActive("/localGame") || isActive("/remoteGame")  || isActive("/iaGame") ? iconActive : iconInactive} relative group`}><IoGameControllerOutline size={35} />
+                        className={`${iconBase} ${isActive("/localGame") || isActive("/remoteGame") || isActive("/iaGame") ? iconActive : iconInactive} relative group`}><IoGameControllerOutline size={35} />
                         <span className={labelStyle}>
                             Game
                         </span></li>
@@ -119,170 +113,3 @@ export function Sidebar({ user_, gotohome, delete_obj, gotodashbord, gotoprofil,
 };
 
 export default Sidebar;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

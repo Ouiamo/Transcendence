@@ -33,7 +33,6 @@ localStorage.setItem('page', 'LOGIN');
         }
         try { 
             const result = await loginUser(data_login);
-            console.log("login resulttttttttttttaaaaaaaaa ", result);
             if (result.twofa_required) {
                 if (result.method === "authenticator" && result.twofa_enabled) {
                      try {
@@ -49,12 +48,12 @@ localStorage.setItem('page', 'LOGIN');
                     }
                 }
                 catch (err) {
-                    console.log("error api profile ")
+                    console.error("error api profile ", err)
                 }
                 }
             }
             else if (result.success) {
-                alert("login sucess");
+                // alert("login sucess");
                 try {
                     const res = await fetch(`${API_URL}/api/profile`, {
                         method: 'GET',
@@ -65,12 +64,11 @@ localStorage.setItem('page', 'LOGIN');
                         const ress = await await res.json();
                         onloginsucces(ress);
                          gotoDASHBOARD();
-    // onloginsucces(null);
 
                     }
                 }
                 catch (err) {
-                    console.log("------->>error api profile ")
+                    console.error("error api profile ", err);
                 }
             }
             else {

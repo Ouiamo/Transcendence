@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { dbGet, dbRun } = require('../../../utils/dbHelpers');
 require('dotenv').config();
+const backendUrl = process.env.BACKEND_URL || 'https://localhost'
 
 module.exports = async function (fastify) {
-  // 🔹 Step 1: Redirect to Google
+
   fastify.get('/api/auth/google', async (_, reply) => {
     const url =
       'https://accounts.google.com/o/oauth2/v2/auth?' +
@@ -17,13 +18,12 @@ module.exports = async function (fastify) {
     reply.redirect(url);
   });
 
-  // 🔹 Step 2: Callback
+
   fastify.get('/api/auth/google/callback', async (request, reply) => {
     const { code } = request.query;
     if (!code)
       return reply.code(400).send({ error: 'No authorization code' });
 
-    // 1️⃣ Exchange code → token
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,7 +38,6 @@ module.exports = async function (fastify) {
 
     const tokenData = await tokenRes.json();
 
-    // 2️⃣ Get user profile
     const userRes = await fetch(
       'https://www.googleapis.com/oauth2/v2/userinfo',
       { headers: { Authorization: `Bearer ${tokenData.access_token}` } }
@@ -46,7 +45,6 @@ module.exports = async function (fastify) {
 
     const googleUser = await userRes.json();
 
-    // 3️⃣ Find or create user
     let user = await dbGet(
       'SELECT * FROM users WHERE provider = ? AND provider_id = ?',
       ['google', googleUser.id]
@@ -62,7 +60,7 @@ module.exports = async function (fastify) {
           googleUser.id,
           googleUser.name || 'user' + Date.now(),
           googleUser.email,
-          googleUser.picture || 'default-avatar.png',
+          googleUser.picture || `${backendUrl}/api/avatar/file/default.png`,
           googleUser.given_name || '',
           googleUser.family_name || '',
           'OAUTH_USER',
@@ -79,8 +77,6 @@ module.exports = async function (fastify) {
       );
     }
 
-
-    // 4️⃣ Create JWT
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,

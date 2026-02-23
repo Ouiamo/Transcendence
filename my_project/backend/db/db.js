@@ -31,23 +31,6 @@ db.run(`
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 `);
-
-  // db.all(`PRAGMA table_info(users);`, (err, columns) => {
-  //   if (err) throw err;
-  //   const columnNames = columns.map(c => c.name);
-  //   if(!columnNames.includes('avatar_url')) {
-  //     db.run(`ALTER TABLE users ADD COLUMN avatar_url TEXT DEFAULT 'default.png';`);
-  //   }
-  //   if (!columnNames.includes('twofa_enabled')) {
-  //     db.run(`ALTER TABLE users ADD COLUMN twofa_enabled BOOLEAN DEFAULT false;`);
-  //   }
-  //   if (!columnNames.includes('twofa_method')) {
-  //     db.run(`ALTER TABLE users ADD COLUMN twofa_method TEXT;`);
-  //   }
-  //   if (!columnNames.includes('twofa_secret')) {
-  //     db.run(`ALTER TABLE users ADD COLUMN twofa_secret TEXT;`);
-  //   }
-  // });
 });
 
 db.serialize(() => {

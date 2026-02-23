@@ -45,7 +45,7 @@ function StatsCharts() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [history, setHistory] = useState<History[] | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const fetchStats = async () => {
       try {
@@ -53,7 +53,7 @@ function StatsCharts() {
           method: 'GET',
           credentials: 'include',
         });
-        
+
         if (res.ok) {
           const data = await res.json();
           setStats(data);
@@ -63,10 +63,9 @@ function StatsCharts() {
           method: 'GET',
           credentials: 'include',
         });
-        
+
         if (History_res.ok) {
           const data = await History_res.json();
-          console.log("history isssssss :: ", data);
           setHistory(data);
         }
       } catch (err) {
@@ -75,7 +74,7 @@ function StatsCharts() {
         setLoading(false);
       }
     };
-    
+
     fetchStats();
   }, []);
 
@@ -98,8 +97,8 @@ function StatsCharts() {
           'rgba(180, 84, 224, 0.84)',
         ],
         borderColor: [
-         'rgba(214, 209, 227, 0.6)',
-        'rgba(216, 107, 255, 0.45)',
+          'rgba(214, 209, 227, 0.6)',
+          'rgba(216, 107, 255, 0.45)',
         ],
         borderWidth: 2,
       },
@@ -131,7 +130,7 @@ function StatsCharts() {
       },
       tooltip: {
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             const label = context.label || '';
             const value = context.parsed || 0;
             const percentage = stats.win_rate;
@@ -144,26 +143,20 @@ function StatsCharts() {
 
   const POINTS_PER_MATCH = 30;
 
-  function calculatePoints(history:any) {
+  function calculatePoints(history: any) {
     if (!history || history.length === 0) return [0];
-    
+
     let total = 0;
     const points = [0];
-
-    console.log("results hnaa is ", history);
-    history.forEach((result:any) => {
+    history.forEach((result: any) => {
       if (result.isWin === 1 || result.isWin === true) total += POINTS_PER_MATCH;
       else if (result.isWin === 0 || result.isWin === false) total -= POINTS_PER_MATCH;
       points.push(total);
-      console.log("points hnaa is ", points);
     });
     return points;
   }
-  
   const pointsData = calculatePoints(history);
-  console.log("points data is :::" ,pointsData);
-
-  const labels = pointsData.map((_, index) => index); 
+  const labels = pointsData.map((_, index) => index);
 
   const lineData = {
     labels,
@@ -209,16 +202,16 @@ function StatsCharts() {
   };
 
   return (
-<div className="flex flex-row flex-wrap justify-center gap-[40px] md:gap-8 p-1">
-  <div className="flex-1 max-w-[400px] bg-[#0d0221] rounded-xl p-[4px] border-[2px] border-[#c44cff]/50 flex items-center justify-center">
-    <Doughnut data={donutData} options={donutOptions} />
-  </div>
+    <div className="flex flex-row flex-wrap justify-center gap-[40px] md:gap-8 p-1">
+      <div className="flex-1 max-w-[400px] bg-[#0d0221] rounded-xl p-[4px] border-[2px] border-[#c44cff]/50 flex items-center justify-center">
+        <Doughnut data={donutData} options={donutOptions} />
+      </div>
 
-  {/* Line */}
-  <div className="flex-1 max-w-[400px] bg-[#0d0221] rounded-xl p-[4px] border-[2px] border-[#c44cff]/50 flex items-center justify-center">
-    <Line data={lineData} options={lineOptions} />
-  </div>
-</div>
+      {/* Line */}
+      <div className="flex-1 max-w-[400px] bg-[#0d0221] rounded-xl p-[4px] border-[2px] border-[#c44cff]/50 flex items-center justify-center">
+        <Line data={lineData} options={lineOptions} />
+      </div>
+    </div>
 
   );
 }

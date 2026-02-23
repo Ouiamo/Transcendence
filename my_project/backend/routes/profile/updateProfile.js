@@ -74,7 +74,6 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
       const user = await dbGet(`SELECT provider FROM users WHERE id = ?`, [request.user.id]);
       fields.push('avatar_url = ?');
       if(user.provider !== 'local') {
-        // return reply.code(400).send({ error: 'Avatar can only be updated for local accounts' });
          fileName = `/api/avatar/file/${fileName}`;
         values.push(fileName);
       }
@@ -82,8 +81,6 @@ fastify.get('/api/avatar/file/:filename', async (request, reply) => {
         values.push(fileName);
     }
 
-    console.log("fields------>", firstname, lastname, username, email, avatar_url);
-    console.log("values------>", values);
     if (fields.length === 0) {
       return reply.code(400).send({ error: 'No fields to update' });
     }

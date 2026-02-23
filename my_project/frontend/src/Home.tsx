@@ -31,18 +31,18 @@ function Home({ gotologin, gotosignup, gotoprivacy, gototerms }: HomeInterface) 
           </h1>
 
           <p className="text-[16px] uppercase text-[#c4c4ff]/80 mb-[10px] mt-[2px] font-bold"
-          style={{ fontSize: '18px' }}>
+            style={{ fontSize: '18px' }}>
             Competitive Pong Experience
           </p>
 
 
         </div>
         <div className="w-[300px] h-[2px] mt-10 bg-gradient-to-r from-[#b085ff] via-[#c4c4ff] to-[#ff7cff] rounded-full shadow-[0_0_10px_#b085ff]"></div>
-          <div className="flex gap-[20px] mt-[10px]">
-    
+        <div className="flex gap-[20px] mt-[10px]">
+
           <button
             onClick={gotologin}
-      className="w-[120px] h-[38px] rounded-[10px] border-none outline-none
+            className="w-[120px] h-[38px] rounded-[10px] border-none outline-none
              bg-gradient-to-r from-[#a25cff] via-[#c84cff] to-[#d86bff]
              text-white text-xs font-extrabold tracking-widest
              shadow-[0_0_20px_rgba(216,107,255,0.8)]
@@ -66,18 +66,18 @@ function Home({ gotologin, gotosignup, gotoprivacy, gototerms }: HomeInterface) 
 
 
       </div>
-          <div className=" w-full flex flex-col items-center gap-[4px] text-[14px] mt-[60px]">
-          <span className="text-[#c4c4ff]/80 drop-shadow-[0_0_6px_#c4c4ff]">Enter the arena. Challenge players worldwide.</span>
-          <span className="text-[#c4c4ff]/60 drop-shadow-[0_0_4px_#b0aaff]">Become a legend.</span>
+      <div className=" w-full flex flex-col items-center gap-[4px] text-[14px] mt-[60px]">
+        <span className="text-[#c4c4ff]/80 drop-shadow-[0_0_6px_#c4c4ff]">Enter the arena. Challenge players worldwide.</span>
+        <span className="text-[#c4c4ff]/60 drop-shadow-[0_0_4px_#b0aaff]">Become a legend.</span>
       </div>
       <div className="w-full flex flex-col items-center gap-[8px] text-[9px] mt-[120px]">
-        <span 
+        <span
           onClick={gotoprivacy}
           className="underline hover:text-white cursor-pointer"
         >
           Privacy Policy
         </span>
-        <span 
+        <span
           onClick={gototerms}
           className="underline hover:text-white cursor-pointer"
         >

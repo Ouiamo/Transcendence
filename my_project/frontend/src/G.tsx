@@ -8,7 +8,7 @@ import { API_URL } from "./Api.tsx";
 export function GamePage(userdata: any) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastWinnerRef = useRef<string | null>(null);
-  
+
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
 
@@ -18,8 +18,8 @@ export function GamePage(userdata: any) {
     const cleanupGame = initGame(canvasRef.current, userdata.username);
 
     const interval = setInterval(() => {
-    const data = getLocalWinner();
-      
+      const data = getLocalWinner();
+
       setPlayer1Score(data.playerscore);
       setPlayer2Score(data.Guestscore);
 
@@ -89,7 +89,7 @@ export function GamePage(userdata: any) {
         </div>
         <div className="flex items-center gap-[13px]">
           <p className="text-[#c44cff] text-[20px]">Player 2</p>
-            <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
+          <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
           <div className="flex gap-[13px]">
             <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↑</kbd>
             <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↓</kbd>
@@ -100,14 +100,14 @@ export function GamePage(userdata: any) {
   );
 }
 interface game {
-  data1 : any;
+  data1: any;
   currentUser: any;
 }
 
-export function Gamepage_r({data1, currentUser}: game) {
+export function Gamepage_r({ data1, currentUser }: game) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastWinnerRef = useRef<string | null>(null);
-  
+
   const [player1Score, setPlayer1Score] = useState(0);
   const [player2Score, setPlayer2Score] = useState(0);
   const [player1Name, setPlayer1Name] = useState("Player 1");
@@ -121,7 +121,7 @@ export function Gamepage_r({data1, currentUser}: game) {
       console.error("No socket available for remote game");
       return;
     }
-    
+
     initGame_remot(canvasRef.current, existingSocket as any, data1, currentUser);
 
     const interval = setInterval(() => {
@@ -134,7 +134,7 @@ export function Gamepage_r({data1, currentUser}: game) {
         lastWinnerRef.current = data.winner;
 
         const winner = data.winner;
-        
+
         const isPlayer1 = data1?.player1?.id === currentUser?.id;
         const opponent_username = isPlayer1 ? data.player2Username : data.player1Username;
         const opp_id = data.opp_id;
@@ -150,17 +150,11 @@ export function Gamepage_r({data1, currentUser}: game) {
           user_score = isPlayer1 ? data.score1 : data.score2;
           opp_score = isPlayer1 ? data.score2 : data.score1;
         }
-
-        console.log("opp id isss ", opp_id);
-        console.log("opp username isss ", opponent_username);
-        console.log("user score isss ", user_score);
-        console.log("opp score isss ", opp_score);
-        console.log("forfeit isss ", data.forfeit);
         if (user_score === 0 && opp_score === 0 && !data.forfeit) {
           return;
         }
         gameResults({ winner, opponent_username });
-   
+
         if (!data.forfeit) {
           gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
         }
@@ -177,7 +171,7 @@ export function Gamepage_r({data1, currentUser}: game) {
   }, [data1]);
 
   return (
-     <div className="flex flex-col items-center justify-start w-full h-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] pt-[5vh] ">
+    <div className="flex flex-col items-center justify-start w-full h-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] pt-[5vh] ">
       <div className="flex flex-col items-center text-center mb-[30px]">
         <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter glow-text">Remote Game</h1>
         <p className="text-gray-400 text-sm">Play with a friend</p>
@@ -217,7 +211,7 @@ export function Gamepage_r({data1, currentUser}: game) {
         </div>
         <div className="flex items-center gap-[13px]">
           <p className="text-[#c44cff] text-[20px]">Player 2</p>
-            <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
+          <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
           <div className="flex gap-[13px]">
             <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↑</kbd>
             <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↓</kbd>
@@ -236,7 +230,7 @@ export function Gamepage_i(userdata: any) {
   const [player2Score, setPlayer2Score] = useState(0);
 
   useEffect(() => {
-    if (!canvasRef.current) return; 
+    if (!canvasRef.current) return;
 
     aiinitGame(canvasRef.current, userdata.username);
     const interval = setInterval(() => {
@@ -253,27 +247,26 @@ export function Gamepage_i(userdata: any) {
         const opp_id = -1;
         const match_type = "AI";
         gameResults({ winner, opponent_username });
-        console.log("hadxiiiii li 3ndi f front ::::: ", opponent_username, user_score, opp_score, opp_id, match_type);
         gamescore({ opponent_username, user_score, opp_score, opp_id, match_type });
       }
       else if (data.aiwinner === null && lastWinnerRef.current !== null) {
         lastWinnerRef.current = null;
       }
     }, 100);
-    
+
     return () => clearInterval(interval);
   }, [userdata.username]);
 
   return (
-   <div className="flex flex-col items-center justify-start w-full h-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]  ">
+    <div className="flex flex-col items-center justify-start w-full h-full bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221]  ">
       <div className="flex flex-col items-center text-center mb-[30px]">
         <h1 className="text-4xl font-black text-white italic uppercase tracking-tighter glow-text">IA Game</h1>
-       <p className="text-gray-400 text-sm">Challenge our advanced AI and test your skills</p>
+        <p className="text-gray-400 text-sm">Challenge our advanced AI and test your skills</p>
       </div>
 
       <div className="flex items-center gap-[60px] mb-[40px]">
         <div className="flex flex-col items-center">
-          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2 "  style={{ WebkitTextStroke: '2px #c44cff' }}>BOT</p>
+          <p className="text-[20px] text-gray-500 font-bold uppercase tracking-widest mb-2 " style={{ WebkitTextStroke: '2px #c44cff' }}>BOT</p>
           <span className="text-[40px] text-[#c44cff] [text-shadow:_0_0_15px_rgba(255,68,255,0.8),_0_0_30px_rgba(255,68,255,0.4)]">{player1Score}</span>
         </div>
 
@@ -297,7 +290,7 @@ export function Gamepage_i(userdata: any) {
       <div className="mt-[30px] flex gap-[100px] text-[12px]   uppercase ">
         <div className="flex items-center gap-[13px]">
           <p className="text-[#c44cff] text-[20px]">Player 2</p>
-            <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
+          <p className="text-[20px] [text-shadow:_0_0_1px_white] font-black" style={{ WebkitTextStroke: '2px #c44cff' }}>:</p>
           <div className="flex gap-[13px]">
             <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↑</kbd>
             <kbd className="px-[4px] py-[4px]  border  rounded-md text-white shadow-[0_0_5px_rgba(255,255,255,0.2)] text-[16px]">↓</kbd>
@@ -329,7 +322,6 @@ export async function gamescore(data: {
   opp_id: number;
   match_type: string;
 }) {
-  console.log("game score g front:: ", data.opponent_username, data.user_score, data.opp_score, data.opp_id, data.match_type);
   const response = await fetch(`${API_URL}/api/history/new_score`, {
     method: 'POST',
     credentials: 'include',

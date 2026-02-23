@@ -1,15 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-// const fastify = require('fastify')({
-//   https: {
-//     key: fs.readFileSync('certs/key.pem'), 
-//     cert: fs.readFileSync('certs/cert.pem')
-//   }
-// });
 
 const fastify = require('fastify')({
   logger: true,
 });
+
 
 require('dotenv').config();
 require('./db/db');
@@ -28,14 +21,11 @@ fastify.register(require('@fastify/jwt'), {
   }
 });
 
-
-
 fastify.register(require('@fastify/cors'), {
   origin: (origin, cb) => {
     const allowed = [
       'https://localhost',
       'https://127.0.0.1',
-      // 'https:// 10.46.80.37'
       // 'https://10.13.249.15'
     ];
 
@@ -64,13 +54,6 @@ fastify.register(require('./routes/profile/getProfile'));
 fastify.register(require('./routes/profile/updateProfile'));
 fastify.register(require('./routes/profile/deleteProfile'));
 fastify.register(require('./routes/game/gameSocket'));
-//fastify.register(require('./routes/profile/avatar'));
-
-// Game Socket.IO
-// fastify.register(require('./routes/game/gameSocket'));
-
-//fastify.register(require('./routes/friends/'));
-// fastify.register(require('./routes/profile/avatar')); 
 
 fastify.register(require('./routes/friends/index')); 
 

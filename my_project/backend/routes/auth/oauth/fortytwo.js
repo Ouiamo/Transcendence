@@ -23,7 +23,6 @@ module.exports = async function (fastify) {
     if (!code)
       return reply.code(400).send({ error: 'No authorization code' });
 
-    // 1️⃣ Exchange token
     const tokenRes = await fetch('https://api.intra.42.fr/oauth/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -38,14 +37,12 @@ module.exports = async function (fastify) {
 
     const tokenData = await tokenRes.json();
 
-    // 2️⃣ Fetch user
     const userRes = await fetch('https://api.intra.42.fr/v2/me', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` }
     });
 
     const user42 = await userRes.json();
 
-    // 3️⃣ DB
     let user = await dbGet(
       'SELECT * FROM users WHERE provider = ? AND provider_id = ?',
       ['42', user42.id]
@@ -61,7 +58,7 @@ module.exports = async function (fastify) {
           user42.id,
           user42.login ||'user' + Date.now(),
           user42.email,
-          user42.image?.link || `${backendUrl}/api/avatar/file/default-avatar.png`,
+          user42.image?.link || `${backendUrl}/api/avatar/file/default.png`,
           user42.first_name || '',
           user42.last_name || '',
           'OAUTH_USER'
@@ -78,7 +75,6 @@ module.exports = async function (fastify) {
       );
     }
 
-    // 4️⃣ JWT
     const token = jwt.sign(
       { id: user.id, username: user.username },
       process.env.JWT_SECRET,

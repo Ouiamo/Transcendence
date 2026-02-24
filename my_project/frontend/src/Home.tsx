@@ -87,6 +87,4 @@ function Home({ gotologin, gotosignup, gotoprivacy, gototerms }: HomeInterface) 
     </div>
   )
 }
-
 export default Home
-

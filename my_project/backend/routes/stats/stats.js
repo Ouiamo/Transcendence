@@ -20,19 +20,6 @@ module.exports = async function (fastify, options) {
   })
 
 
-  // const tableInfo = await dbAll("PRAGMA table_info(stats)");
-  // const hasPointsColumn = tableInfo.some(col => col.name === 'points');
-
-  // if (!hasPointsColumn) {
-  //   await dbRun(`ALTER TABLE stats ADD COLUMN points INTEGER NOT NULL DEFAULT 0`)
-  //     .then(() => {
-  //       console.log('Points column added to stats table');
-  //     })
-  //     .catch(err => {
-  //       console.error('Error adding points column:', err);
-  //     });
-  // }
-
   const statsCount = await dbGet('SELECT COUNT(*) as count FROM stats');
 
   if (statsCount.count === 0) {
@@ -48,25 +35,20 @@ module.exports = async function (fastify, options) {
   }
 
   fastify.post('/api/stats/game_results', { preHandler: fastify.authenticate }, async (request, reply) => {
-    // const token = request.cookies.access_token;
-    // if (!token) {
-    //   return reply.code(401).send({ error: 'Please login first' });
-    // }
+
     try {
-      // const payload = jwt.verify(token, process.env.JWT_SECRET);
       const userId = request.user.id;
       const { winner, opponent_username } = request.body;
-      console.log("usrIDddddd ", userId, " ooooooo ", winner);
-      const user = await dbGet('SELECT username FROM users WHERE id = ?', [userId]);
-      if (winner === user.username) {
+
+      if (winner === opponent_username) {
         await dbRun(
-          'UPDATE stats SET wins = wins + 1, total_matches = total_matches + 1, points = points + 30, opp_username = ? WHERE user_id = ?',
+          'UPDATE stats SET loss = loss + 1, total_matches = total_matches + 1, points = points - 30, opp_username = ? WHERE user_id = ?',
           [opponent_username, userId]
         );
       }
       else {
         await dbRun(
-          'UPDATE stats SET loss = loss + 1, total_matches = total_matches + 1, points = points - 30, opp_username = ? WHERE user_id = ?',
+          'UPDATE stats SET wins = wins + 1, total_matches = total_matches + 1, points = points + 30, opp_username = ? WHERE user_id = ?',
           [opponent_username, userId]
         );
       }

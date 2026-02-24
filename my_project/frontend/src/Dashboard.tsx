@@ -14,11 +14,7 @@ interface Dashboardtest {
     gotosetting: () => void;
     gotoleaderboard: () => void;
     setActiveSafe: (s: any) => void;
-
-
-
 }
-
 
 function Dashboard({ gotohome, gotoprofil, user, delete_obj, listfriends, goto, gotodashbord, gotoia, gotofriends, gotosetting, gotoleaderboard, setActiveSafe }: Dashboardtest) {
     return (

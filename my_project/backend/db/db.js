@@ -10,7 +10,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     if (err)
         console.error('DB connection error:', err);
     else
-        console.log('🗄️  ✅ Database connected successfully!');
+        console.log('Database connected successfully!');
 });
 
 db.serialize(() => {

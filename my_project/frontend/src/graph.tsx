@@ -15,7 +15,7 @@ import {
 import type { ChartOptions } from 'chart.js';
 import { API_URL } from "./Api.tsx";
 
-// Register Chart.js components
+
 ChartJS.register(
   CategoryScale,
   LinearScale,

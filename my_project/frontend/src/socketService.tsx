@@ -68,7 +68,8 @@ export const connectSocket = (userId: number, username: string) => {
     notifyUpdate();
   });
 
-  socket.on("disconnect", (_reason) => {
+  socket.on("disconnect", (reason) => {
+    console.log(" Disconnected from server:", reason);
   });
 
   socket.on("reconnect", () => {

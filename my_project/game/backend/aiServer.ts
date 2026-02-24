@@ -67,7 +67,7 @@
 //     // });
 
 //     // socket.on("disconnect", () => {
-//     //     console.log("⚠️ Client disconnected:", socket.id);
+//     //     console.log(" Client disconnected:", socket.id);
 //     //     waitingPlayers.filter(id => id !== socket.id);
 //     //     // console.log("All player IDs after disconnect:", waitingPlayers);
 
@@ -143,4 +143,4 @@
 //     state.ballStepY = Math.random() < 0.5 ? -5 : 5;
 // }
 
-// console.log("🚀 Server running on http://localhost:3004");
+// console.log(" Server running on http://localhost:3004");

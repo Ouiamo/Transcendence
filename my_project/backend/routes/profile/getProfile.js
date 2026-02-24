@@ -6,9 +6,9 @@ const fs = require('fs');
 
 module.exports = async function (fastify) {
 
-  fastify.get('/api/avatar/file/default.png', 
+  fastify.get('/api/avatar/file/default-avatar.png', 
     async (request, reply) => {
-  const filePath = path.join(__dirname,'../../avatar/file/default.png');
+  const filePath = path.join(__dirname,'../../avatar/file/default-avatar.png');
 
   if (!fs.existsSync(filePath)) {
     return reply.code(404).send({ error: 'File not found' });
@@ -20,7 +20,7 @@ module.exports = async function (fastify) {
 
 fastify.get('/api/profile', { preHandler: fastify.authenticate }, async (request, reply) => {
       const user = request.user; 
-      let avatarUrl = `/api/avatar/file/default.png`;
+      let avatarUrl = `/api/avatar/file/default-avatar.png`;
 
       if (user.avatar_url) {
         if (user.provider === 'local') {
@@ -45,21 +45,4 @@ fastify.get('/api/profile', { preHandler: fastify.authenticate }, async (request
     });
 });
 
-
-
-fastify.get('/api/me', async (request, reply) => {
-  const token = request.cookies.access_token; 
-  if (!token) return reply.code(401).send({ authenticated: false });
-
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await dbGet(
-      `SELECT id, firstname, lastname, avatar_url, username, email FROM users WHERE id = ?`,
-      [payload.id]
-    );
-    return reply.send({ authenticated: true, user });
-  } catch (err) {
-    return reply.code(401).send({ authenticated: false });
-  }
-});
 };

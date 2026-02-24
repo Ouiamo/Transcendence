@@ -31,10 +31,6 @@ module.exports = async function (fastify) {
 
   gameSocket.on("connection", (socket) => {
 
-    // socket.on("hello", (msg) => {
-    //   console.log("!!!!!!!! Received from front:", msg);
-    // });
-
     socket.on("user_connected", (data) => {
       const { userId, username } = data;
       socket.userId = userId;

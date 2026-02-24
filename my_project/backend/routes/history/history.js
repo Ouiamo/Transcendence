@@ -22,7 +22,6 @@ module.exports = async function(fastify, options) {
     try{
         const userId = request.user.id;
         const {opponent_username, user_score, opp_score, opp_id, match_type} = request.body;
-        // console.log("haaaaaaaaaaaadxi li wslni ::: ", opponent_username, user_score, opp_score, match_type);
         let isWin = false;
         if (user_score > opp_score)
           isWin = true;

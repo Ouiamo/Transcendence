@@ -80,7 +80,7 @@ export function Grid({ listfriends, goto, goto_ia, setActiveSafe }: gridinter) {
   }, []);
 
   return (
-    <div className="w-full mx-auto bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] min-h-screen text-white">
+    <div className="w-full mx-auto  min-h-screen text-white">
 
       <div className="max-w-[1200px] mx-auto p-[20px]">
 

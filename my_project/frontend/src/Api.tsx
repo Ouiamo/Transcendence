@@ -1,13 +1,5 @@
-// const API_URL = `https://${import.meta.env.VITE_API_URL || 'localhost:3010'}`; // kant backend
-export const API_URL = "";
-// export function showMessage(app: HTMLElement, text: string, type: 'success' | 'error' = 'error') {
-//     const msg = document.createElement('div');
-//     msg.className = `message ${type}`;
-//     msg.textContent = text;
-//     app.appendChild(msg);
-//     setTimeout(() => msg.remove(), 3000);
-// }
 
+export const API_URL = "";
 export async function signupUser(userData: {
     firstname: string;
     lastname: string;

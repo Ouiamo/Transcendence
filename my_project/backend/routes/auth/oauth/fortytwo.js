@@ -58,7 +58,7 @@ module.exports = async function (fastify) {
           user42.id,
           user42.login ||'user' + Date.now(),
           user42.email,
-          user42.image?.link || `${backendUrl}/api/avatar/file/default.png`,
+          user42.image?.link || `${backendUrl}/api/avatar/file/default-avatar.png`,
           user42.first_name || '',
           user42.last_name || '',
           'OAUTH_USER'

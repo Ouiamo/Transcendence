@@ -79,7 +79,6 @@ function Friends() {
         }
 
         setSearchLoading(true);
-
         try {
             const response = await fetch(`${API_URL}/api/users/search/${encodeURIComponent(searchText)}`, {
                 method: 'GET',
@@ -90,12 +89,12 @@ function Friends() {
                 setdatafriend(result.users || []);
             } else {
                 const errorText = await response.text();
-                console.error("❌ Search error:", errorText);
+                console.error("Search error:", errorText);
                 setdatafriend([]);
                 alert("Search failed. Please check console.");
             }
         } catch (err) {
-            console.error("❌ Network error in search:", err);
+            console.error("Network error in search:", err);
             setdatafriend([]);
             alert("Network error. Is the backend running?");
         } finally {
@@ -178,7 +177,7 @@ function Friends() {
     };
     return (
         <div className=" bg-gradient-to-br from-[#0d0221] via-[#1a043a] to-[#0d0221] p-[100px] overflow-auto">
-            {/* Main Header */}
+   
             <div className="flex items-center justify-between w-full mb-[40px]">
                 <div className="flex flex-col">
                     <h1 className="text-[40px] font-[900]  glow-text">

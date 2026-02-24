@@ -21,7 +21,7 @@ module.exports = async function (fastify) {
         
         if (fs.existsSync(avatarPath)) {
           fs.unlinkSync(avatarPath);
-          console.log(`🗑️ Deleted avatar file: ${fileName}`);
+          console.log(` Deleted avatar file: ${fileName}`);
         }
       }
       await dbRun('DELETE FROM friends WHERE user_id = ? OR friend_id = ?', [userId, userId]);

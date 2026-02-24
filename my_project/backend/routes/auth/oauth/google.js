@@ -45,6 +45,7 @@ module.exports = async function (fastify) {
 
     const googleUser = await userRes.json();
 
+   
     let user = await dbGet(
       'SELECT * FROM users WHERE provider = ? AND provider_id = ?',
       ['google', googleUser.id]

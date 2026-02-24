@@ -241,7 +241,7 @@ export function Gamepage_i(userdata: any) {
       if (data.aiwinner !== null && data.aiwinner !== lastWinnerRef.current) {
         lastWinnerRef.current = data.aiwinner;
         const winner = data.aiwinner;
-        const opponent_username = "AI";
+        const opponent_username = "BOT";
         const user_score = data.playerscore;
         const opp_score = data.aiscore;
         const opp_id = -1;

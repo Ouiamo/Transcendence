@@ -298,7 +298,7 @@ function aicheckWinner(player: string)
 {
     if(aiplayer.score == aimaxScore)
     {
-        aiwinner = "bot";
+        aiwinner = "BOT";
         aigameStart = false;
     }
     else if(realplayer.score == aimaxScore)

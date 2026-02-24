@@ -283,7 +283,7 @@ function checkWinner(player:string)
 {
     if(player1.score == maxScore)
     {
-        winner = "GUEST";
+        winner = "LOCAL_GUEST";
         gameStart = false;
     }
     else if(player2.score == maxScore)

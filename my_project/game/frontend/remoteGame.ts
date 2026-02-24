@@ -187,7 +187,9 @@ function setupPrivateGame(gameData: any, currentUser: any) {
             gameState.isCleaningUp = true;
             gameState.inGame = false;
             gameState.gameEnd = true;
-            forfeit = true;
+             if (gameState.score1 < 11 && gameState.score2 < 11) {
+                forfeit = true;
+            }
 
             setTimeout(() => {
                 window.dispatchEvent(new CustomEvent('game_ended', {

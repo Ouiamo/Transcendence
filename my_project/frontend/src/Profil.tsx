@@ -336,7 +336,9 @@ function Profil({ user, delete_obj, gotohome, gotosetting }: ProfilInterface) {
                 ? `${API_URL}/api/avatar/file/ia.png`
                 : match.match_type === 'LOCAL'
                 ? `${API_URL}/api/avatar/file/guest.png`
-                : match.opp_avatar
+                : match.opp_avatar === null
+                ? `${API_URL}/api/avatar/file/deleted.jpeg`
+                : match.opp_avatar  
             }
             alt="opponent"
             className="w-full h-full rounded-full object-cover bg-[#1a1033]"

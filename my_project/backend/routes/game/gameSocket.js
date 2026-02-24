@@ -150,7 +150,6 @@ module.exports = async function (fastify) {
         const roomParts = roomId.split('_');
         const senderId = parseInt(roomParts[1]);
         
-        // Verify both players are still friends before starting the game
         const player1Id = room.players[0].userId;
         const player2Id = room.players[1].userId;
         try {
@@ -286,7 +285,7 @@ module.exports = async function (fastify) {
             state.gameEnd = true;
             state.winner = -1; 
          
-            // Record forfeit scores in DB for both players (only once)
+      
             if (!room.forfeitRecorded) {
               room.forfeitRecorded = true;
               recordForfeitScores(room, socket.id);

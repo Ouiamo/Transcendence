@@ -15,7 +15,7 @@ The platform enables users to play the classic Pong game in real-time against ot
 - **Real-time Multiplayer Gaming**: Play Pong against other online players with WebSocket-based real-time synchronization
 - **AI Opponent**: Practice against an AI opponent with adjustable difficulty
 - **User Authentication**: Secure registration and login system with OAuth2 integration (42 Network, Google)
-- **Two-Factor Authentication (2FA)**: Enhanced security with authenticator app and email-based 2FA
+- **Two-Factor Authentication (2FA)**: Enhanced security with authenticator app and based 2FA
 - **Social Features**: Friend system with friend requests, friend list management, and online status tracking
 - **Game History & Statistics**: Comprehensive tracking of match history, win/loss records, and performance metrics
 - **User Profiles**: Customizable user profiles with avatar upload, profile editing, and statistics display
@@ -59,10 +59,6 @@ GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
 GOOGLE_REDIRECT_URI=https://localhost/api/auth/google/callback
 
-# Email Configuration (for 2FA)
-EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_app_password
-```
 
 ### SSL Certificates
 
@@ -134,19 +130,115 @@ docker-compose down
 
 ## Team Information
 
-<!-- TODO: Add team member information -->
-- **wzahir**: Role(s) and responsibilities
-- **mlabyed**: Role(s) and responsibilities  
-- **akoraich**: Role(s) and responsibilities
-- **meabdelk**: Role(s) and responsibilities
-- **oaoulad-**: Role(s) and responsibilities
+
+### wzahir — Project Manager (PM) & Backend Developer
+
+**PM Responsibilities:**
+- Organized team meetings and sprint planning sessions.
+- Tracked progress and deadlines.
+- Ensured communication between frontend and backend.
+- Managed risks and blockers.
+
+**Developer Responsibilities:**
+- Implemented authentication system (JWT, login/signup).
+- Integrated OAuth 2.0 (42 & Google).
+- Developed 2FA system (TOTP + QR code).
+- Contributed to backend security architecture.
+
+---
+
+### mlabyed — Product Owner (PO) & Frontend Lead
+
+**PO Responsibilities:**
+- Defined product vision and prioritized features.
+- Maintained the product backlog.
+- Validated completed work and feature integration.
+- Communicated with evaluators and stakeholders.
+
+**Developer Responsibilities:**
+- Developed main frontend pages (Login, Signup, Home, Dashboard, Profile).
+- Implemented routing and protected routes (React Router).
+- Integrated 2FA flows on frontend.
+- Ensured cross-browser compatibility and UI consistency.
+
+---
+
+### meabdelk — Technical Lead (TL) & Game Developer
+
+**TL Responsibilities:**
+- Defined technical architecture and WebSocket strategy.
+- Reviewed critical code changes.
+- Ensured code quality and modular design.
+
+**Developer Responsibilities:**
+- Implemented real-time multiplayer Pong game.
+- Managed latency, synchronization, and reconnection logic.
+- Built game invitation system.
+- Developed frontend game interface.
+
+---
+
+### akoraich — AI & Data Systems Developer
+
+**Developer Responsibilities:**
+- Designed AI opponent logic.
+- Developed game statistics and leaderboard.
+- Built analytics dashboard with charts.
+- Managed match history persistence.
+
+---
+
+### oaoulad- — Backend API & Social Features Developer
+
+**Developer Responsibilities:**
+- Developed secured Public API (CRUD endpoints).
+- Implemented rate limiting and API security.
+- Built friend system (requests, online status, removal).
+- Implemented avatar upload and account deletion modules.
 
 ---
 
 ## Project Management
 
-<!-- TODO: Add project management details -->
+Proper organization and task coordination were crucial for the success of **ft_transcendence**. Our team followed a structured workflow with clearly defined roles and responsibilities.
 
+### Work Organization
+- Features were divided into major modules:  
+  - Authentication & Security  
+  - Real-Time Game Engine  
+  - AI & Statistics  
+  - Public API & Social Features  
+  - Frontend Interface
+- Each module had a responsible lead.
+- Development tasks were tracked using GitHub Issues.
+- Features were implemented in dedicated Git branches.
+- Pull requests were reviewed before merging into the main branch.
+- Weekly integration sessions were held to ensure system stability.
+
+### Tools Used
+- **Version Control:** Git & GitHub  
+- **Task Management:** GitHub Issues, Milestones, Feature Branches  
+- **Communication:** Discord for text and voice communication  
+- **Collaboration:** Pair programming and screen-sharing for complex features  
+
+### Development Methodology
+- Agile-inspired workflow with milestones and sprints.
+- Modular architecture with separation of concerns.
+- Real-time communication handled with WebSockets.
+- Security-first approach (HTTPS, JWT, 2FA, secure cookies).
+- Continuous testing, code reviews, and refactoring.
+
+### Risk Management
+- Potential risks identified:
+  - Real-time synchronization challenges
+  - OAuth integration issues
+  - HTTPS and cookie security setup
+  - Cross-browser compatibility
+- Mitigation strategies:
+  - Early prototype testing for WebSockets
+  - Dedicated OAuth testing environment
+  - SSL certificate setup and testing
+  - Manual and automated cross-browser testing
 ---
 
 ## Technical Stack
@@ -187,9 +279,6 @@ docker-compose down
 
 **Real-time Communication:**
 - **Socket.IO 4.8.3**: WebSocket library for real-time game state synchronization and online status
-
-**Email Service:**
-- **Nodemailer 7.0.12**: Email sending for 2FA codes and notifications
 
 **Additional Backend Libraries:**
 - **@fastify/cors 8.0.0**: Cross-origin resource sharing configuration
@@ -313,7 +402,7 @@ Stores all user account information, authentication data, and 2FA settings.
 | `lastname` | TEXT | User's last name | - |
 | `avatar_url` | TEXT | URL/path to user avatar | DEFAULT: '/api/avatar/default.png' |
 | `twofa_enabled` | BOOLEAN | 2FA activation status | DEFAULT: false |
-| `twofa_method` | TEXT | 2FA method (authenticator/email) | - |
+| `twofa_method` | TEXT | 2FA method (authenticator) | - |
 | `twofa_secret` | TEXT | TOTP secret for authenticator app | - |
 | `created_at` | TIMESTAMP | Account creation timestamp | DEFAULT: CURRENT_TIMESTAMP |
 
@@ -356,7 +445,6 @@ Manages friend relationships and friend request statuses between users.
 
 #### 2. **Two-Factor Authentication (2FA)**
 - **Authenticator App Support**: TOTP-based 2FA using apps like Google Authenticator or Authy
-- **Email-based 2FA**: Alternative 2FA method using time-limited codes sent via email
 - **QR Code Generation**: Easy setup by scanning QR code with authenticator app
 - **2FA Management**: Enable/disable 2FA from user settings
 
@@ -445,23 +533,105 @@ Manages friend relationships and friend request statuses between users.
 
 
 **Major Modules:**
-- Use a framework for both frontend and backend (React + Fastify)
-- Public API with secured key, rate limiting, documentation, and at least 5 endpoints (GET, POST, PUT, DELETE)
-- Standard user management and authentication (profile update, avatar upload, friends with online status, profile page)
-- Real-time features using WebSockets
-- Complete web-based game (Pong with live matches, clear rules, win/loss conditions)
-- Remote players (two players on separate computers, latency handling, disconnection management, reconnection logic)
-- AI Opponent for games (challenging AI that wins occasionally, human-like behavior, explainable implementation)
+- **Use a framework for both frontend and backend (React + Fastify):** React provides a component-based SPA architecture, while Fastify offers high-performance routing and a lightweight plugin system — together they give a clean separation of concerns and faster development.
+- **Public API with secured key, rate limiting, documentation, and at least 5 endpoints (GET, POST, PUT, DELETE):** Exposes core platform data to third parties in a controlled, abuse-resistant way, demonstrating production API design practices.
+- **Standard user management and authentication (profile update, avatar upload, friends with online status, profile page):** Covers the essential social layer of any multiplayer platform — users need persistent identities, profiles, and a way to connect with others.
+- **Real-time features using WebSockets:** Game state, online presence, and invitations all require instant two-way communication that HTTP polling cannot deliver reliably.
+- **Complete web-based game (Pong with live matches, clear rules, win/loss conditions):** The core deliverable of the project — a fully playable, rule-complete game running in the browser without any native dependencies.
+- **Remote players (two players on separate computers, latency handling, disconnection management, reconnection logic):** Moves the game beyond localhost, requiring server-authoritative state and handling real network conditions such as lag and drops.
+- **AI Opponent for games (challenging AI that wins occasionally, human-like behavior, explainable implementation):** Gives solo users a meaningful practice mode and fills game queues when no human opponent is available.
 
 
 **Minor Modules:**
-- Remote authentication with OAuth 2.0 (42, Google)
-- Complete 2FA system (authenticator app + email)
-- Game statistics and match history (wins/losses, match history, leaderboard)
-- User activity analytics and insights dashboard
-- Support for additional browsers (Firefox, Safari, Edge - full compatibility, testing, consistent UI/UX)
+- **Remote authentication with OAuth 2.0 (42, Google):** Lets users sign in with existing accounts, reducing friction at registration and offloading credential management to trusted providers.
+- **Complete 2FA system (authenticator app):** Adds a second layer of account security using TOTP, protecting users whose passwords may be compromised.
+- **Game statistics and match history (wins/losses, match history, leaderboard):** Gives players a reason to keep coming back by tracking progress and enabling friendly competition through rankings.
+- **User activity analytics and insights dashboard:** Surfaces aggregated play data in visual form, making personal performance easy to understand at a glance.
+- **Support for additional browsers (Firefox, Brave — full compatibility, testing, consistent UI/UX):** Ensures the platform is accessible to users regardless of browser choice, with verified parity across Chromium-based and non-Chromium engines.
 - Module of choice: Account deletion with data cleanup and confirmation flow
 
+---
+
+## Module of Choice — Justification
+
+### Account Deletion with Data Cleanup (Minor Module)
+
+**Why we chose this module:**
+Account deletion is a real production requirement that touches every layer of the stack — authentication, database, file system, and active sessions. It was chosen to demonstrate full-stack ownership rather than an isolated feature.
+
+**Technical challenges it addresses:**
+- Cascading deletion across multiple tables (users, friends, game history, stats) without breaking foreign key constraints
+- Physical avatar file removal from disk alongside database cleanup
+- Session and JWT cookie invalidation to prevent ghost sessions after deletion
+- Preventing data writes during an active deletion process
+
+**How it adds value:**
+- Gives users full control over their personal data (GDPR-aligned)
+- Demonstrates production-quality thinking beyond basic CRUD
+- Includes a multi-step confirmation flow on the frontend to prevent accidental deletion
+
+**Why it deserves Minor Module status:**
+- Requires coordinated logic across routes, database, file system, and session management
+- Frontend implements a secure confirmation modal (password re-entry before deletion)
+- Handles edge cases: pending friend requests, ongoing game sessions, orphaned avatar files
+- Goes well beyond a simple `DELETE FROM users WHERE id = ?` query
+
+---
+
+## Architecture Overview
+
+### Application Architecture
+
+The application follows a client-server architecture:
+
+- **Frontend:** React SPA (served via Nginx over HTTPS)
+- **Backend:** Fastify API server (REST + WebSocket)
+- **Database:** SQLite (persistent storage)
+- **Real-time Communication:** Socket.IO (WebSockets)
+- **Reverse Proxy:** Nginx handling HTTPS and routing
+
+### Authentication Flow
+
+1. User submits login credentials.
+2. Backend verifies credentials.
+3. JWT token is generated.
+4. Token is stored in a secure httpOnly cookie.
+5. Protected routes verify JWT via middleware.
+
+### Real-Time Game Flow
+
+1. Player joins matchmaking queue.
+2. Server pairs players and creates a game room.
+3. Server maintains authoritative game state.
+4. Game state is broadcasted via WebSockets.
+5. Match result is stored in the database.
+
+
+---
+
+## Public API Overview
+
+The backend provides secured public API endpoints, protected by **API key** and **rate limiting** (100 requests per minute per IP). All endpoints respond with JSON.
+
+### Available Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/public/stats` | Returns total user count and server time |
+| GET | `/api/public/users` | Returns a list of up to 10 users with their creation date |
+| POST | `/api/public/contact` | Submit a contact message (`name` + `message`) |
+| PUT | `/api/public/feedback` | Submit feedback rating (`rating` required) |
+| DELETE | `/api/public/request` | Delete a request by `request_id` |
+| GET | `/api/public` | Overview of the public API and application status |
+
+**Authentication & Security:**
+- Each request requires a valid API key in header: `x-api-key: pong-api-key`
+- Rate limiting enforced: max 100 requests per minute per IP
+- Responses include proper HTTP status codes:
+  - 401: Invalid API key
+  - 429: Rate limit exceeded
+  - 400: Missing required fields
+  - 500: Server or database errors
 
 
 ## Individual Contributions
@@ -470,7 +640,7 @@ Manages friend relationships and friend request statuses between users.
 ### wzahir
 - Standard user management (profile update, profile page)
 - Remote authentication with OAuth 2.0 (42, Google)
-- Complete 2FA system (authenticator app + email)
+- Complete 2FA system (authenticator app)
 - Settings page frontend
 - Authentication backend (login/signup, JWT, middleware)
 
@@ -488,18 +658,18 @@ Manages friend relationships and friend request statuses between users.
 - Game invitation system
 - Frontend game interface
 
-### akouraich
+### akoraich
 - AI Opponent for games (challenging AI that wins occasionally, human-like behavior)
 - Game statistics and match history (wins/losses, match history, leaderboard)
 - User activity analytics dashboard
-- Statistics frontend with Chart
-- Leaderboard frontend with rankings
+- Statistics with Chart
+- Leaderboard with rankings
 
 ### mlabyed
 - Main frontend developer (login, signup, home, dashboard, profile pages)
 - Frontend routing navigation (React Router with protected routes)
 - 2FA frontend integration (setup wizard, verification screens)
-- Support for additional browsers (Firefox, Safari, Edge - testing and fixes)
+- Support for additional browsers (Firefox, brave - testing and fixes)
 ---
 
 *Last updated: February 2026*

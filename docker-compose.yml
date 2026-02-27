@@ -1,0 +1,38 @@
+
+services:
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/data:/app/data
+      - ./backend/avatar/file:/app/avatar/file
+    depends_on:
+      - ai
+    networks:
+      - webnet
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/certs:/etc/nginx/certs:ro
+    depends_on:
+      - backend
+    networks:
+      - webnet
+    
+  ai:
+    build:
+      context: ./game/ai
+      dockerfile: Dockerfile
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    driver: bridge

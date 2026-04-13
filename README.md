@@ -10,6 +10,16 @@
 
 The platform enables users to play the classic Pong game in real-time against other players, with support for both online multiplayer and AI opponents. Built as a single-page application (SPA), it provides a seamless user experience with responsive design and real-time updates.
 
+## 👤 My Individual Contributions (ouiam)
+
+As a core Backend Developer on this project, I was responsible for the **Public API architecture, Social Logic, and Data Privacy systems**. My work focused on building secure, scalable, and production-ready modules:
+
+- **Secured Public API:** Designed and implemented a Public API with **API Key authentication** and **Rate Limiting** (Fastify), exposing core platform data securely to third parties.
+- **Social Ecosystem:** Built the entire **Real-time Friend System**, including friend requests, online status tracking via WebSockets, and relationship management.
+- **Media Management:** Developed the **Avatar Upload** system, handling file validation and secure storage.
+- **Data Privacy & Cleanup (Module of Choice):** Implemented a complete **Account Deletion** flow. This ensured full data integrity by handling cascading deletions across the database (SQLite) and physical file cleanup, complying with user privacy standards (GDPR-ready).
+- **Backend Security:** Integrated security best practices, including input sanitization, secure cookies, and CORS policies.
+
 ### Key Features
 
 - **Real-time Multiplayer Gaming**: Play Pong against other online players with WebSocket-based real-time synchronization
@@ -130,6 +140,15 @@ docker-compose down
 
 ## Team Information
 
+### [ouiam] oaoulad- — Backend API & Social Features Developer
+
+**Developer Responsibilities:**
+- Developed secured Public API (CRUD endpoints).
+- Implemented rate limiting and API security.
+- Built friend system (requests, online status, removal).
+- Implemented avatar upload and Account deletion (Data Cleanup) modules.
+
+---
 
 ### wzahir — Project Manager (PM) & Backend Developer
 
@@ -185,16 +204,6 @@ docker-compose down
 - Developed game statistics and leaderboard.
 - Built analytics dashboard with charts.
 - Managed match history persistence.
-
----
-
-### oaoulad- — Backend API & Social Features Developer
-
-**Developer Responsibilities:**
-- Developed secured Public API (CRUD endpoints).
-- Implemented rate limiting and API security.
-- Built friend system (requests, online status, removal).
-- Implemented avatar upload and account deletion modules.
 
 ---
 

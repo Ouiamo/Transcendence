@@ -12,15 +12,14 @@ The platform enables users to play the classic Pong game in real-time against ot
 
 ## 👤 My Individual Contributions (ouiam)
 
-As a core Backend Developer on this project, I was responsible for the **Public API architecture, Social Logic, and Data Privacy systems**. My work focused on building secure, scalable, and production-ready modules:
+As a Backend Developer, I engineered the platform's social core and public data architecture, focusing on real-time performance and data integrity:
 
-- **Secured Public API:** Designed and implemented a Public API with **API Key authentication** and **Rate Limiting** (Fastify), exposing core platform data securely to third parties.
-- **Social Ecosystem:** Built the entire **Real-time Friend System**, including friend requests, online status tracking via WebSockets, and relationship management.
-- **Media Management:** Developed the **Avatar Upload** system, handling file validation and secure storage.
-- **Data Privacy & Cleanup (Module of Choice):** Implemented a complete **Account Deletion** flow. This ensured full data integrity by handling cascading deletions across the database (SQLite) and physical file cleanup, complying with user privacy standards (GDPR-ready).
-- **Backend Security:** Integrated security best practices, including input sanitization, secure cookies, and CORS policies.
+- **Public API Architecture:** Designed and implemented a secured Public API with **API Key authentication** and **Rate Limiting** (Fastify), exposing core platform data through 5+ specialized endpoints (CRUD).
+- **Real-time Social Ecosystem:** Built the entire **Friendship System** from scratch, leveraging **WebSockets** for instant friend requests and live **Online/Offline status tracking** with connection grace periods.
+- **Media & Profile Management:** Developed the **Avatar Upload** system, handling file validation, secure server-side storage, and profile integration.
+- **Data Privacy (Module of Choice):** Implemented a GDPR-compliant **Account Deletion** flow, ensuring complete data cleanup across SQLite tables while maintaining referential integrity for match history.
 
-### Key Features
+## Key Features
 
 - **Real-time Multiplayer Gaming**: Play Pong against other online players with WebSocket-based real-time synchronization
 - **AI Opponent**: Practice against an AI opponent with adjustable difficulty

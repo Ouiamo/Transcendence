@@ -10,6 +10,32 @@
 
 The platform enables users to play the classic Pong game in real-time against other players, with support for both online multiplayer and AI opponents. Built as a single-page application (SPA), it provides a seamless user experience with responsive design and real-time updates.
 
+## 📸 Screenshots
+
+### 🏠 Home
+![Home](screenshots/home.png)
+
+### 🔐 Authentication
+![Login](screenshots/login.png)
+![Signup](screenshots/signup.png)
+
+### 📊 Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### 🎮 Game (Pong)
+![Game Start](screenshots/game-start.png)
+![Gameplay](screenshots/game-play.png)
+
+### 🏆 Leaderboard
+![Leaderboard](screenshots/leaderboard.png)
+
+### 👤 Profile & Social
+![Profile](screenshots/profile.png)
+![Friends](screenshots/friends.png)
+
+### ⚙️ Settings
+![Settings](screenshots/settings.png)
+
 ## 👤 My Individual Contributions (ouiam)
 
 As a Backend Developer, I engineered the platform's social core and public data architecture, focusing on real-time performance and data integrity:
